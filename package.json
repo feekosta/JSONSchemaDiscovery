@@ -1,7 +1,10 @@
 {
   "name": "JSONSchemaDiscovery",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
+  "author": "Felipe de Souza da Costa",
+  "description": "Web application for extraction of documents nosql database schemas",
+  "angular-cli": {},
   "scripts": {
     "ng": "ng",
     "start": "node dist/server/app.js",
@@ -12,19 +15,23 @@
     "predev": "tsc -p server",
     "dev": "concurrently \"mongod\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
     "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/app.js\"",
-    "lintbe": "tslint server/**/**.ts{,x}"
+    "preinstall": "tsc -p server",
+    "postinstall": "ng build --aot -prod"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^4.0.0",
+    "@angular/animations": "^4.3.3",
+    "@angular/cli": "1.2.7",
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.0.0",
     "@angular/core": "^4.0.0",
     "@angular/forms": "^4.0.0",
     "@angular/http": "^4.0.0",
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "@types/node": "~6.0.60",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "bootstrap": "^3.3.7",
@@ -39,15 +46,14 @@
     "morgan": "^1.8.2",
     "rotating-file-stream": "^1.2.2",
     "rxjs": "^5.4.1",
+    "ts-node": "~3.0.4",
+    "typescript": "~2.3.3",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "1.2.7",
-    "@angular/compiler-cli": "^4.0.0",
     "@angular/language-service": "^4.0.0",
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
-    "@types/node": "~6.0.60",
     "codelyzer": "~3.0.1",
     "concurrently": "^3.5.0",
     "jasmine-core": "~2.6.2",
@@ -60,8 +66,6 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "nodemon": "^1.11.0",
     "protractor": "~5.1.2",
-    "ts-node": "~3.0.4",
-    "tslint": "~5.3.2",
-    "typescript": "~2.3.3"
+    "tslint": "~5.3.2"
   }
 }

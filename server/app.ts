@@ -12,9 +12,6 @@ import setRoutes from './routes';
 
 const app = express();
 
-// Load environment variables
-dotenv.load({'path':'.env'});
-
 // Logging middleware
 // You can set morgan to log differently depending on your environment
 if (app.get('env') == 'production') {
@@ -30,7 +27,10 @@ if (app.get('env') == 'production') {
 	// setup the logger
 	app.use(morgan('combined', {stream: morganLogStream}))
 } else {
+	// setup the logger
 	app.use(morgan('dev'));
+	// Load environment development variables
+	dotenv.load({'path':'.env'});
 }
 
 // Use body parser so we can get info from POST and/or URL parameters
