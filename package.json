@@ -15,8 +15,7 @@
     "predev": "tsc -p server",
     "dev": "concurrently \"mongod\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
     "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/app.js\"",
-    "preinstall": "tsc -p server",
-    "postinstall": "ng build --aot -prod"
+    "postinstall": "tsc -p server && ng build --aot -prod"
   },
   "private": true,
   "dependencies": {

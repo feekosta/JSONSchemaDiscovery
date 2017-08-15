@@ -3,12 +3,14 @@
 ## What you need installed to run this project:
 * [NodeJS](http://nodejs.org)
 * [Mongo DB](https://www.mongodb.org)
-* [Angular CLI](https://cli.angular.io/)
 
 ## Setting up development envoirment:
 After clone the repo to your local machine, in project's folder:
+1. Install global dependencies:
+* [Angular CLI](https://cli.angular.io/) `npm install -g @angular/cli`
+* [Typescript](https://www.typescriptlang.org/) `npm install -g typescript`
 
-1. Install server dependencies running: `npm install`;
+2. Install server dependencies running: `npm install`;
 
 ## Development server
 
