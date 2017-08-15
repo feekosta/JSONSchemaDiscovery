@@ -36,6 +36,8 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/reduce/:id').get(rawSchemaResultController.listByBatchId);
 	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaResultController.deleteByBatchId);
 
+	router.route('/batch/rawschema/union').post(rawSchemaResultController.union)
+
 	// Apply the routes to our application with the prefix /api
 	app.use('/api', router);
 

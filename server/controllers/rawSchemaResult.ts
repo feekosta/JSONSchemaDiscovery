@@ -2,6 +2,8 @@ import RawSchemaResult from '../models/rawSchemaResult';
 
 import BaseController from './base';
 
+import RawSchemaUnionHelper from '../helpers/RawSchemaUnionHelper';
+
 export default class RawSchemaResultController extends BaseController {
   
 	model = RawSchemaResult;
@@ -37,6 +39,16 @@ export default class RawSchemaResultController extends BaseController {
 		this.model.remove({ 'rawSchemaBatchId': req.params.id }, (err) => {
 			if (err) { return this.error(res, err, 404); }
 			this.success(res, null);
+		});
+	}
+  
+	union = (req, res) => {
+		this.model.find({ 'rawSchemaBatchId': req.body.rawSchemaBatchId }, (err, docs) => {
+			if (err) { return this.error(res, err, 404); }
+			new RawSchemaUnionHelper().union(docs, (unionError, finalRawSchema) => {
+				if (unionError) { return this.error(res, unionError, 404); }
+				this.success(res, finalRawSchema);
+			});
 		});
 	}
 	
