@@ -3,6 +3,7 @@ import * as express from 'express';
 import UserController from './controllers/user';
 import RawSchemaController from './controllers/rawSchema';
 import RawSchemaBatchController from './controllers/rawSchemaBatch';
+import RawSchemaResultController from './controllers/rawSchemaResult';
 
 export default function setRoutes(app) {
 
@@ -12,6 +13,7 @@ export default function setRoutes(app) {
 
 	const rawSchemaController = new RawSchemaController();
 	const rawSchemaBatchController = new RawSchemaBatchController();
+	const rawSchemaResultController = new RawSchemaResultController();
 
 	router.route('/login').post(userController.login);
 	router.route('/register').post(userController.register);
@@ -29,6 +31,10 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/discovery').post(rawSchemaBatchController.discovery);
 	router.route('/batch/rawschema/discovery/:id').get(rawSchemaController.listByBatchId);
 	router.route('/batch/rawschema/discovery/:id').delete(rawSchemaController.deleteByBatchId);
+
+	router.route('/batch/rawschema/reduce').post(rawSchemaBatchController.reduce);
+	router.route('/batch/rawschema/reduce/:id').get(rawSchemaResultController.listByBatchId);
+	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaResultController.deleteByBatchId);
 
 	// Apply the routes to our application with the prefix /api
 	app.use('/api', router);

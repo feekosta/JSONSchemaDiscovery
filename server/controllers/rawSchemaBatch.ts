@@ -1,9 +1,11 @@
 import * as mongodb from 'mongodb';
 
 import RawSchemaBatch from '../models/rawSchemaBatch';
+import RawSchemaResult from '../models/rawSchemaResult';
 
 import BaseController from './base';
 import RawSchemaController from './rawSchema';
+import RawSchemaResultController from './rawSchemaResult';
 
 import rawSchemaParse from '../helpers/rawSchemaParse';
 
@@ -32,6 +34,21 @@ export default class RawSchemaBatchController extends BaseController {
             if (saveAllError) { return this.error(res, saveAllError, 500); }
             return this.success(res, {"rawSchemaBatchId":doc._id});
           }); 
+        });
+      });
+    });
+  }
+
+  reduce = (req, res) => {
+    this.getById(req.body.rawSchemaBatchId, (getError, rawSchemaBatch) => {
+      if (getError) { return this.error(res, getError, 500); }
+      let rawSchemaController = new RawSchemaController();
+      rawSchemaController.mapReduce(rawSchemaBatch._id, (mapReduceError, mapReduceResults) => {
+        if (mapReduceError) { return this.error(res, mapReduceError, 500); }
+        let rawSchemaResultController = new RawSchemaResultController();
+        rawSchemaResultController.saveResults(mapReduceResults, rawSchemaBatch._id, (saveResultsError) => {
+          if (saveResultsError) { return this.error(res, saveResultsError, 500); }
+          return this.success(res, {"rawSchemaBatchId":rawSchemaBatch._id});
         });
       });
     });

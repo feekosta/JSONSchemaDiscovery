@@ -2,6 +2,10 @@ import BaseController from './base';
 
 import RawSchema from '../models/rawSchema';
 
+import options from '../helpers/mapReduceOptions';
+
+declare var emit;
+
 export default class RawSchemaController extends BaseController {
   
   model = RawSchema;
@@ -28,6 +32,16 @@ export default class RawSchemaController extends BaseController {
     this.model.remove({ 'rawSchemaBatchId': req.params.id }, (err) => {
       if (err) { return this.error(res, err, 404); }
       this.success(res, null);
+    });
+  }
+
+  mapReduce = (rawSchemaBatchId, callback) => {
+    options.query = {'rawSchemaBatchId':rawSchemaBatchId};
+    options.map = function() { emit(this.docRawSchema, 1); };
+    options.reduce = function(key, values) { return values.length; };
+    this.model.mapReduce(options, (mapReduceError, results) => {
+      if (mapReduceError) { return callback(mapReduceError, null); }
+      callback(null, results);
     });
   }
 
