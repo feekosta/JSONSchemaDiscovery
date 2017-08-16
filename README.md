@@ -4,13 +4,13 @@
 * [NodeJS](http://nodejs.org)
 * [Mongo DB](https://www.mongodb.org)
 
-## Setting up development envoirment:
+## Setting up development environment:
 After clone the repo to your local machine, in project's folder:
 1. Install global dependencies:
 * [Angular CLI](https://cli.angular.io/) `npm install -g @angular/cli`
 * [Typescript](https://www.typescriptlang.org/) `npm install -g typescript`
 
-2. Install server dependencies running: `npm install`;
+2. Install project dependencies running: `npm install`;
 
 ## Development server
 
