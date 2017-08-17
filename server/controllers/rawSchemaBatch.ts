@@ -31,15 +31,19 @@ export default class RawSchemaBatchController extends BaseController {
       console.log("uri",uri);
       mongodb(uri, (dbError, database) => {
         if (dbError) { return this.error(res, dbError, 500); }
-        let collection = database.collection(batch.dbCollection).find();
-        this.discoveryRawSchemaFromCollection(collection, (discoveryError, rawSchemas) => {
-          database.close();
-          if (discoveryError) { return this.error(res, discoveryError, 500); }
-          let rawSchemaController = new RawSchemaController();
-          rawSchemaController.saveAll(rawSchemas, doc._id, (saveAllError) => {
-            if (saveAllError) { return this.error(res, saveAllError, 500); }
-            return this.success(res, {"rawSchemaBatchId":doc._id});
-          }); 
+        database.collection(batch.dbCollection).find().count((err, qtd) =>{
+          console.log("qtddddd",qtd);
+        });
+        database.collection(batch.dbCollection).find({}, (err, collection) => {
+          this.discoveryRawSchemaFromCollection(collection, (discoveryError, rawSchemas) => {
+            database.close();
+            if (discoveryError) { return this.error(res, discoveryError, 500); }
+            let rawSchemaController = new RawSchemaController();
+            rawSchemaController.saveAll(rawSchemas, doc._id, (saveAllError) => {
+              if (saveAllError) { return this.error(res, saveAllError, 500); }
+              return this.success(res, {"rawSchemaBatchId":doc._id});
+            }); 
+          });
         });
       });
     });

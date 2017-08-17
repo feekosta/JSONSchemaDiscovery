@@ -16,9 +16,9 @@ class BatchParam {
 	public getURI() {
 		let uri;
 		if(this.dbLogin && this.dbPasswd){
-			uri = "mongodb://"+this.dbLogin+":"+this.dbPasswd+"@"+this.dbUrl+":"+this.dbPort+"/"+this.dbCollection+"?authSource=admin";
+			uri = "mongodb://"+this.dbLogin+":"+this.dbPasswd+"@"+this.dbUrl+":"+this.dbPort+"/"+this.dbName+"?authSource=admin";
 		} else {
-			uri = "mongodb://"+this.dbUrl+":"+this.dbPort+"/"+this.dbCollection
+			uri = "mongodb://"+this.dbUrl+":"+this.dbPort+"/"+this.dbName
 		}
 		if(this.dbAuthMechanism)
 			uri = uri+ (uri.indexOf("?") >= 0 ? "&" : "&")+"authMechanism="+this.dbAuthMechanism;
