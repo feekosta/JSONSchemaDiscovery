@@ -1,5 +1,5 @@
-abstract class ExtendedJSONTypeChecker {
-	static isExtendedJSONType(data) {
+abstract class BSONTypeHelper {
+	static getBSONType(data) {
 		if(data != null && data != undefined){
 			if(data._bsontype != null){
 				return data._bsontype;
@@ -11,4 +11,4 @@ abstract class ExtendedJSONTypeChecker {
 		}
 	}
 }
-export default ExtendedJSONTypeChecker;
+export default BSONTypeHelper;

@@ -1,6 +1,6 @@
-import BaseController from './base';
-
 import RawSchema from '../models/rawSchema';
+
+import BaseController from './base';
 
 import options from '../helpers/mapReduceOptions';
 
@@ -35,12 +35,28 @@ export default class RawSchemaController extends BaseController {
     });
   }
 
+  countByBatchId = (req, res) => {
+    this.model.find({ 'rawSchemaBatchId': req.params.id }).count((err, count) => {
+      if (err) { return this.error(res, err, 404); }
+      this.success(res, count);
+    });
+  }
+
   mapReduce = (rawSchemaBatchId, callback) => {
     options.query = {'rawSchemaBatchId':rawSchemaBatchId};
-    options.map = function() { emit(this.docRawSchema, 1); };
-    options.reduce = function(key, values) { return values.length; };
+    options.map = function() { 
+      emit(this.docRawSchema, 1); 
+    };
+    options.reduce = function(key, values) { 
+      var count = 0;
+      values.forEach((value) =>{
+        count += value;
+      })
+      return count;
+    };
     this.model.mapReduce(options, (mapReduceError, results) => {
       if (mapReduceError) { return callback(mapReduceError, null); }
+      console.log("results"+results);
       callback(null, results);
     });
   }

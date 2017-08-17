@@ -29,8 +29,10 @@ export default function setRoutes(app) {
 	router.route('/batch/:id').delete(rawSchemaBatchController.delete);
 	
 	router.route('/batch/rawschema/discovery').post(rawSchemaBatchController.discovery);
+	router.route('/batch/rawschema/discovery/count').get(rawSchemaController.count);
 	router.route('/batch/rawschema/discovery/:id').get(rawSchemaController.listByBatchId);
 	router.route('/batch/rawschema/discovery/:id').delete(rawSchemaController.deleteByBatchId);
+	router.route('/batch/rawschema/discovery/:id/count').get(rawSchemaController.countByBatchId);
 
 	router.route('/batch/rawschema/reduce').post(rawSchemaBatchController.reduce);
 	router.route('/batch/rawschema/reduce/:id').get(rawSchemaResultController.listByBatchId);

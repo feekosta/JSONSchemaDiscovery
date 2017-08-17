@@ -2,7 +2,7 @@ import RawSchemaResult from '../models/rawSchemaResult';
 
 import BaseController from './base';
 
-import RawSchemaUnionHelper from '../helpers/RawSchemaUnionHelper';
+import RawSchemaUnionHelper from '../helpers/rawSchemaUnionHelper';
 
 export default class RawSchemaResultController extends BaseController {
   

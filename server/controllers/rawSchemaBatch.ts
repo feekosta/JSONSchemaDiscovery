@@ -2,6 +2,7 @@ import * as mongodb from 'mongodb';
 
 import RawSchemaBatch from '../models/rawSchemaBatch';
 import RawSchemaResult from '../models/rawSchemaResult';
+import BatchParam from '../models/batchParam';
 
 import BaseController from './base';
 import RawSchemaController from './rawSchema';
@@ -12,20 +13,25 @@ import rawSchemaParse from '../helpers/rawSchemaParse';
 export default class RawSchemaBatchController extends BaseController {
   
   model = RawSchemaBatch;
+  batchParam: BatchParam;
 
   discovery = (req, res) => {
-    let params = req.body;
-    let dbUrl = params.dbUrl.indexOf("mongodb://") !== -1 ? params.dbUrl : "mongodb://"+params.dbUrl;
-    let dbUri = params.dbUrl+'/'+params.dbName;
+
+    var data = JSON.parse(JSON.stringify(req.body));
+    var batch = new BatchParam(data);
+
     let rawSchemaBatch = new this.model();
-    rawSchemaBatch.collectionName = params.dbCollection;
-    rawSchemaBatch.dbUri = dbUri;
-    rawSchemaBatch.userId = params.userId;
+    rawSchemaBatch.collectionName = batch.dbCollection;
+    rawSchemaBatch.dbUri = batch.dbUrl;
+    rawSchemaBatch.userId = batch.userId;
+    
     this.save(rawSchemaBatch, (saveError, doc) => {
       if (saveError) { return this.error(res, saveError, 500); }
-      mongodb(dbUri, (dbError, database) => {
+      let uri = batch.getURI();
+      console.log("uri",uri);
+      mongodb(uri, (dbError, database) => {
         if (dbError) { return this.error(res, dbError, 500); }
-        let collection = database.collection(params.dbCollection).find();
+        let collection = database.collection(batch.dbCollection).find();
         this.discoveryRawSchemaFromCollection(collection, (discoveryError, rawSchemas) => {
           database.close();
           if (discoveryError) { return this.error(res, discoveryError, 500); }

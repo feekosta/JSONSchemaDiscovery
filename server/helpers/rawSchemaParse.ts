@@ -1,13 +1,13 @@
 import * as es from 'event-stream';
 
-import ExtendedJSONTypeChecker from './ExtendedJSONTypeChecker';
+import BSONTypeHelper from './bsonTypeHelper';
 
 let parse = function(){
 
   let rawSchemes = [];
 
   let buildRawSchema = function(value, key) {
-    let extendedJSONType = ExtendedJSONTypeChecker.isExtendedJSONType(value);
+    let extendedJSONType = BSONTypeHelper.getBSONType(value);
     let response;
     if(extendedJSONType){
       response = extendedJSONType;
