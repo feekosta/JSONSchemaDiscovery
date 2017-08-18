@@ -1,8 +1,7 @@
 import RawSchemaResult from '../models/rawSchemaResult';
 
 import BaseController from './base';
-
-import RawSchemaUnionHelper from '../helpers/rawSchemaUnionHelper';
+import RawSchemaUnionController from './rawSchemaUnion';
 
 export default class RawSchemaResultController extends BaseController {
   
@@ -41,13 +40,22 @@ export default class RawSchemaResultController extends BaseController {
 			this.success(res, null);
 		});
 	}
-  
-	union = (req, res) => {
-		this.model.find({ 'rawSchemaBatchId': req.body.rawSchemaBatchId }, (err, docs) => {
+
+	countByBatchId = (req, res) => {
+		this.model.find({ 'rawSchemaBatchId': req.params.id }).count((err, count) => {
 			if (err) { return this.error(res, err, 404); }
-			new RawSchemaUnionHelper().union(docs, (unionError, finalRawSchema) => {
+			this.success(res, count);
+		});
+	}
+  
+	hashMapUnion = (req, res) => {
+		const rawSchemaBatchId = req.body.rawSchemaBatchId;
+		this.model.find({ 'rawSchemaBatchId': rawSchemaBatchId }, (err, rawSchemasResultByBatchId) => {
+			if (err) { return this.error(res, err, 404); }
+			let rawSchemaUnionController = new RawSchemaUnionController();
+			rawSchemaUnionController.hashMapUnion(rawSchemasResultByBatchId, rawSchemaBatchId, (unionError, unionSuccess) => {
 				if (unionError) { return this.error(res, unionError, 404); }
-				this.success(res, finalRawSchema);
+				this.success(res, unionSuccess);
 			});
 		});
 	}

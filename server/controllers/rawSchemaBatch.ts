@@ -2,7 +2,6 @@ import * as mongodb from 'mongodb';
 
 import RawSchemaBatch from '../models/rawSchemaBatch';
 import RawSchemaResult from '../models/rawSchemaResult';
-import BatchParam from '../models/batchParam';
 
 import BaseController from './base';
 import RawSchemaController from './rawSchema';
@@ -10,39 +9,34 @@ import RawSchemaResultController from './rawSchemaResult';
 
 import rawSchemaParse from '../helpers/rawSchemaParse';
 
+import DatabaseParam from '../params/databaseParam';
+
 export default class RawSchemaBatchController extends BaseController {
   
   model = RawSchemaBatch;
-  batchParam: BatchParam;
 
   discovery = (req, res) => {
-
     var data = JSON.parse(JSON.stringify(req.body));
-    var batch = new BatchParam(data);
-
+    var databaseParam = new DatabaseParam(data);
     let rawSchemaBatch = new this.model();
-    rawSchemaBatch.collectionName = batch.dbCollection;
-    rawSchemaBatch.dbUri = batch.dbUrl;
-    rawSchemaBatch.userId = batch.userId;
-    
-    this.save(rawSchemaBatch, (saveError, doc) => {
-      if (saveError) { return this.error(res, saveError, 500); }
-      let uri = batch.getURI();
-      console.log("uri",uri);
-      mongodb(uri, (dbError, database) => {
-        if (dbError) { return this.error(res, dbError, 500); }
-        database.collection(batch.dbCollection).find().count((err, qtd) =>{
-          console.log("qtddddd",qtd);
-        });
-        database.collection(batch.dbCollection).find({}, (err, collection) => {
-          this.discoveryRawSchemaFromCollection(collection, (discoveryError, rawSchemas) => {
-            database.close();
-            if (discoveryError) { return this.error(res, discoveryError, 500); }
+    rawSchemaBatch.collectionName = databaseParam.collectionName;
+    rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
+    rawSchemaBatch.userId = databaseParam.userId;
+    mongodb(databaseParam.getURI(), (dbError, database) => {
+      if (dbError) { return this.error(res, dbError, 500); }
+      let collection = database.collection(databaseParam.collectionName);
+      collection.find({}, (err, docs) => {
+        this.discoveryRawSchemaFromCollection(docs, (discoveryError, rawSchemas) => {
+          database.close();
+          if (discoveryError) { return this.error(res, discoveryError, 500); }
+          rawSchemaBatch.collectionCount = rawSchemas.length;
+          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {
+            if (rawSchemaBatchSaveError) { return this.error(res, discoveryError, 500); }
             let rawSchemaController = new RawSchemaController();
-            rawSchemaController.saveAll(rawSchemas, doc._id, (saveAllError) => {
+            rawSchemaController.saveAll(rawSchemas, rawSchemaBatchSaved._id, (saveAllError) => {
               if (saveAllError) { return this.error(res, saveAllError, 500); }
-              return this.success(res, {"rawSchemaBatchId":doc._id});
-            }); 
+              return this.success(res, {"rawSchemaBatchId":rawSchemaBatchSaved._id});
+            });
           });
         });
       });
