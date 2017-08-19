@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcryptjs';
-class PasswordHelper {
+abstract class PasswordHelper {
 	static crypt(password, callback) {
-		bcrypt.genSalt(10, (err, salt) => {
-			if (err) { return callback(err); }
-			bcrypt.hash(password, salt, (error, hash) => {
-				if (error) { return callback(error); }
+		bcrypt.genSalt(10, (saltError, salt) => {
+			if (saltError) { return callback(saltError); }
+			bcrypt.hash(password, salt, (hashError, hash) => {
+				if (hashError) { return callback(hashError); }
 				callback(hash);
 			});
 	    });

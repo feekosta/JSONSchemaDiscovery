@@ -59,5 +59,17 @@ export default class RawSchemaResultController extends BaseController {
 			});
 		});
 	}
+
+	treeMapUnion = (req, res) => {
+		const rawSchemaBatchId = req.body.rawSchemaBatchId;
+		this.model.find({ 'rawSchemaBatchId': rawSchemaBatchId }, (err, rawSchemasResultByBatchId) => {
+			if (err) { return this.error(res, err, 404); }
+			let rawSchemaUnionController = new RawSchemaUnionController();
+			rawSchemaUnionController.treeMapUnion(rawSchemasResultByBatchId, rawSchemaBatchId, (unionError, unionSuccess) => {
+				if (unionError) { return this.error(res, unionError, 404); }
+				this.success(res, unionSuccess);
+			});
+		});
+	}
 	
 }

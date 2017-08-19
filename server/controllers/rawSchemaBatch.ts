@@ -7,7 +7,7 @@ import BaseController from './base';
 import RawSchemaController from './rawSchema';
 import RawSchemaResultController from './rawSchemaResult';
 
-import rawSchemaParse from '../helpers/rawSchemaParse';
+import rawSchemaParser from '../helpers/rawSchemaParser';
 
 import DatabaseParam from '../params/databaseParam';
 
@@ -16,8 +16,9 @@ export default class RawSchemaBatchController extends BaseController {
   model = RawSchemaBatch;
 
   discovery = (req, res) => {
-    var data = JSON.parse(JSON.stringify(req.body));
-    var databaseParam = new DatabaseParam(data);
+    let startDate = new Date();
+    let data = JSON.parse(JSON.stringify(req.body));
+    let databaseParam = new DatabaseParam(data);
     let rawSchemaBatch = new this.model();
     rawSchemaBatch.collectionName = databaseParam.collectionName;
     rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
@@ -30,6 +31,8 @@ export default class RawSchemaBatchController extends BaseController {
           database.close();
           if (discoveryError) { return this.error(res, discoveryError, 500); }
           rawSchemaBatch.collectionCount = rawSchemas.length;
+          let endDate = new Date();
+          rawSchemaBatch.elapsedTime = Math.abs((startDate.getTime() - endDate.getTime())/1000)
           this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {
             if (rawSchemaBatchSaveError) { return this.error(res, discoveryError, 500); }
             let rawSchemaController = new RawSchemaController();
@@ -75,7 +78,7 @@ export default class RawSchemaBatchController extends BaseController {
   discoveryRawSchemaFromCollection(collection, callback){
     let result;
     collection.stream()
-      .pipe(rawSchemaParse())
+      .pipe(rawSchemaParser())
       .on('data', (data) => { result = data; })
       .on('error', (err) => { callback(err, null); })
       .on('end', () => { callback(null, result); });

@@ -37,16 +37,22 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/discovery/:id/count').get(rawSchemaController.countByBatchId);
 
 	router.route('/batch/rawschema/reduce').post(rawSchemaBatchController.reduce);
-	router.route('/batch/rawschema/reduce/count').get(rawSchemaBatchController.count);
+	router.route('/batch/rawschema/reduce/count').get(rawSchemaResultController.count);
 	router.route('/batch/rawschema/reduce/:id').get(rawSchemaResultController.listByBatchId);
 	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaResultController.deleteByBatchId);
 	router.route('/batch/rawschema/reduce/:id/count').get(rawSchemaResultController.countByBatchId);
 
 	router.route('/batch/rawschema/union/hashmap').post(rawSchemaResultController.hashMapUnion);
-	router.route('/batch/rawschema/union/hashmap/count').get(rawSchemaUnionController.hasMapUnionCount);
-	router.route('/batch/rawschema/union/hashmap/:id').get(rawSchemaUnionController.hasMapUnionListByBatchId);
-	router.route('/batch/rawschema/union/hashmap/:id/final').get(rawSchemaUnionController.finalRawSchemaListByBatchId);
-	router.route('/batch/rawschema/union/hashmap/:id').delete(rawSchemaUnionController.hasMapUnionDeleteByBatchId);
+	router.route('/batch/rawschema/union/hashmap/count').get(rawSchemaUnionController.hashMapUnionCount);
+	router.route('/batch/rawschema/union/hashmap/:id').get(rawSchemaUnionController.hashMapUnionListByBatchId);
+	router.route('/batch/rawschema/union/hashmap/:id/final').get(rawSchemaUnionController.hashMapUnionListFormatedByBatchId);
+	router.route('/batch/rawschema/union/hashmap/:id').delete(rawSchemaUnionController.hashMapUnionDeleteByBatchId);
+
+	router.route('/batch/rawschema/union/treemap').post(rawSchemaResultController.treeMapUnion);
+	router.route('/batch/rawschema/union/treemap/count').get(rawSchemaUnionController.treeMapUnionCount);
+	router.route('/batch/rawschema/union/treemap/:id').get(rawSchemaUnionController.treeMapUnionListByBatchId);
+	router.route('/batch/rawschema/union/treemap/:id/final').get(rawSchemaUnionController.treeMapUnionListFormatedByBatchId);
+	router.route('/batch/rawschema/union/treemap/:id').delete(rawSchemaUnionController.treeMapUnionDeleteByBatchId);
 
 
 	// Apply the routes to our application with the prefix /api

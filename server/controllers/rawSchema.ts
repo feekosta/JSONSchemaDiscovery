@@ -2,7 +2,7 @@ import RawSchema from '../models/rawSchema';
 
 import BaseController from './base';
 
-import options from '../helpers/mapReduceOptions';
+import options from '../params/mapReduceParam';
 
 declare var emit;
 
@@ -48,15 +48,14 @@ export default class RawSchemaController extends BaseController {
       emit(this.docRawSchema, 1); 
     };
     options.reduce = function(key, values) { 
-      var count = 0;
-      values.forEach((value) =>{
+      let count = 0;
+      values.forEach((value) => {
         count += value;
-      })
+      });
       return count;
     };
     this.model.mapReduce(options, (mapReduceError, results) => {
       if (mapReduceError) { return callback(mapReduceError, null); }
-      console.log("results"+results);
       callback(null, results);
     });
   }
