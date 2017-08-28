@@ -1,16 +1,11 @@
 import * as es from 'event-stream';
 import RawSchemaBuilder from './rawSchemaBuilder';
 let parse = function(){
-  let rawSchemes = [];
-  let mapper = es.through(function write(document) {
-    let rawSchema = {};
-    Object.keys(document).forEach((key) => {
-      rawSchema[key] = RawSchemaBuilder.build(document[key], key);
-    });
-    let docRawSchema = {
-      "docId":document._id,
-      "docRawSchema":JSON.stringify(rawSchema)
-    }
+  const rawSchemes = [];
+  const mapper = es.through(function write(document) {
+    const documentRawSchema = {};
+    Object.keys(document).forEach((key) => { documentRawSchema[key] = RawSchemaBuilder.build(document[key]); });
+    let docRawSchema = { "docId":document._id, "docRawSchema":JSON.stringify(documentRawSchema) };
     rawSchemes.push(docRawSchema);
     this.emit('progress', document);
   }, function end() {

@@ -70,7 +70,11 @@ mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }, (err, databa
 	console.log("Database connection ready");
 
 	// Listen on provided port, on all network interfaces.
-	server.listen(port, () => console.log(`API running on localhost:${port}`));
+	try {
+		server.listen(port, () => console.log(`API running on localhost:${port}`));
+	} catch (err) {
+		console.log("GRAVE: ",err);
+	}
 
 });	
 

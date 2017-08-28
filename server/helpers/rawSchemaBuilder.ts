@@ -1,33 +1,29 @@
 import BSONTypeHelper from './bsonTypeHelper';
 abstract class RawSchemaBuilder {
-  static build = (value, key) => {
-    let BSONType = BSONTypeHelper.getBSONType(value);
-    let response;
-    if(BSONType){
-      response = BSONType;
+  static build = (value) => {
+    let bsonType = BSONTypeHelper.getBSONType(value);
+    let instance;
+    if(bsonType){
+      instance = bsonType;
     } else if (value === undefined){
-      response = "Undefined";
+      instance = "Undefined";
     } else if(value === null){
-      response = "Null";
+      instance = "Null";
     } else if (Array.isArray(value)){
-      response = [];
-      value.forEach((val) => {
-        let rawSchema = RawSchemaBuilder.build(val, null)
-        let hasRawSchema = response.find((resp) => {
-          return JSON.stringify(resp) === JSON.stringify(rawSchema);
-        }) != null;
-        if(!hasRawSchema)
-          response.push(rawSchema);
+      instance = [];
+      value.forEach((arrayItem) => {
+        let arrayItemRawSchema = RawSchemaBuilder.build(arrayItem);
+        let rawSchemaAlreadyExists = instance.find((resp) => { return JSON.stringify(resp) === JSON.stringify(arrayItemRawSchema); }) != null;
+        if(!rawSchemaAlreadyExists)
+          instance.push(arrayItemRawSchema);
       });
     } else if (typeof value === "object") {
-      response = {};
-      Object.keys(value).forEach((key) => {
-        response[key] = RawSchemaBuilder.build(value[key], key);
-      });
+      instance = {};
+      Object.keys(value).forEach((property) => { instance[property] = RawSchemaBuilder.build(value[property]); });
     } else {
-      response = value.constructor.name;
+      instance = value.constructor.name;
     }
-    return response;
+    return instance;
   };
 }
 export default RawSchemaBuilder;

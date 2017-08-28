@@ -1,13 +1,14 @@
+import * as co from 'co';
 import * as mongodb from 'mongodb';
+import {MongoClient} from 'mongodb'
 
 import RawSchemaBatch from '../models/rawSchemaBatch';
-import RawSchemaResult from '../models/rawSchemaResult';
 
 import BaseController from './base';
 import RawSchemaController from './rawSchema';
 import RawSchemaResultController from './rawSchemaResult';
 
-import rawSchemaParser from '../helpers/rawSchemaParser';
+import RawSchemaProcessWorker from '../helpers/rawSchemaProcessWorker';
 
 import DatabaseParam from '../params/databaseParam';
 
@@ -16,39 +17,70 @@ export default class RawSchemaBatchController extends BaseController {
   model = RawSchemaBatch;
 
   discovery = (req, res) => {
-    let startDate = new Date();
     let data = JSON.parse(JSON.stringify(req.body));
     let databaseParam = new DatabaseParam(data);
     let rawSchemaBatch = new this.model();
     rawSchemaBatch.collectionName = databaseParam.collectionName;
     rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
     rawSchemaBatch.userId = databaseParam.userId;
-    mongodb(databaseParam.getURI(), (dbError, database) => {
-      if (dbError) { return this.error(res, dbError, 500); }
+    this.getDatabaseConnection(res, databaseParam, (database) => {
       let collection = database.collection(databaseParam.collectionName);
-      collection.find({}, (err, docs) => {
-        this.discoveryRawSchemaFromCollection(docs, (discoveryError, rawSchemas) => {
-          database.close();
-          if (discoveryError) { return this.error(res, discoveryError, 500); }
-          rawSchemaBatch.collectionCount = rawSchemas.length;
-          let endDate = new Date();
-          rawSchemaBatch.elapsedTime = Math.abs((startDate.getTime() - endDate.getTime())/1000)
-          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {
-            if (rawSchemaBatchSaveError) { return this.error(res, discoveryError, 500); }
-            let rawSchemaController = new RawSchemaController();
-            rawSchemaController.saveAll(rawSchemas, rawSchemaBatchSaved._id, (saveAllError) => {
-              if (saveAllError) { return this.error(res, saveAllError, 500); }
-              return this.success(res, {"rawSchemaBatchId":rawSchemaBatchSaved._id});
-            });
-          });
+      this.setCollectionSize(res, collection, rawSchemaBatch, (count) => {});
+      rawSchemaBatch.startDate = new Date();
+      this.success(res, rawSchemaBatch._id);
+      const worker = new RawSchemaProcessWorker();
+      worker.work(rawSchemaBatch, collection, null)
+        .on('done',() => {
+          rawSchemaBatch.status = "DONE";
+          rawSchemaBatch.endDate = new Date();
+          rawSchemaBatch.elapsedTime = Math.abs((rawSchemaBatch.startDate.getTime() - rawSchemaBatch.endDate.getTime())/1000);
+          console.log("BATCHQUERY",rawSchemaBatch._id," DONE IN: ",rawSchemaBatch.elapsedTime);
+          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {});
+        })
+        .on('error', (error) => {
+          rawSchemaBatch.status = "ERROR";
+          rawSchemaBatch.statusMessage = error;
+          console.log("BATCHQUERY",rawSchemaBatch._id," ERROR: ",error);
+          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {});
+        })
+        .on('lastObjectId', (lastObjectId) => {
+          worker.work(rawSchemaBatch, collection, lastObjectId);
         });
+    });
+  }
+
+  setCollectionSize = (res, collection, rawSchemaBatch, callback) => {
+    return co(function*() {
+      const count = yield collection.count();
+      return count;
+    }).then((resp) => {
+      rawSchemaBatch.collectionCount = resp;
+      rawSchemaBatch.status = "IN_PROGRESS";
+      this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {
+        if(rawSchemaBatchSaveError) { throw rawSchemaBatchSaveError; }
+        return callback(resp);
       });
+    }).catch((err) => {
+      return this.error(res, err, 500);
+    });
+  }
+
+  getDatabaseConnection = (res, databaseParam, callback) => {
+    return co(function*() {
+      const url = databaseParam.getURI();
+      const database = yield MongoClient.connect(url);
+      return database;
+    }).then((resp) => {
+      return callback(resp);
+    }).catch((err) => {
+      return this.error(res, err, 500);
     });
   }
 
   reduce = (req, res) => {
     this.getById(req.body.rawSchemaBatchId, (getError, rawSchemaBatch) => {
       if (getError) { return this.error(res, getError, 500); }
+      if (!rawSchemaBatch) { return this.error(res, `rawSchemaBatch with id: ${req.body.rawSchemaBatchId} not found`, 404); }
       let rawSchemaController = new RawSchemaController();
       rawSchemaController.mapReduce(rawSchemaBatch._id, (mapReduceError, mapReduceResults) => {
         if (mapReduceError) { return this.error(res, mapReduceError, 500); }
@@ -74,14 +106,5 @@ export default class RawSchemaBatchController extends BaseController {
       callback(null, doc);
     });
   }
-  
-  discoveryRawSchemaFromCollection(collection, callback){
-    let result;
-    collection.stream()
-      .pipe(rawSchemaParser())
-      .on('data', (data) => { result = data; })
-      .on('error', (err) => { callback(err, null); })
-      .on('end', () => { callback(null, result); });
-  }
-  
+ 
 }
