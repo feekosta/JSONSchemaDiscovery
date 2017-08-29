@@ -6,7 +6,7 @@ import RawSchemaUnion from './rawSchemaUnion';
 import JsonSchemaBuilder from '../helpers/jsonSchemaBuilder';
 
 export default class JsonSchemaExtractedController extends BaseController {
-  
+
   model = JsonSchemaExtracted;
 
   generate = (req, res) => {
@@ -14,10 +14,10 @@ export default class JsonSchemaExtractedController extends BaseController {
       if (getError) { return this.error(res, getError, 500); }
       if (!rawSchemaUnion) { return this.error(res, `rawSchemaUnion for batchId: ${req.body.rawSchemaBatchId} not found`, 404); }
       new JsonSchemaBuilder().build(JSON.parse(rawSchemaUnion.finalRawSchema).fields, (error, jsonschema) => {
-      	this.model = new JsonSchemaExtracted();
-      	this.model.rawSchemaBatchId = req.body.rawSchemaBatchId;
-      	this.model.jsonSchema = JSON.stringify(jsonschema);
-      	this.model.save(this.model, (saveError) => {
+      	let jsSchema = new JsonSchemaExtracted();
+      	jsSchema.rawSchemaBatchId = req.body.rawSchemaBatchId;
+      	jsSchema.jsonSchema = JSON.stringify(jsonschema);
+      	jsSchema.save(jsSchema, (saveError) => {
 			if (saveError) { return this.error(res, saveError, 500); }
         	this.success(res, jsonschema);
 		});
