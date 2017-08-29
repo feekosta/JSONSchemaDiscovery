@@ -7,8 +7,6 @@ import RawSchemaResultController from './controllers/rawSchemaResult';
 import RawSchemaUnionController from './controllers/rawSchemaUnion';
 import JsonSchemaExtractedController from './controllers/jsonSchemaExtracted'
 
-import AllController from './controllers/all';
-
 export default function setRoutes(app) {
 
 	const router = express.Router();
