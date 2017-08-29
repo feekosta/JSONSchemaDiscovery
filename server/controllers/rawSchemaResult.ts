@@ -47,18 +47,6 @@ export default class RawSchemaResultController extends BaseController {
 			this.success(res, count);
 		});
 	}
-  
-	hashMapUnion = (req, res) => {
-		const rawSchemaBatchId = req.body.rawSchemaBatchId;
-		this.model.find({ 'rawSchemaBatchId': rawSchemaBatchId }, (err, rawSchemasResultByBatchId) => {
-			if (err) { return this.error(res, err, 404); }
-			let rawSchemaUnionController = new RawSchemaUnionController();
-			rawSchemaUnionController.hashMapUnion(rawSchemasResultByBatchId, rawSchemaBatchId, (unionError, unionSuccess) => {
-				if (unionError) { return this.error(res, unionError, 404); }
-				this.success(res, unionSuccess);
-			});
-		});
-	}
 
 	treeMapUnion = (req, res) => {
 		const rawSchemaBatchId = req.body.rawSchemaBatchId;
