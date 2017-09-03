@@ -45,6 +45,12 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaResultController.deleteByBatchId);
 	router.route('/batch/rawschema/reduce/:id/count').get(rawSchemaResultController.countByBatchId);
 
+	router.route('/batch/rawschema/aggregate').post(rawSchemaBatchController.aggregate);
+	router.route('/batch/rawschema/aggregate/count').get(rawSchemaResultController.count);
+	router.route('/batch/rawschema/aggregate/:id').get(rawSchemaResultController.listByBatchId);
+	router.route('/batch/rawschema/aggregate/:id').delete(rawSchemaResultController.deleteByBatchId);
+	router.route('/batch/rawschema/aggregate/:id/count').get(rawSchemaResultController.countByBatchId);
+
 	router.route('/batch/rawschema/union/treemap').post(rawSchemaResultController.treeMapUnion);
 	router.route('/batch/rawschema/union/treemap/count').get(rawSchemaUnionController.treeMapUnionCount);
 	router.route('/batch/rawschema/union/treemap/:id').get(rawSchemaUnionController.treeMapUnionListByBatchId);

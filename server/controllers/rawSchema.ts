@@ -1,3 +1,5 @@
+import {ObjectId} from 'mongodb';
+
 import RawSchema from '../models/rawSchema';
 
 import BaseController from './base';
@@ -42,7 +44,23 @@ export default class RawSchemaController extends BaseController {
     });
   }
 
+  aggregate = (rawSchemaBatchId, callback) => {
+    const start = new Date();
+    this.model.aggregate([
+      { $match:{ rawSchemaBatchId:ObjectId(rawSchemaBatchId)}},
+      { $group:{ _id:"$docRawSchema", value:{$sum:1} }}
+     ], function (aggregateError, results) {
+        if (aggregateError) {
+          return callback(aggregateError, null);
+        } else {
+          console.log("aggregate end in ",Math.abs((start.getTime() - new Date().getTime())/1000));
+          return callback(null, results);
+        }
+    });
+  }
+
   mapReduce = (rawSchemaBatchId, callback) => {
+    const start = new Date();
     options.query = {'rawSchemaBatchId':rawSchemaBatchId};
     options.map = function() { 
       emit(this.docRawSchema, 1); 
@@ -56,6 +74,7 @@ export default class RawSchemaController extends BaseController {
     };
     this.model.mapReduce(options, (mapReduceError, results) => {
       if (mapReduceError) { return callback(mapReduceError, null); }
+      console.log("mapreduce end in ",Math.abs((start.getTime() - new Date().getTime())/1000));
       callback(null, results);
     });
   }

@@ -93,6 +93,22 @@ export default class RawSchemaBatchController extends BaseController {
     });
   }
 
+  aggregate = (req, res) => {
+    this.getById(req.body.rawSchemaBatchId, (getError, rawSchemaBatch) => {
+      if (getError) { return this.error(res, getError, 500); }
+      if (!rawSchemaBatch) { return this.error(res, `rawSchemaBatch with id: ${req.body.rawSchemaBatchId} not found`, 404); }
+      let rawSchemaController = new RawSchemaController();
+      rawSchemaController.aggregate(rawSchemaBatch._id, (aggregateError, aggregateResults) => {
+        if (aggregateError) { return this.error(res, aggregateError, 500); }
+        let rawSchemaResultController = new RawSchemaResultController();
+        rawSchemaResultController.saveResults(aggregateResults, rawSchemaBatch._id, (saveResultsError) => {
+          if (saveResultsError) { return this.error(res, saveResultsError, 500); }
+          return this.success(res, {"rawSchemaBatchId":rawSchemaBatch._id});
+        });
+      });
+    });
+  }
+
   save = function(rawSchemaBatch, callback){
     rawSchemaBatch.save((err, doc) => {
       if (err) { return callback(err, null); }
