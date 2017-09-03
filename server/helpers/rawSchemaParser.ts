@@ -1,12 +1,12 @@
 import * as es from 'event-stream';
+import ObjectKeysSorter from './objectKeysSorter';
 import RawSchemaBuilder from './rawSchemaBuilder';
 let parse = function(){
   const rawSchemes = [];
   const mapper = es.through(function write(document) {
     const documentRawSchema = {};
-    Object.keys(document).forEach((key) => { documentRawSchema[key] = RawSchemaBuilder.build(document[key]); });
-    let docRawSchema = { "docId":document._id, "docRawSchema":JSON.stringify(documentRawSchema) };
-    rawSchemes.push(docRawSchema);
+    Object.keys(ObjectKeysSorter.sort(document)).forEach((key) => { documentRawSchema[key] = RawSchemaBuilder.build(document[key]); });
+    rawSchemes.push({ "docId":document._id, "docRawSchema":JSON.stringify(documentRawSchema) });
     this.emit('progress', document);
   }, function end() {
     this.emit('data', rawSchemes);

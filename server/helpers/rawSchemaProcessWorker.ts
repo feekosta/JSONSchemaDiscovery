@@ -6,7 +6,7 @@ class RawSchemaProcessWorker extends EventEmitter {
 	work(rawSchemaBatch, collection, lastObjectId): EventEmitter {
 		console.log("work in greater than ",lastObjectId);
 		const start = new Date();
-		const collectionToWork = collection.find(lastObjectId != null ? {'_id':{$gt:lastObjectId}} : {}).limit(this.limit);
+		const collectionToWork = collection.find(lastObjectId != null ? {'_id':{$gt:lastObjectId}} : {}).sort({_id:1}).limit(this.limit);
 		const discovery = new RawSchemaDiscovery().discovery(collectionToWork);
 		discovery.on('end', (rawSchemes) => {
 			let lastObjectId = null;
