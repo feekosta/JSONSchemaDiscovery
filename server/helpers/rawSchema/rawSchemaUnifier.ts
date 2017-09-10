@@ -54,7 +54,9 @@ class RawSchemaUnifier {
 				const existingArrayItemType = type.types.find((currentType) => {
 					return currentType.name === arrayItemTypeName && currentType.path === path;
 				});
-				const totalCount = existingArrayItemType != null ? Number(existingArrayItemType.count) + Number(count) : count;
+				console.log("existingArrayItemType.count",existingArrayItemType);
+				console.log("Number(count)",Number(count));
+				const totalCount = existingArrayItemType != null ? Number(existingArrayItemType.count) + Number(count) : Number(count);
 				let arrayItemType = this.buildInstance(path, arrayItem, totalCount);
 				if(!existingArrayItemType){
 					type.types.push(arrayItemType);
@@ -71,6 +73,7 @@ class RawSchemaUnifier {
 		}
 	};
 	buildInstance = (path, value, count) => {
+		console.log("count",count);
 		let typeName = this.getTypeFromValue(value);
 		let instance;
 		if(typeName === 'Array'){
@@ -89,6 +92,7 @@ class RawSchemaUnifier {
 					instance.types.push(type);
 				} else {
 					typeInArray.count = Number(typeInArray.count) + Number(type.count);
+					console.log("typeInArray.count",typeInArray.count);
 				}
 			})
 		} else if (typeName === 'Object'){

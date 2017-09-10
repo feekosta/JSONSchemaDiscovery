@@ -1,11 +1,9 @@
-import * as dotenv from 'dotenv';
-import * as jwt from 'jsonwebtoken';
+import * as dotenv  from 'dotenv';
+import * as jwt     from 'jsonwebtoken';
 
-import User from '../models/user';
-
-import BaseController from './base';
-
-import PasswordHelper from '../helpers/passwordHelper';
+import User           from '../../models/user/user';
+import PasswordHelper from '../../helpers/passwordHelper';
+import BaseController from '../base';
 
 export default class UserController extends BaseController {
   

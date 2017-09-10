@@ -1,11 +1,10 @@
-import * as express from 'express';
-
-import UserController from './controllers/user';
-import RawSchemaController from './controllers/rawSchema';
-import RawSchemaBatchController from './controllers/rawSchemaBatch';
-import RawSchemaResultController from './controllers/rawSchemaResult';
-import RawSchemaUnionController from './controllers/rawSchemaUnion';
-import JsonSchemaExtractedController from './controllers/jsonSchemaExtracted'
+import * as express 					from 'express';
+import UserController 					from './controllers/user/user';
+import RawSchemaController 				from './controllers/rawSchema/rawSchema';
+import RawSchemaBatchController 		from './controllers/rawSchema/rawSchemaBatch';
+import RawSchemaOrderedResultController from './controllers/rawSchema/rawSchemaOrderedResult';
+import RawSchemaUnionController 		from './controllers/rawSchema/rawSchemaUnion';
+import JsonSchemaExtractedController 	from './controllers/jsonSchema/jsonSchemaExtracted'
 
 export default function setRoutes(app) {
 
@@ -15,7 +14,7 @@ export default function setRoutes(app) {
 
 	const rawSchemaController = new RawSchemaController();
 	const rawSchemaBatchController = new RawSchemaBatchController();
-	const rawSchemaResultController = new RawSchemaResultController();
+	const rawSchemaOrderedResultController = new RawSchemaOrderedResultController();
 	const rawSchemaUnionController = new RawSchemaUnionController();
 
 	const jsonSchemaExtractedController = new JsonSchemaExtractedController();
@@ -40,22 +39,28 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/discovery/:id/count').get(rawSchemaController.countByBatchId);
 
 	router.route('/batch/rawschema/reduce').post(rawSchemaBatchController.reduce);
-	router.route('/batch/rawschema/reduce/count').get(rawSchemaResultController.count);
-	router.route('/batch/rawschema/reduce/:id').get(rawSchemaResultController.listByBatchId);
-	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaResultController.deleteByBatchId);
-	router.route('/batch/rawschema/reduce/:id/count').get(rawSchemaResultController.countByBatchId);
+	router.route('/batch/rawschema/reduce/count').get(rawSchemaOrderedResultController.count);
+	router.route('/batch/rawschema/reduce/:id').get(rawSchemaOrderedResultController.listByBatchId);
+	router.route('/batch/rawschema/reduce/:id').delete(rawSchemaOrderedResultController.deleteByBatchId);
+	router.route('/batch/rawschema/reduce/:id/count').get(rawSchemaOrderedResultController.countByBatchId);
 
 	router.route('/batch/rawschema/aggregate').post(rawSchemaBatchController.aggregate);
-	router.route('/batch/rawschema/aggregate/count').get(rawSchemaResultController.count);
-	router.route('/batch/rawschema/aggregate/:id').get(rawSchemaResultController.listByBatchId);
-	router.route('/batch/rawschema/aggregate/:id').delete(rawSchemaResultController.deleteByBatchId);
-	router.route('/batch/rawschema/aggregate/:id/count').get(rawSchemaResultController.countByBatchId);
+	router.route('/batch/rawschema/aggregate/count').get(rawSchemaOrderedResultController.count);
+	router.route('/batch/rawschema/aggregate/:id').get(rawSchemaOrderedResultController.listByBatchId);
+	router.route('/batch/rawschema/aggregate/:id').delete(rawSchemaOrderedResultController.deleteByBatchId);
+	router.route('/batch/rawschema/aggregate/:id/count').get(rawSchemaOrderedResultController.countByBatchId);
 
-	router.route('/batch/rawschema/union/treemap').post(rawSchemaResultController.treeMapUnion);
-	router.route('/batch/rawschema/union/treemap/count').get(rawSchemaUnionController.treeMapUnionCount);
-	router.route('/batch/rawschema/union/treemap/:id').get(rawSchemaUnionController.treeMapUnionListByBatchId);
-	router.route('/batch/rawschema/union/treemap/:id/final').get(rawSchemaUnionController.treeMapUnionListFormatedByBatchId);
-	router.route('/batch/rawschema/union/treemap/:id').delete(rawSchemaUnionController.treeMapUnionDeleteByBatchId);
+	router.route('/batch/rawschema/aggregateAndReduce').post(rawSchemaBatchController.aggregateAndReduce);
+	router.route('/batch/rawschema/aggregateAndReduce/count').get(rawSchemaOrderedResultController.count);
+	router.route('/batch/rawschema/aggregateAndReduce/:id').get(rawSchemaOrderedResultController.listByBatchId);
+	router.route('/batch/rawschema/aggregateAndReduce/:id').delete(rawSchemaOrderedResultController.deleteByBatchId);
+	router.route('/batch/rawschema/aggregateAndReduce/:id/count').get(rawSchemaOrderedResultController.countByBatchId);
+	
+	router.route('/batch/rawschema/union').post(rawSchemaOrderedResultController.union);
+	router.route('/batch/rawschema/union/count').get(rawSchemaUnionController.count);
+	router.route('/batch/rawschema/union/:id').get(rawSchemaUnionController.listByBatchId);
+	router.route('/batch/rawschema/union/:id').delete(rawSchemaUnionController.deleteByBatchId);
+	router.route('/batch/rawschema/union/:id/count').get(rawSchemaUnionController.countByBatchId);
 
 	router.route('/batch/jsonschema/generate').post(jsonSchemaExtractedController.generate);
 	router.route('/batch/jsonschema/generate/count').get(jsonSchemaExtractedController.count);

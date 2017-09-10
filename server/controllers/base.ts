@@ -12,9 +12,7 @@ abstract class BaseController {
 
   // Count all
   public count = (req, res) => {
-    console.log("cooooooooooount");
     this.model.count((err, count) => {
-      console.log("eeeeeeeeeerrr",err);
       if (err) { return this.error(res, err, 404); }
       this.success(res, count);
     });
@@ -60,7 +58,7 @@ abstract class BaseController {
   }
 
   public success(res, obj){
-    if(obj)
+    if(obj) 
       return res.status(200).json(obj);
     return res.sendStatus(200);
   }

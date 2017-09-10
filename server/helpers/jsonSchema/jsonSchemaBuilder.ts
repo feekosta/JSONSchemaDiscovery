@@ -1,4 +1,4 @@
-import JSONSchema from '../models/jsonSchema';
+import JSONSchema from './jsonSchema';
 class JsonSchemaBuilder {
 	rootSchema = new JSONSchema();
 	build = (collection, callback) => {

@@ -1,7 +1,7 @@
 import BSONTypeHelper from './bsonTypeHelper';
 abstract class RawSchemaBuilder {
   static build = (value) => {
-    let bsonType = BSONTypeHelper.getBSONType(value);
+    const bsonType = BSONTypeHelper.getBSONType(value);
     let instance;
     if(bsonType){
       instance = bsonType;
@@ -12,14 +12,18 @@ abstract class RawSchemaBuilder {
     } else if (Array.isArray(value)){
       instance = [];
       value.forEach((arrayItem) => {
-        let arrayItemRawSchema = RawSchemaBuilder.build(arrayItem);
-        let rawSchemaAlreadyExists = instance.find((resp) => { return JSON.stringify(resp) === JSON.stringify(arrayItemRawSchema); }) != null;
+        const arrayItemRawSchema = RawSchemaBuilder.build(arrayItem);
+        const rawSchemaAlreadyExists = instance.find((resp) => { 
+          return JSON.stringify(resp) === JSON.stringify(arrayItemRawSchema); 
+        }) != null;
         if(!rawSchemaAlreadyExists)
           instance.push(arrayItemRawSchema);
       });
     } else if (typeof value === "object") {
       instance = {};
-      Object.keys(value).forEach((property) => { instance[property] = RawSchemaBuilder.build(value[property]); });
+      Object.keys(value).forEach((property) => { 
+        instance[property] = RawSchemaBuilder.build(value[property]); 
+      });
     } else {
       instance = value.constructor.name;
     }

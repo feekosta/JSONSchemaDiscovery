@@ -9,9 +9,11 @@ const rawSchemaBatchSchema = new mongoose.Schema({
   'status': { type: String, required: true },
   'statusMessage': { type: String },
   'startDate': { type: Date },
-  'endDate': { type: Date }
+  'endDate': { type: Date },
+  'unorderedMapReduceElapsedTime': {type:String},
+  'orderedMapReduceElapsedTime': {type:String},
+  'unorderedAggregationElapsedTime': {type:String},
+  'orderedAggregationElapsedTime': {type:String}
 },{ timestamps: { createdAt: 'createdAt' } });
 
-const RawSchemaBatch = mongoose.model('RawSchemaBatch', rawSchemaBatchSchema);
-
-export default RawSchemaBatch;
+export default mongoose.model('RawSchemaBatch', rawSchemaBatchSchema);

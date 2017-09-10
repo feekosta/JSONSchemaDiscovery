@@ -1,7 +1,7 @@
-import * as es from 'event-stream';
-import {EventEmitter} from 'events';
-import rawSchemaParser from './rawSchemaParser';
-class RawSchemaDiscovery extends EventEmitter {
+import * as es 			from 'event-stream';
+import {EventEmitter} 	from 'events';
+import rawSchemaParser 	from './rawSchemaParser';
+class RawSchemaDiscoverer extends EventEmitter {
 	discovery(collection): EventEmitter {
 		let result;
 		const parser = collection.stream().pipe(rawSchemaParser());
@@ -11,4 +11,4 @@ class RawSchemaDiscovery extends EventEmitter {
 		return this;
 	}
 }
-export default RawSchemaDiscovery;
+export default RawSchemaDiscoverer;
