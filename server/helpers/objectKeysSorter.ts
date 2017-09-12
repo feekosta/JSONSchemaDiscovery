@@ -3,6 +3,12 @@ class ObjectKeysSorter {
 		let ordered;
 		if(typeof object === "string"){
 			ordered = object;
+		} else if (Array.isArray(object)){
+			const items = [];
+			object.forEach((item) => {
+				items.push(this.sort(item));
+			});
+			ordered = items.sort();
 		} else {
 			ordered = this.sortObject(object);
 			Object.keys(ordered).forEach((key) => {
