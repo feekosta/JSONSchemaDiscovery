@@ -6,112 +6,55 @@ class RawSchemaUnifier {
 	union = (documents, callback) => {
 		documents.forEach((document) => {
 			this.buildRawSchema(JSON.parse(document.rawSchema), Number(document.count), this.rootSchema.fields, null);
-			this.rootSchema.count = Number(this.rootSchema.count) + Number(document.count);
+			this.rootSchema.count = this.sum(this.rootSchema.count, document.count);
 		});
 		callback(null, this.rootSchema);
 	};
 	buildRawSchema = (document, count, fields, parent) => {
 		Object.keys(document).forEach((key) => {
-			let path = parent != null ? `${parent}.${key}` : key;
+			const path = parent != null ? `${parent}.${key}` : key;
 			this.addToField(path, document[key], fields, count);
 		});
 	};
 	addToField = (path, value, fields, count) => {
-		let lastPath = path.split('.').pop();
-		let field = fields.find((field) => { return field.path === path; });
-		if(!field){
-			field = {
-				'name': lastPath,
-				'path': path,
-				'count': Number(count),
-				'types': []
-			}
-			fields.push(field);
-		} else {
-			field.count = Number(field.count)+Number(count);
-		}
+		const lastPath = path.split('.').pop();
+		let field = fields.find((field) => { 
+			return field.path === path; 
+		});
+		field = this.getOrUpdateInstance(field, fields, lastPath, path, count);
+		if(!field.types)
+			field.types = [];
 		this.addToType(path, value, field.types, count);
 	};
 	addToType = (path, value, types, count) => {
-		let typeName = this.getTypeFromValue(value);
-		let type = types.find((currentType) => { return currentType.name === typeName; });
-		if(!type) {
-			type = {
-				'name': typeName,
-				'path': path,
-				'count': Number(count)
-			}
-			types.push(type);
-		} else {
-			type.count = Number(type.count)+Number(count);
-		}
-
+		const typeName = this.getTypeFromValue(value);
+		let type = types.find((currentType) => { 
+			return currentType.name === typeName; 
+		});
+		type = this.getOrUpdateInstance(type, types, typeName, path, count);
+		this.workOnType(path, value, type, typeName, count);
+	};
+	addToItem = (path, value, items, count) => {
+		const typeName = this.getTypeFromValue(value);
+		let item = items.find((currentItem) => {
+			return currentItem.name === typeName && currentItem.path === path;
+		});
+		item = this.getOrUpdateInstance(item, items, typeName, path, count);
+		this.workOnType(path, value, item, typeName, count);
+	}
+	workOnType = (path, value, instance, typeName, count) => {
 		if(typeName === 'Array'){
-			if(!type.types)
-				type.types = [];
+			if(!instance.items)
+				instance.items = [];
 			value.forEach((arrayItem) => {
-				const arrayItemTypeName = this.getTypeFromValue(arrayItem);
-				const existingArrayItemType = type.types.find((currentType) => {
-					return currentType.name === arrayItemTypeName && currentType.path === path;
-				});
-				console.log("existingArrayItemType.count",existingArrayItemType);
-				console.log("Number(count)",Number(count));
-				const totalCount = existingArrayItemType != null ? Number(existingArrayItemType.count) + Number(count) : Number(count);
-				let arrayItemType = this.buildInstance(path, arrayItem, totalCount);
-				if(!existingArrayItemType){
-					type.types.push(arrayItemType);
-				} else {
-					existingArrayItemType.count = Number(existingArrayItemType.count) + Number(arrayItemType.count);
-				}
-			})
-		} else if (typeName === 'Object'){
-			if(!type.fields)
-				type.fields = [];
-			Object.keys(value).forEach((key) => {
-				this.addToField(`${path}.${key}`, value[key], type.fields, count);
+				this.addToItem(path, arrayItem, instance.items, count);
 			});
-		}
-	};
-	buildInstance = (path, value, count) => {
-		console.log("count",count);
-		let typeName = this.getTypeFromValue(value);
-		let instance;
-		if(typeName === 'Array'){
-			instance = {
-				'name': typeName,
-				'path': path,
-				'count': Number(count),
-				'types': []
-			}
-			value.forEach((val) => {
-				let type = this.buildInstance(path, val, count);
-				let typeInArray = instance.types.find((currentType) => {
-					return currentType.name === type.name && currentType.path === type.path;
-				});
-				if(!typeInArray){
-					instance.types.push(type);
-				} else {
-					typeInArray.count = Number(typeInArray.count) + Number(type.count);
-					console.log("typeInArray.count",typeInArray.count);
-				}
-			})
-		} else if (typeName === 'Object'){
-			instance = {
-				'name': typeName,
-				'path': path,
-				'count': Number(count),
-				'fields': []
-			}
+		} else if(typeName === 'Object'){
+			if(!instance.fields)
+				instance.fields = [];
 			this.buildRawSchema(value, count, instance.fields, path);
-		} else {
-			instance = {
-				'name': typeName,
-				'path': path,
-				'count': Number(count)
-			}
 		}
-		return instance;
-	};
+	}
 	getTypeFromValue = (value) => {
 		if(typeof value === "string"){
 			return value;
@@ -121,5 +64,19 @@ class RawSchemaUnifier {
 			return "Object";
 		}
 	};
+	sum = (value1, value2) => Number(value1) + Number(value2);
+	getOrUpdateInstance = (instance, instances, name, path, count) => {
+		if(!instance){
+			instance = {
+				"name":name,
+				"path":path,
+				"count":Number(count)
+			};
+			instances.push(instance);
+		} else {
+			instance.count = this.sum(instance.count, count);
+		}
+		return instance;
+	}
 }
 export default RawSchemaUnifier;
