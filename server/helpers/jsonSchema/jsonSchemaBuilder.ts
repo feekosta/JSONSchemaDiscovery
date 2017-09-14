@@ -6,7 +6,7 @@ class JsonSchemaBuilder {
 		callback(null, this.rootSchema);
 	}
 	buildProperties = (collection) => {
-		let properties = {};
+		const properties = {};
 		collection.forEach((item) => {
 			properties[item.name] = this.addToProperties(item);
 		});
@@ -16,63 +16,55 @@ class JsonSchemaBuilder {
 		let instance;
 		if(value.types){
 			if(value.types.length === 1){
-				let type = value.types[0];
+				const type = value.types[0];
 				if(this.isBSON(type)){
 					instance = {"$ref": `#/definitions/${type.name}`};
-				} else {
-					if(this.isPrimitive(type)){
-						instance = {
-							"name":value.name,
-							"type": type.name.toLowerCase()
-						}
-					} else {
-						if(type.name === "Array"){
-							instance = {
-								"name":value.name,
-								"type": "array",
-								"items": this.addToProperties(type)
-							}
-						} else {
-							instance = {
-								"name":value.name,
-								"type": "object",
-								"properties": this.buildProperties(type.fields)
-							}
-						}
+				} else if(this.isPrimitive(type)){
+					instance = {
+						"name": value.name,
+						"type": type.name.toLowerCase()
 					}
+				} else if(type.name === "Array"){
+					instance = this.addToProperties(type);
+				} else {
+					instance = this.addToProperties(type);
+					instance.name = type.path;
 				}
 			} else {
-				let items = []
-				value.types.forEach((type) => {
-					items.push(this.addToProperties(type));
-				});
-				return items;
+				instance = {
+					"name": value.name,
+					"anyOf": this.addToItems(value.types)
+				}
 			}
 		} else {
 			if(this.isBSON(value)){
 				instance = {"$ref": `#/definitions/${value.name}`};
+			} else if(this.isPrimitive(value)){
+				instance = {
+					"type": value.name.toLowerCase()
+				}
+			} else if(value.name === "Array"){
+				instance = {
+					"name": value.path,
+					"type": value.name.toLowerCase(),
+					"items": this.addToItems(value.items)
+				}
 			} else {
-				if(this.isPrimitive(value)){
-					instance = {
-						"type": value.name.toLowerCase()
-					}
-				} else {
-					if(value.name === "Array"){
-						instance = {
-							"type": "array",
-							"items": this.addToProperties(value)
-						}
-					} else {
-						instance = {
-							"type": "object",
-							"properties": this.buildProperties(value.fields)
-						}
-					}
+				instance = {
+					"type": "object",
+					"properties": this.buildProperties(value.fields)
 				}
 			}
 		}
 		return instance;
 	}
+	addToItems = (values) => {
+		const items = [];
+		values.forEach((value) => {
+			items.push(this.addToProperties(value));
+		});
+		return items;
+	};
 	isBSON = (value) => {
 		switch(value.name){
 			case "Boolean":
