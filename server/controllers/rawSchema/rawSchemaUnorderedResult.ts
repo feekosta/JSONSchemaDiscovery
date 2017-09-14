@@ -44,7 +44,7 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 	    options.map = function() {
 	    	const unorderedObject = JSON.parse(this.docRawSchema);
 	    	const orderedObject = sort(unorderedObject);
-	      	emit(JSON.stringify(orderedObject), 1); 
+	      	emit(JSON.stringify(orderedObject), this.value); 
 	    };
 	    options.reduce = function(key, values) { 
 	      let count = 0;
