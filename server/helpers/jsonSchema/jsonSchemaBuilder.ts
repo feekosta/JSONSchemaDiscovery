@@ -1,8 +1,10 @@
 import JSONSchema from './jsonSchema';
 class JsonSchemaBuilder {
 	rootSchema = new JSONSchema();
+	usedDefinitions = [];
 	build = (collection, callback) => {
 		this.rootSchema.properties = this.buildProperties(collection);
+		this.removeUnusedDefinitions();
 		callback(null, this.rootSchema);
 	}
 	buildProperties = (collection) => {
@@ -18,6 +20,7 @@ class JsonSchemaBuilder {
 			if(value.types.length === 1){
 				const type = value.types[0];
 				if(this.isBSON(type)){
+					this.addToUsedDefinitions(type.name);
 					instance = {"$ref": `#/definitions/${type.name}`};
 				} else if(this.isPrimitive(type)){
 					instance = {
@@ -38,6 +41,7 @@ class JsonSchemaBuilder {
 			}
 		} else {
 			if(this.isBSON(value)){
+				this.addToUsedDefinitions(value.name);
 				instance = {"$ref": `#/definitions/${value.name}`};
 			} else if(this.isPrimitive(value)){
 				instance = {
@@ -65,6 +69,10 @@ class JsonSchemaBuilder {
 		});
 		return items;
 	};
+	addToUsedDefinitions = (bsonType) => {
+		if (this.usedDefinitions.indexOf(bsonType) < 0)
+			this.usedDefinitions.push(bsonType);
+	}
 	isBSON = (value) => {
 		switch(value.name){
 			case "Boolean":
@@ -90,6 +98,15 @@ class JsonSchemaBuilder {
 			default:
 				return false;
 		}
+	};
+	removeUnusedDefinitions = () => {
+		Object.keys(this.rootSchema.definitions).forEach((definition) => {
+			const definitionUsed = this.usedDefinitions.find((bsonType) => {
+				return bsonType === definition;
+			}) != null;
+			if(!definitionUsed)
+				delete this.rootSchema.definitions[definition];
+		});
 	};
 }
 export default JsonSchemaBuilder;
