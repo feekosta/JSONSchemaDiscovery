@@ -12,7 +12,8 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
       if (unionError) { return this.error(res, unionError, 500); }
       const rawSchemaUnion = unionResult.pop();
       if (!rawSchemaUnion) { return this.error(res, `rawSchemaUnion for batchId: ${req.body.batchId} not found`, 404); }
-      new JsonSchemaBuilder().build(JSON.parse(rawSchemaUnion.rawSchemaFinal).fields, (error, jsonschema) => {
+      const rawSchemaFinal = JSON.parse(rawSchemaUnion.rawSchemaFinal);
+      new JsonSchemaBuilder().build(rawSchemaFinal.fields, rawSchemaFinal.count, (error, jsonschema) => {
       	let jsSchema = new JsonSchemaExtracted();
       	jsSchema.batchId = req.body.batchId;
       	jsSchema.jsonSchema = JSON.stringify(jsonschema);

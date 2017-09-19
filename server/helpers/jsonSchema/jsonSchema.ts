@@ -7,6 +7,7 @@ class JSONSchema {
 	'type':String;
 	'properties':any;
 	'additionalProperties':Boolean;
+	'required':Array<String>;
 
 	constructor(){
 		this.$schema = "http://json-schema.org/draft-06/schema#";
