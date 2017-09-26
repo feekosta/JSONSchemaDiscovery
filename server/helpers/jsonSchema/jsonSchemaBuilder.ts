@@ -2,27 +2,25 @@ import JSONSchema from './jsonSchema';
 class JsonSchemaBuilder {
 	rootSchema = new JSONSchema();
 	usedDefinitions = [];
-	build = (fields, count, callback) => {
+	build = (fields, count) => {
 		this.rootSchema.properties = this.buildProperties(fields, count);
-
 		this.rootSchema.required = [];
 		Object.keys(this.rootSchema.properties).forEach((property) => {
 			if(this.rootSchema.properties[property].count === count)
 				this.rootSchema.required.push(property);
 			delete this.rootSchema.properties[property].count;
 		});
-
 		this.removeUnusedDefinitions();
-		callback(null, this.rootSchema);
+		return this.rootSchema;
 	}
 	buildProperties = (fields, count) => {
 		const properties = {};
 		fields.forEach((field) => {
-			properties[field.name] = this.addToProperties(field, count);
+			properties[field.name] = this.buildInstance(field, count);
 		});
 		return properties;
 	}
-	addToProperties = (value, count) => {
+	buildInstance = (value, count) => {
 		let instance;
 		if(value.types){
 			if(value.types.length === 1){
@@ -40,15 +38,15 @@ class JsonSchemaBuilder {
 						"count": value.count
 					}
 				} else if(type.name === "Array"){
-					instance = this.addToProperties(type, 0);
+					instance = this.buildInstance(type, 0);
 				} else {
-					instance = this.addToProperties(type, 0);
+					instance = this.buildInstance(type, 0);
 					instance.name = type.path;
 				}
 			} else {
 				instance = {
 					"name": value.name,
-					"anyOf": this.addToItems(value.types),
+					"anyOf": this.buildItems(value.types),
 					"count": value.count
 				}
 				instance.anyOf.forEach((item) => {
@@ -65,20 +63,31 @@ class JsonSchemaBuilder {
 					"count": value.count
 				}
 			} else if(value.name === "Array"){
+				let items, totalCount;
+				const itemsArray = this.buildItems(value.items);
+				if(itemsArray.length === 1){
+					items = itemsArray.pop();
+					totalCount = items.count;
+					delete items.count;
+				} else {
+					items = {
+						"anyOf": itemsArray
+					}
+					totalCount = itemsArray.map((item) => item.count).reduce((preVal, elem) => preVal + elem, 0);
+					itemsArray.forEach((item) => {
+						delete item.count;
+					});
+				}
 				instance = {
 					"name": value.path,
 					"type": value.name.toLowerCase(),
-					"items": this.addToItems(value.items),
+					"items": items,
 					"minItems":0,
 					"count": value.count,
 					"additionalItems":true
 				}
-				const totalCount = instance.items.map((item) => item.count).reduce((preVal, elem) => preVal + elem, 0);
 				if(totalCount === value.count)
 					instance.minItems = 1;
-				instance.items.forEach((item) => {
-					delete item.count;
-				});
 			} else {
 				instance = {
 					"type": "object",
@@ -97,10 +106,10 @@ class JsonSchemaBuilder {
 		}
 		return instance;
 	}
-	addToItems = (values) => {
+	buildItems = (values) => {
 		const items = [];
 		values.forEach((value) => {
-			items.push(this.addToProperties(value, 0));
+			items.push(this.buildInstance(value, 0));
 		});
 		return items;
 	};
