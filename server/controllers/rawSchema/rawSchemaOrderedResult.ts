@@ -44,5 +44,4 @@ export default class RawSchemaOrderedResultController extends BatchBaseControlle
 		return rawSchemaOrderedResults;
 	}
 
-	
 }

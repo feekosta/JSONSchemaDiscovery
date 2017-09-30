@@ -33,19 +33,19 @@ export default class RawSchemaBatchController extends BaseController {
           rawSchemaBatch.endDate = new Date();
           rawSchemaBatch.elapsedTime = Math.abs((rawSchemaBatch.startDate.getTime() - rawSchemaBatch.endDate.getTime())/1000);
           console.log("BATCHQUERY",rawSchemaBatch._id," DONE IN: ",rawSchemaBatch.elapsedTime);
-          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {});
+          rawSchemaBatch.save();
         })
         .on('error', (error) => {
           rawSchemaBatch.status = "ERROR";
           rawSchemaBatch.statusMessage = error;
           console.log("BATCHQUERY",rawSchemaBatch._id," ERROR: ",error);
-          this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchSaved) => {});
+          rawSchemaBatch.save();
         })
         .on('lastObjectId', (lastObjectId) => {
           worker.work(rawSchemaBatch, collection, lastObjectId);
         })
         .on('save', (rawSchemes) => {
-          saver.saveAll(rawSchemes, rawSchemaBatch._id, (saveAllError) => {});
+          saver.saveAll(rawSchemes, rawSchemaBatch._id);
         });
     });
   }
@@ -69,118 +69,82 @@ export default class RawSchemaBatchController extends BaseController {
     }).then((resp) => {
       rawSchemaBatch.collectionCount = resp;
       rawSchemaBatch.status = "IN_PROGRESS";
-      this.save(rawSchemaBatch, (rawSchemaBatchSaveError, rawSchemaBatchResult) => {});
+      rawSchemaBatch.save();
     }).catch((err) => {});
   }
 
   reduce = (req, res) => {
-    this.getById(req.body.batchId, (rawSchemaBatchError, rawSchemaBatchResult) => {
-      if (rawSchemaBatchError) { return this.error(res, rawSchemaBatchError, 500); }
+    this.getById(req.body.batchId).then((rawSchemaBatchResult) => {
       if (!rawSchemaBatchResult) { return this.error(res, `rawSchemaBatch with id: ${req.body.batchId} not found`, 404); }
-
-      const start = new Date();
-      new RawSchemaController().mapReduce(rawSchemaBatchResult._id, (mapReduceError, mapReduceResult) => {
-        if (mapReduceError) { return this.error(res, mapReduceError, 500); }
-        const mapreduce = new Date();
-        console.log("mapreduce end in ",Math.abs((start.getTime() - mapreduce.getTime())/1000));
-        
-        new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).saveResults(mapReduceResult, rawSchemaBatchResult._id).then((data) => {
-          const save = new Date();
-          console.log("save mapreduce end in ",Math.abs((mapreduce.getTime() - save.getTime())/1000)); 
-
-          new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).mapReduce(rawSchemaBatchResult._id, (mapReduceError2, mapReduceResult2) => {
-          if (mapReduceError2) { return this.error(res, mapReduceError2, 500); }
-            const mapreduce2 = new Date();
-            console.log("mapreduce2 end in ",Math.abs((save.getTime() - mapreduce2.getTime())/1000));
-
-            new RawSchemaOrderedResultController().saveResults(mapReduceResult2, rawSchemaBatchResult._id).then((data) => {
-              const save2 = new Date();
-              console.log("save mapreduce2 end in ",Math.abs((mapreduce.getTime() - save2.getTime())/1000)); 
-              return this.success(res, {"batchId":rawSchemaBatchResult._id});
+      const batchId = rawSchemaBatchResult._id;
+      new RawSchemaController().mapReduce(batchId).then((data) => {
+        new RawSchemaUnorderedResultController(batchId).saveResults(data, batchId).then((data) => {
+          new RawSchemaUnorderedResultController(batchId).mapReduce(batchId).then((data) => {
+            new RawSchemaOrderedResultController().saveResults(data, batchId).then((data) => {
+              return this.success(res, data);
             }, (error) => {
               return this.error(res, error, 500);
             });
-
+          }, (error) => {
+            return this.error(res, error, 500);
           }); 
-
         }, (error) => {
           return this.error(res, error, 500);
         });
-
+      }, (error) => {
+        return this.error(res, error, 500);
       });
+    }, (error) => {
+      return this.error(res, error, 500);
     });
   }
 
   aggregate = (req, res) => {
-    this.getById(req.body.batchId, (rawSchemaBatchError, rawSchemaBatchResult) => {
-      if (rawSchemaBatchError) { return this.error(res, rawSchemaBatchError, 500); }
+    this.getById(req.body.batchId).then((rawSchemaBatchResult) => {
       if (!rawSchemaBatchResult) { return this.error(res, `rawSchemaBatch with id: ${req.body.batchId} not found`, 404); }
-
-      const start = new Date();
-      new RawSchemaController().aggregate(rawSchemaBatchResult._id, (aggregateTemporaryError, aggregateTemporaryResult) => {
-        if (aggregateTemporaryError) { return this.error(res, aggregateTemporaryError, 500); }
-        const aggregate = new Date();
-        console.log("aggregate1 end in ",Math.abs((start.getTime() - aggregate.getTime())/1000));
-
-        new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).aggregate(rawSchemaBatchResult._id, (aggregateError, aggregateResult) => {
-          if (aggregateError) { return this.error(res, aggregateError, 500); }
-          const aggregate2 = new Date();
-          console.log("aggregate2 end in ",Math.abs((aggregate.getTime() - aggregate2.getTime())/1000));
-
-          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id).then((data) => {
-            const save2 = new Date();
-            console.log("save aggregate2 end in ",Math.abs((aggregate2.getTime() - save2.getTime())/1000)); 
-            return this.success(res, {"batchId":rawSchemaBatchResult._id});
+      const batchId = rawSchemaBatchResult._id;
+      new RawSchemaController().aggregate(batchId).then((data) => {
+        new RawSchemaUnorderedResultController(batchId).aggregate(batchId).then((data) => {
+          new RawSchemaOrderedResultController().saveResults(data, batchId).then((data) => {
+            return this.success(res, data);
           }, (error) => {
             return this.error(res, error, 500);
           });
-
+        }, (error) => {
+          return this.error(res, error, 500);
         });
+      }, (error) => {
+        return this.error(res, error, 500);
       });
+    }, (error) => {
+      return this.error(res, error, 500);
     });
   }
 
   aggregateAndReduce = (req, res) => {
-    this.getById(req.body.batchId, (rawSchemaBatchError, rawSchemaBatchResult) => {
-      if (rawSchemaBatchError) { return this.error(res, rawSchemaBatchError, 500); }
+    this.getById(req.body.batchId).then((rawSchemaBatchResult) => {
       if (!rawSchemaBatchResult) { return this.error(res, `rawSchemaBatch with id: ${req.body.batchId} not found`, 404); }
-
-      const start = new Date();
-      new RawSchemaController().aggregate(rawSchemaBatchResult._id, (aggregateTemporaryError, aggregateTemporaryResult) => {
-        if (aggregateTemporaryError) { return this.error(res, aggregateTemporaryError, 500); }
-        const aggregate = new Date();
-        console.log("aggregate end in ",Math.abs((start.getTime() - aggregate.getTime())/1000));
-
-        new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).mapReduce(rawSchemaBatchResult._id, (aggregateError, aggregateResult) => {
-          if (aggregateError) { return this.error(res, aggregateError, 500); }
-          const mapReduce = new Date();
-          console.log("mapreduce end in ",Math.abs((aggregate.getTime() - mapReduce.getTime())/1000));
-
-          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id).then((data) => {
-            const save2 = new Date();
-            console.log("save mapreduce end in ",Math.abs((mapReduce.getTime() - save2.getTime())/1000)); 
-            return this.success(res, {"batchId":rawSchemaBatchResult._id});
+      const batchId = rawSchemaBatchResult._id;
+      new RawSchemaController().aggregate(batchId).then((data) => {
+        new RawSchemaUnorderedResultController(batchId).mapReduce(batchId).then((data) => {
+          new RawSchemaOrderedResultController().saveResults(data, batchId).then((data) => {
+            return this.success(res, data);
             }, (error) => {
             return this.error(res, error, 500);
           });
-
+        }, (error) => {
+          return this.error(res, error, 500);
         });
+      }, (error) => {
+        return this.error(res, error, 500);
       });
+    }, (error) => {
+      return this.error(res, error, 500);
     });
   }
 
-  save = function(rawSchemaBatch, callback){
-    rawSchemaBatch.save((err, doc) => {
-      if (err) { return callback(err, null); }
-      callback(null, doc);
-    });
-  }
-
-  getById = function(id, callback){
-  	this.model.findById(id, (err, doc) => {
-      if (err) { return callback(err, null); }
-      callback(null, doc);
-    });
+  getById = (id) => {
+  	return this.model.findById(id);
   }
  
 }
