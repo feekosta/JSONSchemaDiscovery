@@ -7,14 +7,10 @@ const userSchema = new mongoose.Schema({
   'password': { type: String, required: true }
 },{ timestamps: { createdAt: 'createdAt' } });
 
-userSchema.methods.comparePassword = function(candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) { return callback(err); }
-    callback(null, isMatch);
-  });
+userSchema.methods.comparePassword = function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Omit the password when returning a user
 userSchema.set('toJSON', {
   transform: function(doc, ret, options) {
     delete ret.password;
