@@ -7,15 +7,18 @@ export default class UserController extends BaseController {
   
   model = User;
 
-  login = (req, res) => {
-    this.model.findOne({ 'email': req.body.email }).then((user) => {
-      if(!user){ return this.error(res, "Não foi possível encontrar sua conta.", 404); }
-      return user.comparePassword(req.body.password).then((isMatch) => {
-        if(!isMatch)
-          return this.error(res, "Senha incorreta. Tente novamente.", 403);
-        return this.success(res, { 'token': jwt.sign({ 'user': user }, process.env.SECRET_TOKEN) });
+  public login = (email:String, password:String): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      this.model.findOne({ 'email': email }).then((user) => {
+        if(!user)
+          return reject({"message":"Não foi possível encontrar sua conta.", "code":404});
+        return user.comparePassword(password).then((isMatch) => {
+          if(!isMatch)
+            return reject({"message":"Senha incorreta. Tente novamente.", "code":403});
+          return resolv({ 'token': jwt.sign({ 'user': user }, process.env.SECRET_TOKEN) });
+        });
       });
-    })
+    });
   }
 
   register = (req, res) => {
