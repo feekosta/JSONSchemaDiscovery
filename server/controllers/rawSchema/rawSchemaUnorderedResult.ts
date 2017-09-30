@@ -21,23 +21,33 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 	 	this.model = RawSchemaUnorderedResult;
 	}
 
-	saveResults = (mapReduceResults, batchId, callback) => {
-		this.deleteEntitiesByBatchId(batchId).then((data) => {
-			const rawSchemaUnorderedResults = [];
-			mapReduceResults.forEach((result) => {
-				let rawSchemaUnorderedResult = this.model();
-				rawSchemaUnorderedResult.batchId = batchId;
-				rawSchemaUnorderedResult.docRawSchema = result._id;
-				rawSchemaUnorderedResult.value = result.value;
-				rawSchemaUnorderedResult._id = result._id;
-				rawSchemaUnorderedResults.push(rawSchemaUnorderedResult);
+	saveResults = (mapReduceResults, batchId) => {
+		return new Promise((resolv, reject) => {
+			this.deleteEntitiesByBatchId(batchId).then((data) => {
+				const rawSchemaUnorderedResults = this.buildRawSchemaUnorderedResults(mapReduceResults, batchId);
+				this.model.insertMany(rawSchemaUnorderedResults, { ordered: true }).then((data) => {
+					return resolv(data);
+				}, (error) => {
+					return reject(error);
+				});
+			}, (error) => {
+				return reject(error);
 			});
-			this.model.insertMany(rawSchemaUnorderedResults, { ordered: true }, (error, res) => {
-				callback(null, "OK");	
-			});
-		}, (error) => {
-			
 		});
+	}
+
+	private buildRawSchemaUnorderedResults = (results, batchId) => {
+		const rawSchemaUnorderedResults = [];
+		results.forEach((result) => {
+			const rawSchemaUnorderedResult = this.model({
+				"batchId": batchId,
+				"docRawSchema": result._id,
+				"value": result.value,
+				"_id": result._id
+			});
+			rawSchemaUnorderedResults.push(rawSchemaUnorderedResult);
+		});
+		return rawSchemaUnorderedResults;
 	}
 
 	mapReduce = (batchId, callback) => {

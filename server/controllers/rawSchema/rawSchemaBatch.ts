@@ -84,8 +84,7 @@ export default class RawSchemaBatchController extends BaseController {
         const mapreduce = new Date();
         console.log("mapreduce end in ",Math.abs((start.getTime() - mapreduce.getTime())/1000));
         
-        new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).saveResults(mapReduceResult, rawSchemaBatchResult._id, (saveResultsError) => {
-          if (saveResultsError) { return this.error(res, saveResultsError, 500); }
+        new RawSchemaUnorderedResultController(rawSchemaBatchResult._id).saveResults(mapReduceResult, rawSchemaBatchResult._id).then((data) => {
           const save = new Date();
           console.log("save mapreduce end in ",Math.abs((mapreduce.getTime() - save.getTime())/1000)); 
 
@@ -94,14 +93,20 @@ export default class RawSchemaBatchController extends BaseController {
             const mapreduce2 = new Date();
             console.log("mapreduce2 end in ",Math.abs((save.getTime() - mapreduce2.getTime())/1000));
 
-            new RawSchemaOrderedResultController().saveResults(mapReduceResult2, rawSchemaBatchResult._id, (saveResultsError2) => {
-              if (saveResultsError2) { return this.error(res, saveResultsError2, 500); }
+            new RawSchemaOrderedResultController().saveResults(mapReduceResult2, rawSchemaBatchResult._id).then((data) => {
               const save2 = new Date();
               console.log("save mapreduce2 end in ",Math.abs((mapreduce.getTime() - save2.getTime())/1000)); 
               return this.success(res, {"batchId":rawSchemaBatchResult._id});
+            }, (error) => {
+              return this.error(res, error, 500);
             });
-          });    
+
+          }); 
+
+        }, (error) => {
+          return this.error(res, error, 500);
         });
+
       });
     });
   }
@@ -122,12 +127,14 @@ export default class RawSchemaBatchController extends BaseController {
           const aggregate2 = new Date();
           console.log("aggregate2 end in ",Math.abs((aggregate.getTime() - aggregate2.getTime())/1000));
 
-          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id, (saveResultsError) => {
-            if (saveResultsError) { return this.error(res, saveResultsError, 500); }
+          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id).then((data) => {
             const save2 = new Date();
             console.log("save aggregate2 end in ",Math.abs((aggregate2.getTime() - save2.getTime())/1000)); 
             return this.success(res, {"batchId":rawSchemaBatchResult._id});
+          }, (error) => {
+            return this.error(res, error, 500);
           });
+
         });
       });
     });
@@ -149,12 +156,14 @@ export default class RawSchemaBatchController extends BaseController {
           const mapReduce = new Date();
           console.log("mapreduce end in ",Math.abs((aggregate.getTime() - mapReduce.getTime())/1000));
 
-          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id, (saveResultsError) => {
-            if (saveResultsError) { return this.error(res, saveResultsError, 500); }
+          new RawSchemaOrderedResultController().saveResults(aggregateResult, rawSchemaBatchResult._id).then((data) => {
             const save2 = new Date();
             console.log("save mapreduce end in ",Math.abs((mapReduce.getTime() - save2.getTime())/1000)); 
             return this.success(res, {"batchId":rawSchemaBatchResult._id});
+            }, (error) => {
+            return this.error(res, error, 500);
           });
+
         });
       });
     });

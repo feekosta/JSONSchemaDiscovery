@@ -1,29 +1,39 @@
-import JsonSchemaExtracted      from '../../models/jsonSchema/jsonSchemaExtracted';
-import BatchBaseController      from '../batchBase';
-import RawSchemaUnion           from '../rawSchema/rawSchemaUnion';
-import JsonSchemaBuilder        from '../../helpers/jsonSchema/jsonSchemaBuilder';
+import JsonSchemaExtracted from '../../models/jsonSchema/jsonSchemaExtracted';
+import BatchBaseController from '../batchBase';
+import RawSchemaUnion from '../rawSchema/rawSchemaUnion';
+import JsonSchemaBuilder from '../../helpers/jsonSchema/jsonSchemaBuilder';
 
 export default class JsonSchemaExtractedController extends BatchBaseController {
 
   model = JsonSchemaExtracted;
 
   generate = (req, res) => {
+    const batchId = req.body.batchId;
+    new RawSchemaUnion().listEntitiesByBatchId(batchId).then((data) => {
+      return this.buildJsonSchema(data, batchId);
+    }).then((data) => {
+      return this.success(res, data);
+    }).catch((error) => {
+      return this.error(res, error, 500);
+    });
+  }
 
-    new RawSchemaUnion().listEntitiesByBatchId(req.body.batchId).then((data) => {
-      const rawSchemaUnion = data.pop();
-      if (!rawSchemaUnion) { return this.error(res, `rawSchemaUnion for batchId: ${req.body.batchId} not found`, 404); }
+  private buildJsonSchema = (rawSchemaUnions, batchId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      const rawSchemaUnion = rawSchemaUnions.pop();
+      if (!rawSchemaUnion)
+        throw `no results for batchId: ${batchId}`;
       const rawSchemaFinal = JSON.parse(rawSchemaUnion.rawSchemaFinal);
       const jsonSchemaGenerated = new JsonSchemaBuilder().build(rawSchemaFinal.fields, rawSchemaFinal.count);
       const jsonSchemaExtracted = new JsonSchemaExtracted({
-        batchId: req.body.batchId, 
+        batchId: batchId, 
         jsonSchema: JSON.stringify(jsonSchemaGenerated)
       });
-      jsonSchemaExtracted.save(jsonSchemaGenerated, (saveError) => {
-        if (saveError) { return this.error(res, saveError, 500); }
-        this.success(res, jsonSchemaGenerated);
+      jsonSchemaExtracted.save().then((data) => {
+        return resolv(data);
+      }, (error) => {
+        return reject(error);
       });
-    }, (error) => {
-      return this.error(res, error, 500);
     });
   }
 

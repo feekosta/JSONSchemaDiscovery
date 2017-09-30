@@ -1,6 +1,6 @@
-import RawSchemaUnion 			from '../../models/rawSchema/rawSchemaUnion';
-import RawSchemaUnifier		 	from '../../helpers/rawSchema/rawSchemaUnifier';
-import BatchBaseController		from '../batchBase';
+import RawSchemaUnion from '../../models/rawSchema/rawSchemaUnion';
+import RawSchemaUnifier from '../../helpers/rawSchema/rawSchemaUnifier';
+import BatchBaseController from '../batchBase';
 
 export default class RawSchemaUnionController extends BatchBaseController {
   
@@ -9,7 +9,7 @@ export default class RawSchemaUnionController extends BatchBaseController {
 	union = (rawSchemaResults, batchId): Promise<any> => {
 		return new Promise((resolv, reject) => {
 			if(!rawSchemaResults || rawSchemaResults.length == 0)
-				throw `no results for batchId: ${batchId}`
+				throw `no results for batchId: ${batchId}`;
 			const rawSchemaFinal = new RawSchemaUnifier().union(rawSchemaResults);
 			const rawSchemaUnion = new RawSchemaUnion({
 				"batchId": batchId,

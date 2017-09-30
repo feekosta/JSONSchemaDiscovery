@@ -1,28 +1,10 @@
-import RawSchemaOrderedResult 		from '../../models/rawSchema/rawSchemaOrderedResult';
-import BatchBaseController 			from '../batchBase';
-import RawSchemaUnionController 	from './rawSchemaUnion';
+import RawSchemaOrderedResult from '../../models/rawSchema/rawSchemaOrderedResult';
+import BatchBaseController from '../batchBase';
+import RawSchemaUnionController from './rawSchemaUnion';
 
 export default class RawSchemaOrderedResultController extends BatchBaseController {
   
 	model = RawSchemaOrderedResult;
-
-	saveResults = (mapReduceResults, batchId, callback) => {
-		this.deleteEntitiesByBatchId(batchId).then((data) => {
-			const rawSchemaOrderedResults = [];
-			mapReduceResults.forEach((result) => {
-				let rawSchemaOrderedResult = this.model();
-				rawSchemaOrderedResult.batchId = batchId;
-				rawSchemaOrderedResult.rawSchema = result._id;
-				rawSchemaOrderedResult.count = result.value;
-				rawSchemaOrderedResults.push(rawSchemaOrderedResult);
-			});
-			this.model.insertMany(rawSchemaOrderedResults, { ordered: true }, (error, res) => {
-				callback(null, "OK");	
-			});
-		}, (error) => {
-			
-		});
-	}
 
 	union = (req, res) => {
 		this.listEntitiesByBatchId(req.body.batchId).then((data) => {
@@ -33,5 +15,34 @@ export default class RawSchemaOrderedResultController extends BatchBaseControlle
 			return this.error(res, error, 404);
 		});
 	}
+
+	saveResults = (mapReduceResults, batchId) => {
+		return new Promise((resolv, reject) => {
+			this.deleteEntitiesByBatchId(batchId).then((data) => {
+				const rawSchemaOrderedResults = this.buildRawSchemaOrderedResults(mapReduceResults, batchId);
+				this.model.insertMany(rawSchemaOrderedResults, { ordered: true }).then((data) => {
+					return resolv(data);
+				}, (error) => {
+					return reject(error);
+				});
+			}, (error) => {
+				return reject(error);
+			});
+		});
+	}
+
+	private buildRawSchemaOrderedResults = (results, batchId) => {
+		const rawSchemaOrderedResults = [];
+		results.forEach((result) => {
+			const rawSchemaOrderedResult = this.model({
+				"batchId": batchId,
+				"rawSchema": result._id,
+				"count": result.value
+			});
+			rawSchemaOrderedResults.push(rawSchemaOrderedResult);
+		});
+		return rawSchemaOrderedResults;
+	}
+
 	
 }
