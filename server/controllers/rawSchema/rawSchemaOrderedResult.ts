@@ -7,7 +7,7 @@ export default class RawSchemaOrderedResultController extends BatchBaseControlle
 	model = RawSchemaOrderedResult;
 
 	saveResults = (mapReduceResults, batchId, callback) => {
-		this.deleteEntitiesByBatchId(batchId, (err, res) => {
+		this.deleteEntitiesByBatchId(batchId).then((data) => {
 			const rawSchemaOrderedResults = [];
 			mapReduceResults.forEach((result) => {
 				let rawSchemaOrderedResult = this.model();
@@ -19,16 +19,18 @@ export default class RawSchemaOrderedResultController extends BatchBaseControlle
 			this.model.insertMany(rawSchemaOrderedResults, { ordered: true }, (error, res) => {
 				callback(null, "OK");	
 			});
+		}, (error) => {
+			
 		});
 	}
 
 	union = (req, res) => {
-		this.model.find({ 'batchId': req.body.batchId }, (rawSchemaError, rawSchemaOrderedResults) => {
-			if (rawSchemaError) { return this.error(res, rawSchemaError, 404); }
-			new RawSchemaUnionController().union(rawSchemaOrderedResults, req.body.batchId, (unionError, unionSuccess) => {
-				if (unionError) { return this.error(res, unionError, 404); }
-				this.success(res, unionSuccess);
-			});
+		this.listEntitiesByBatchId(req.body.batchId).then((data) => {
+			return new RawSchemaUnionController().union(data, req.body.batchId);
+		}).then((data) => {
+			return this.success(res, data);
+		}).catch((error) => {
+			return this.error(res, error, 404);
 		});
 	}
 	

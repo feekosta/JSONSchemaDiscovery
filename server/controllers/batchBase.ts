@@ -3,36 +3,39 @@ import BaseController from './base';
 abstract class BatchBaseController extends BaseController {
   
   	listByBatchId = (req, res) => {
-  		this.listEntitiesByBatchId(req.params.id, (err, docs) => {
-			if (err) { return this.error(res, err, 404); }
-			this.success(res, docs);
-		});
-	}
-
-	listEntitiesByBatchId = (batchId, callback) => {
-		this.model.find({ 'batchId':batchId }, callback);
+  		this.listEntitiesByBatchId(req.params.id).then((data) => {
+  			return this.success(res, data);
+  		}, (error) => {
+			return this.error(res, error, 404);
+  		});
 	}
 
 	deleteByBatchId = (req, res) => {
-		this.deleteEntitiesByBatchId(req.params.id, (err) => {
-			if (err) { return this.error(res, err, 404); }
-			this.success(res, "OK");
+		this.deleteEntitiesByBatchId(req.params.id).then((data) => {
+			return this.success(res, "DELETED");
+		}, (error) => {
+			return this.error(res, error, 404);
 		});
-	}
-
-	deleteEntitiesByBatchId = (batchId, callback) => {
-		this.model.remove({ 'batchId': batchId }, callback);
 	}
 
 	countByBatchId = (req, res) => {
-		this.countEntitiesByBatchId(req.params.id, (err, count) => {
-			if (err) { return this.error(res, err, 404); }
-			this.success(res, count);
+		this.countEntitiesByBatchId(req.params.id).then((data) => {
+			return this.success(res, data);
+		}, (error) => {
+			return this.error(res, error, 404);
 		});
 	}
 
-	countEntitiesByBatchId = (batchId, callback) => {
-		this.model.find({ 'batchId': batchId }).count(callback);
+	listEntitiesByBatchId = (batchId) => {
+		return this.model.find({'batchId':batchId});
+	}
+
+	deleteEntitiesByBatchId = (batchId) => {
+		return this.model.remove({'batchId': batchId});
+	}
+
+	countEntitiesByBatchId = (batchId) => {
+		return this.model.find({ 'batchId': batchId }).count();
 	}
 
 }

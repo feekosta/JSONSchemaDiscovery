@@ -1,22 +1,22 @@
 class RawSchemaUnifier {
-	rootSchema = {
+	private rootSchema = {
 		fields: [],
 		count: 0
 	};
-	union = (documents, callback) => {
+	union = (documents) => {
 		documents.forEach((document) => {
 			this.buildRawSchema(JSON.parse(document.rawSchema), Number(document.count), this.rootSchema.fields, null);
 			this.rootSchema.count = this.sum(this.rootSchema.count, document.count);
 		});
-		callback(null, this.rootSchema);
+		return this.rootSchema;
 	};
-	buildRawSchema = (document, count, fields, parent) => {
+	private buildRawSchema = (document, count, fields, parent) => {
 		Object.keys(document).forEach((key) => {
 			const path = parent != null ? `${parent}.${key}` : key;
 			this.addToField(path, document[key], fields, count);
 		});
 	};
-	addToField = (path, value, fields, count) => {
+	private addToField = (path, value, fields, count) => {
 		const lastPath = path.split('.').pop();
 		let field = fields.find((field) => { 
 			return field.path === path; 
@@ -26,7 +26,7 @@ class RawSchemaUnifier {
 			field.types = [];
 		this.addToType(path, value, field.types, count);
 	};
-	addToType = (path, value, types, count) => {
+	private addToType = (path, value, types, count) => {
 		const typeName = this.getTypeFromValue(value);
 		let type = types.find((currentType) => { 
 			return currentType.name === typeName; 
@@ -34,7 +34,7 @@ class RawSchemaUnifier {
 		type = this.getOrUpdateInstance(type, types, typeName, path, count);
 		this.workOnType(path, value, type, typeName, count);
 	};
-	addToItem = (path, value, items, count) => {
+	private addToItem = (path, value, items, count) => {
 		const typeName = this.getTypeFromValue(value);
 		let item = items.find((currentItem) => {
 			return currentItem.name === typeName && currentItem.path === path;
@@ -42,7 +42,7 @@ class RawSchemaUnifier {
 		item = this.getOrUpdateInstance(item, items, typeName, path, count);
 		this.workOnType(path, value, item, typeName, count);
 	}
-	workOnType = (path, value, instance, typeName, count) => {
+	private workOnType = (path, value, instance, typeName, count) => {
 		if(typeName === 'Array'){
 			if(!instance.items)
 				instance.items = [];
@@ -55,7 +55,7 @@ class RawSchemaUnifier {
 			this.buildRawSchema(value, count, instance.fields, path);
 		}
 	}
-	getTypeFromValue = (value) => {
+	private getTypeFromValue = (value) => {
 		if(typeof value === "string"){
 			return value;
 		} else if (Array.isArray(value)){
@@ -64,8 +64,8 @@ class RawSchemaUnifier {
 			return "Object";
 		}
 	};
-	sum = (value1, value2) => Number(value1) + Number(value2);
-	getOrUpdateInstance = (instance, instances, name, path, count) => {
+	private sum = (value1, value2) => Number(value1) + Number(value2);
+	private getOrUpdateInstance = (instance, instances, name, path, count) => {
 		if(!instance){
 			instance = {
 				"name":name,

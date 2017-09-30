@@ -22,7 +22,7 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 	}
 
 	saveResults = (mapReduceResults, batchId, callback) => {
-		this.deleteEntitiesByBatchId(batchId, (err, res) => {
+		this.deleteEntitiesByBatchId(batchId).then((data) => {
 			const rawSchemaUnorderedResults = [];
 			mapReduceResults.forEach((result) => {
 				let rawSchemaUnorderedResult = this.model();
@@ -35,6 +35,8 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 			this.model.insertMany(rawSchemaUnorderedResults, { ordered: true }, (error, res) => {
 				callback(null, "OK");	
 			});
+		}, (error) => {
+			
 		});
 	}
 

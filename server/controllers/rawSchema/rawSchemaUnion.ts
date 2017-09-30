@@ -6,22 +6,19 @@ export default class RawSchemaUnionController extends BatchBaseController {
   
 	model = RawSchemaUnion;
 
-	save = (rawSchemaUnion, callback) => {
-		rawSchemaUnion.save((err, item) => {
-			if (err) { return callback(err, null); }
-			callback(null, item);
-		});
-	}
-
-	union = (rawSchemaResults, batchId, callback) => {
-		new RawSchemaUnifier().union(rawSchemaResults, (unionError, rawSchemaFinal) => {
-			if (unionError) { return callback(unionError, null); }
-			const rawSchemaUnion = new RawSchemaUnion();
-			rawSchemaUnion.batchId = batchId;
-			rawSchemaUnion.rawSchemaFinal = JSON.stringify(rawSchemaFinal);
-			this.save(rawSchemaUnion, (saveError) => {
-				if (saveError) { return callback(saveError, null); }
-				callback(null, {"batchId":batchId})
+	union = (rawSchemaResults, batchId): Promise<any> => {
+		return new Promise((resolv, reject) => {
+			if(!rawSchemaResults || rawSchemaResults.length == 0)
+				throw `no results for batchId: ${batchId}`
+			const rawSchemaFinal = new RawSchemaUnifier().union(rawSchemaResults);
+			const rawSchemaUnion = new RawSchemaUnion({
+				"batchId": batchId,
+				"rawSchemaFinal": JSON.stringify(rawSchemaFinal)
+			});
+			rawSchemaUnion.save().then((data) => {
+				resolv(data);
+			}, (error) => {
+				reject(error);
 			});
 		});
 	}

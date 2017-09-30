@@ -9,9 +9,8 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
 
   generate = (req, res) => {
 
-    new RawSchemaUnion().listEntitiesByBatchId(req.body.batchId, (unionError, unionResult) => {
-      if (unionError) { return this.error(res, unionError, 500); }
-      const rawSchemaUnion = unionResult.pop();
+    new RawSchemaUnion().listEntitiesByBatchId(req.body.batchId).then((data) => {
+      const rawSchemaUnion = data.pop();
       if (!rawSchemaUnion) { return this.error(res, `rawSchemaUnion for batchId: ${req.body.batchId} not found`, 404); }
       const rawSchemaFinal = JSON.parse(rawSchemaUnion.rawSchemaFinal);
       const jsonSchemaGenerated = new JsonSchemaBuilder().build(rawSchemaFinal.fields, rawSchemaFinal.count);
@@ -19,10 +18,12 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
         batchId: req.body.batchId, 
         jsonSchema: JSON.stringify(jsonSchemaGenerated)
       });
-    	jsonSchemaExtracted.save(jsonSchemaGenerated, (saveError) => {
-  			if (saveError) { return this.error(res, saveError, 500); }
-      	this.success(res, jsonSchemaGenerated);
+      jsonSchemaExtracted.save(jsonSchemaGenerated, (saveError) => {
+        if (saveError) { return this.error(res, saveError, 500); }
+        this.success(res, jsonSchemaGenerated);
       });
+    }, (error) => {
+      return this.error(res, error, 500);
     });
   }
 
