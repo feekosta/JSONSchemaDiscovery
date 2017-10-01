@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, Validators } from '@angular/forms';
+import { AuthenticationService, EventService, FeedbackService } from '../../_services/services';
 
-import { AlertService, AuthenticationService } from '../../_services/services';
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 @Component({
   selector: 'app-login',
@@ -11,14 +13,20 @@ import { AlertService, AuthenticationService } from '../../_services/services';
 export class LoginComponent implements OnInit {
 	
 	model: any = {};
-    loading = false;
+    loading: boolean = false;
     returnUrl: string;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private alertService: AlertService) { }
+		private eventService: EventService,
+		private feedbackService: FeedbackService) { }
+
+	emailFormControl = new FormControl('', [
+	    Validators.required,
+	    Validators.pattern(EMAIL_REGEX)
+	]);
 
 	ngOnInit() {
 		// reset login status
@@ -31,12 +39,16 @@ export class LoginComponent implements OnInit {
 		this.loading = true;
 		this.authenticationService.login(this.model.email, this.model.password)
 			.subscribe(
-				data => { this.router.navigate([this.returnUrl]); },
+				data => {
+					this.eventService.setShowNavBar(true);
+					this.router.navigate([this.returnUrl]); 
+				},
 				error => {
-					this.alertService.error(error.json().error);
+					this.feedbackService.error(error.json().error);
 					this.loading = false;
 				}
 			);
 	}
 
 }
+
