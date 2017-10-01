@@ -1,18 +1,30 @@
 import RawSchemaOrderedResult from '../../models/rawSchema/rawSchemaOrderedResult';
 import BatchBaseController from '../batchBase';
 import RawSchemaUnionController from './rawSchemaUnion';
+import RawSchemaBatch from './rawSchemaBatch';
 
 export default class RawSchemaOrderedResultController extends BatchBaseController {
   
 	model = RawSchemaOrderedResult;
 
-	union = (req, res) => {
-		this.listEntitiesByBatchId(req.body.batchId).then((data) => {
-			return new RawSchemaUnionController().union(data, req.body.batchId);
-		}).then((data) => {
-			return this.success(res, data);
-		}).catch((error) => {
-			return this.error(res, error, 404);
+	union = (batchId): Promise<any> => {
+		return new Promise((resolv, reject) => {
+			let rawSchemaBatch;
+			new RawSchemaBatch().getById(batchId).then((data) => {
+				if(!data)
+					reject({"message":`no results for batchId: ${batchId}`,"code":404});
+				rawSchemaBatch = data;
+				return this.listEntitiesByBatchId(batchId);
+			}).then((data) => {
+				return new RawSchemaUnionController().union(data, batchId);
+			}).then((data) => {
+				rawSchemaBatch.unionDate = new Date();
+				rawSchemaBatch.status = "MAPPER_JSONSCHEMA";
+				rawSchemaBatch.save();
+				return resolv(data);
+			}).catch((error) => {
+				return reject({"message":error,"code":404});
+			});
 		});
 	}
 

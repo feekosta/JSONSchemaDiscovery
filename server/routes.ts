@@ -37,6 +37,8 @@ export default function setRoutes(app) {
 	router.route('/batch/:id').get(rawSchemaBatchController.get);
 	router.route('/batch/:id').delete(rawSchemaBatchController.delete);
 
+	router.route('/batch/rawschema/steps/all').post(apiController.allSteps);
+
 	router.route('/batch/rawschema/discovery').post(apiController.discovery);
 	router.route('/batch/rawschema/discovery/count').get(rawSchemaController.count);
 	router.route('/batch/rawschema/discovery/:id').get(rawSchemaController.listByBatchId);
@@ -61,13 +63,13 @@ export default function setRoutes(app) {
 	router.route('/batch/rawschema/aggregateAndReduce/:id').delete(rawSchemaOrderedResultController.deleteByBatchId);
 	router.route('/batch/rawschema/aggregateAndReduce/:id/count').get(rawSchemaOrderedResultController.countByBatchId);
 	
-	router.route('/batch/rawschema/union').post(rawSchemaOrderedResultController.union);
+	router.route('/batch/rawschema/union').post(apiController.union);
 	router.route('/batch/rawschema/union/count').get(rawSchemaUnionController.count);
 	router.route('/batch/rawschema/union/:id').get(rawSchemaUnionController.listByBatchId);
 	router.route('/batch/rawschema/union/:id').delete(rawSchemaUnionController.deleteByBatchId);
 	router.route('/batch/rawschema/union/:id/count').get(rawSchemaUnionController.countByBatchId);
 
-	router.route('/batch/jsonschema/generate').post(jsonSchemaExtractedController.generate);
+	router.route('/batch/jsonschema/generate').post(apiController.generate);
 	router.route('/batch/jsonschema/generate/count').get(jsonSchemaExtractedController.count);
 	router.route('/batch/jsonschema/generate/:id').get(jsonSchemaExtractedController.listByBatchId);
 	router.route('/batch/jsonschema/generate/:id').delete(jsonSchemaExtractedController.deleteByBatchId);

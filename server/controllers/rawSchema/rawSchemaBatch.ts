@@ -1,56 +1,135 @@
-import * as co                            from 'co';
-import * as mongodb                       from 'mongodb';
-import {MongoClient}                      from 'mongodb'
-import RawSchemaBatch                     from '../../models/rawSchema/rawSchemaBatch';
-import RawSchemaProcessWorker             from '../../helpers/rawSchema/rawSchemaProcessWorker';
-import DatabaseParam                      from '../../params/databaseParam';
-import BaseController                     from '../base';
-import RawSchemaController                from './rawSchema';
-import RawSchemaOrderedResultController   from './rawSchemaOrderedResult';
+import * as co from 'co';
+import * as mongodb from 'mongodb';
+import {MongoClient} from 'mongodb'
+import RawSchemaBatch from '../../models/rawSchema/rawSchemaBatch';
+import RawSchemaProcessWorker from '../../helpers/rawSchema/rawSchemaProcessWorker';
+import DatabaseParam from '../../params/databaseParam';
+import BaseController from '../base';
+import RawSchemaController from './rawSchema';
+import RawSchemaOrderedResultController from './rawSchemaOrderedResult';
 import RawSchemaUnorderedResultController from './rawSchemaUnorderedResult';
+import RawSchemaUnionController from './rawSchemaUnion';
+import JsonSchemaExtractedController from '../jsonSchema/jsonSchemaExtracted'
 
 export default class RawSchemaBatchController extends BaseController {
   
   model = RawSchemaBatch;
 
-  discovery = (params): Promise<any> => {
+  allSteps = (params): Promise<any> => {
     return new Promise((resolv, reject) => {
+      
       const databaseParam = new DatabaseParam(JSON.parse(JSON.stringify(params)));
       const rawSchemaBatch = new this.model();
       rawSchemaBatch.collectionName = databaseParam.collectionName;
       rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
       rawSchemaBatch.userId = databaseParam.userId;
       rawSchemaBatch.startDate = new Date();
+
+      this.connect(databaseParam).then((data) => {
+        return this.getCollection(data, rawSchemaBatch);
+      }).then((data) => {
+        return this.executeStepOne(data, rawSchemaBatch);
+      }).then((data) => {
+        return this.executeStepTwo(rawSchemaBatch);
+      }).then((data) => {
+        return this.executeStepThree(rawSchemaBatch);
+      }).then((data) => {
+        return this.executeStepFour(rawSchemaBatch);
+      }).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        if(rawSchemaBatch){  
+          rawSchemaBatch.status = "ERROR";
+          rawSchemaBatch.statusMessage = error;
+          rawSchemaBatch.save();
+          return reject(error);
+        } else {
+          return reject(error);
+        }
+      });
+    });
+  }
+  
+  discovery = (params): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      
+      const databaseParam = new DatabaseParam(JSON.parse(JSON.stringify(params)));
+      const rawSchemaBatch = new this.model();
+      rawSchemaBatch.collectionName = databaseParam.collectionName;
+      rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
+      rawSchemaBatch.userId = databaseParam.userId;
+      rawSchemaBatch.startDate = new Date();
+
+      this.connect(databaseParam).then((data) => {
+        return this.getCollection(data, rawSchemaBatch);
+      }).then((data) => {
+        return this.executeStepOne(data, rawSchemaBatch);
+      }).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        if(rawSchemaBatch){  
+          rawSchemaBatch.status = "ERROR";
+          rawSchemaBatch.statusMessage = error;
+          rawSchemaBatch.save();
+          return reject(error);
+        } else {
+          return reject(error);
+        }
+      });
+    });
+  }
+
+  private connect = (databaseParam): Promise<any> => {
+    return new Promise((resolv, reject) => {
       this.getDatabaseConnection(databaseParam, (connectionError, database) => {
         if(connectionError)
           return reject({"message":connectionError, "code":404});
-        resolv(rawSchemaBatch);
-
-        const collection = database.collection(databaseParam.collectionName);
-        this.setCollectionSize(collection, rawSchemaBatch);
-        const worker = new RawSchemaProcessWorker();
-        const saver = new RawSchemaController();
-        worker.work(rawSchemaBatch, collection, null)
-          .on('done',() => {
-            rawSchemaBatch.status = "REDUCE_DOCUMENTS";
-            rawSchemaBatch.extractionDate = new Date();
-            console.log("BATCHQUERY",rawSchemaBatch._id," DONE IN: ",rawSchemaBatch.elapsedTime);
-            rawSchemaBatch.save();
-          })
-          .on('error', (error) => {
-            rawSchemaBatch.status = "ERROR";
-            rawSchemaBatch.statusMessage = error;
-            console.log("BATCHQUERY",rawSchemaBatch._id," ERROR: ",error);
-            rawSchemaBatch.save();
-          })
-          .on('lastObjectId', (lastObjectId) => {
-            worker.work(rawSchemaBatch, collection, lastObjectId);
-          })
-          .on('save', (rawSchemes) => {
-            saver.saveAll(rawSchemes, rawSchemaBatch._id);
-          });
+        return resolv(database);
       });
     });
+  }
+
+  private getCollection = (database, rawSchemaBatch): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      const collection = database.collection(rawSchemaBatch.collectionName);
+      this.setCollectionSize(collection, rawSchemaBatch);
+      return resolv(collection);
+    });
+  }
+
+  private executeStepOne = (collection, rawSchemaBatch): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      const worker = new RawSchemaProcessWorker();
+      const saver = new RawSchemaController();
+      worker.work(rawSchemaBatch, collection, null)
+        .on('done',() => {
+          rawSchemaBatch.status = "REDUCE_DOCUMENTS";
+          rawSchemaBatch.extractionDate = new Date();
+          rawSchemaBatch.save();
+          return resolv(rawSchemaBatch);
+        })
+        .on('error', (error) => {
+          return reject(error);
+        })
+        .on('lastObjectId', (lastObjectId) => {
+          worker.work(rawSchemaBatch, collection, lastObjectId);
+        })
+        .on('save', (rawSchemes) => {
+          saver.saveAll(rawSchemes, rawSchemaBatch._id);
+        });
+    });
+  }
+
+  private executeStepTwo = (rawSchemaBatch) => {
+    return this.aggregateAndReduce(rawSchemaBatch._id);
+  }
+
+  private executeStepThree = (rawSchemaBatch) => {
+    return new RawSchemaOrderedResultController().union(rawSchemaBatch._id);
+  }
+
+  private executeStepFour = (rawSchemaBatch) => {
+    return new JsonSchemaExtractedController().generate(rawSchemaBatch._id);
   }
 
   getDatabaseConnection = (databaseParam, callback) => {
@@ -100,6 +179,7 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         return new RawSchemaOrderedResultController().saveResults(data, batchId);
       }).then((data) => {
+        rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedMapReduceDate = new Date();
         rawSchemaBatch.save();
         return resolv(data);
@@ -131,6 +211,7 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         return new RawSchemaOrderedResultController().saveResults(data, batchId);
       }).then((data) => {
+        rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedAggregationDate = new Date();
         rawSchemaBatch.save();
         return resolv(data);
@@ -162,9 +243,10 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         return new RawSchemaOrderedResultController().saveResults(data, batchId);
       }).then((data) => {
+        rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedMapReduceDate = new Date();
         rawSchemaBatch.save();
-        return resolv(data);
+        return resolv(rawSchemaBatch);
       }).catch((error) => {
         return reject({"message":error, "code":400});
       });

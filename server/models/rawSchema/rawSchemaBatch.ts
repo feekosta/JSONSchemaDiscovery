@@ -16,6 +16,7 @@ const rawSchemaBatchSchema = new mongoose.Schema({
   'orderedMapReduceDate': {type:Date},
   'unorderedAggregationDate': {type:Date},
   'orderedAggregationDate': {type:Date},
+  'unionDate': {type:Date},
   'endDate': { type: Date }
 },{ timestamps: { createdAt: 'createdAt' } });
 

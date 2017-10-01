@@ -1,20 +1,31 @@
 import JsonSchemaExtracted from '../../models/jsonSchema/jsonSchemaExtracted';
 import BatchBaseController from '../batchBase';
 import RawSchemaUnion from '../rawSchema/rawSchemaUnion';
+import RawSchemaBatch from '../rawSchema/rawSchemaBatch';  
 import JsonSchemaBuilder from '../../helpers/jsonSchema/jsonSchemaBuilder';
 
 export default class JsonSchemaExtractedController extends BatchBaseController {
 
   model = JsonSchemaExtracted;
 
-  generate = (req, res) => {
-    const batchId = req.body.batchId;
-    new RawSchemaUnion().listEntitiesByBatchId(batchId).then((data) => {
-      return this.buildJsonSchema(data, batchId);
-    }).then((data) => {
-      return this.success(res, data);
-    }).catch((error) => {
-      return this.error(res, error, 500);
+  generate = (batchId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      let rawSchemaBatch;
+      new RawSchemaBatch().getById(batchId).then((data) => {
+        if(!data)
+          reject({"message":`no results for batchId: ${batchId}`,"code":404});
+        rawSchemaBatch = data;
+        return new RawSchemaUnion().listEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return this.buildJsonSchema(data, batchId);
+      }).then((data) => {
+        rawSchemaBatch.endDate = new Date();
+        rawSchemaBatch.status = "DONE";
+        rawSchemaBatch.save();
+        return resolv(data);
+      }).catch((error) => {
+        return reject({"message": error, "code": 500});
+      });
     });
   }
 
