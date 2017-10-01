@@ -1,30 +1,28 @@
 import { Injectable } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import DatabaseParam from '../../_params/databaseParam';
 
 @Injectable()
 export class JsonSchemaService {
 
-  constructor() { }
+ 	constructor(private http: Http) { }
 
-  listJsonSchemes(){
-		return [{
-			"batchId":"21213",
-			"userId":"123322",
-			"databaseUrl":"mongodb://192.168.0.1/testbd",
-			"collection":"contatos",
-			"schema": "{\"id\":\"string\"}"
-		},{
-			"batchId":"111111",
-			"userId":"333333333",
-			"databaseUrl":"mongodb://10.0.0.1/test",
-			"collection":"usuarios",
-			"schema": "{\"id\":\"string\"}"
-		},{
-			"batchId":"111111",
-			"userId":"333333333",
-			"databaseUrl":"mongodb://10.0.0.1/test",
-			"collection":"usuarios",
-			"schema": "{\"id\":\"string\"}"
-		}]
+	discovery(databaseParam: DatabaseParam) {
+		return this.http.post('/api/batch/rawschema/steps/all', databaseParam, this.jwt())
+			.map((response: Response) => response.json());
 	}
+
+  listBatches(){
+  		return this.http.get('/api/batches', this.jwt())
+			.map((response: Response) => response.json());
+	}
+
+  private jwt() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && currentUser.token) {
+          const headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
+          return new RequestOptions({ headers: headers });
+      }
+  }
 
 }

@@ -11,7 +11,8 @@ class DatabaseParam {
 	}
 	public getURI() {
 		let uri;
-		if(this.authentication){
+		console.log("this.authentication",this.authentication);
+		if(this.hasAuthentication()){
 			uri = this.getURIWithAuthentication(`${this.address}:${this.port}/${this.databaseName}`);
 		} else {
 			uri = this.getURIWithoutAuthentication();
@@ -23,6 +24,11 @@ class DatabaseParam {
 	}
 	public getURIWithAuthentication(address) {
 		return `${this.authentication.userName}:${this.authentication.password}@${address}?authSource=${this.authentication.authDatabase}&authMechanism=${this.authentication.authMechanism}`;
+	}
+	private hasAuthentication(){
+		if(this.authentication && this.authentication.authDatabase && this.authentication.userName && this.authentication.password && this.authentication.authMechanism)
+			return true;
+		return false;
 	}
 }
 export default DatabaseParam;

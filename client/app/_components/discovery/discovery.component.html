@@ -1,61 +1,55 @@
-<md-horizontal-stepper [linear]="isLinear">
-  
-  <md-step [stepControl]="firstFormGroup">
+<form name="form" #f="ngForm"> 
+  <md-horizontal-stepper [linear]="isLinear">
     
-    <form [formGroup]="firstFormGroup">
+    <md-step>
       <ng-template mdStepLabel>Conexão</ng-template>
       <md-form-field>
-        <input mdInput placeholder="Endereço" formControlName="firstCtrl" required>
+        <input mdInput placeholder="Endereço" [(ngModel)]="model.address" name="address" required>
       </md-form-field>
       <md-form-field>
-        <input mdInput placeholder="Porta" formControlName="firstCtrl" required>
+        <input mdInput placeholder="Porta" [(ngModel)]="model.port" name="port" required>
       </md-form-field>
       <md-form-field>
-        <input mdInput placeholder="Nome do banco" formControlName="firstCtrl" required>
+        <input mdInput placeholder="Nome do banco" [(ngModel)]="model.databaseName" name="databaseName" required>
       </md-form-field>
       <md-form-field>
-        <input mdInput placeholder="Nome da coleção" formControlName="firstCtrl" required>
+        <input mdInput placeholder="Nome da coleção" [(ngModel)]="model.collectionName" name="collectionName" required>
       </md-form-field>
       <div>
-        <button md-button mdStepperNext >Próximo</button>
+        <button md-button [routerLink]="['/']">Cancelar</button>
+        <button md-raised-button color="primary" mdStepperNext [disabled]="f.form.invalid">Próximo</button>
       </div>
-    </form>
-
-  </md-step>
-  
-  <md-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
+    </md-step>
+    
+    <md-step>
       <ng-template mdStepLabel>Autenticação</ng-template>
       <md-form-field>
-        <input mdInput placeholder="Nome do banco de dados de administração" formControlName="secondCtrl" required>
+        <input mdInput placeholder="Nome do banco de dados de administração" [(ngModel)]="model.authentication.authDatabase" name="authDatabase">
       </md-form-field>
       <md-form-field>
-        <input mdInput placeholder="Usuário" formControlName="secondCtrl" required>
+        <input mdInput placeholder="Usuário" [(ngModel)]="model.authentication.userName" name="userName">
       </md-form-field>
       <md-form-field>
-        <input mdInput placeholder="Senha" formControlName="secondCtrl" required>
+        <input mdInput type="password" placeholder="Senha" [(ngModel)]="model.authentication.password" name="password"> 
       </md-form-field>
-      <md-select placeholder="Mecanismo de autenticação" formControlName="secondCtrl" required>
-        <md-option [value]="SCRAM-SHA-1">SCRAM-SHA-1</md-option>
-        <md-option [value]="MONGODB-CR">MONGODB-CR</md-option>
+      <md-select placeholder="Mecanismo de autenticação" [(ngModel)]="model.authentication.authMechanism" name="authMechanism">
+        <md-option *ngFor="let authMechanism of authMechanisms" [value]="authMechanism">{{authMechanism}}</md-option>
       </md-select>
       <div>
         <button md-button mdStepperPrevious>Voltar</button>
-        <button md-button mdStepperNext>Próximo</button>
+        <button md-raised-button color="primary" mdStepperNext [disabled]="f.form.invalid">Próximo</button>
       </div>
-    </form>
-  </md-step>
-  
-  <md-step>
-    <ng-template mdStepLabel>Pronto</ng-template>
-    <p>
-    Esse processo pode demorar de acordo com o tamanho da coleção de documentos informado.
-    Você receberá uma notificação assim que o JSONSchema for extraído. </p>
-    <h4>Extrair JSONSchema?</h4>
-    <div>
-      <button md-button mdStepperPrevious>Voltar</button>
-      <button md-button>Extrair</button>
-    </div>
-  </md-step>
-
-</md-horizontal-stepper>
+    </md-step>
+    
+    <md-step>
+      <ng-template mdStepLabel>Pronto</ng-template>
+      <p>
+      Esse processo pode demorar de acordo com o tamanho da coleção de documentos informado.
+      Você receberá uma notificação assim que o JSONSchema for extraído. </p>
+      <div>
+        <button md-button mdStepperPrevious>Voltar</button>
+        <button md-raised-button color="primary" [disabled]="f.form.invalid" (click)="f.form.valid && discovery()">Extrair JSONSchema</button>
+      </div>
+    </md-step>
+  </md-horizontal-stepper>
+</form>

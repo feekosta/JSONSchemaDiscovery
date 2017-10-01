@@ -13,11 +13,13 @@ import { JsonSchemaService } from "../../_services/services";
 export class HomeComponent implements OnInit {
 
 	currentUser: User;
-	jsonSchemes: Array<any>;
+	batches: any;
 
 	constructor(private jsonSchemaService:JsonSchemaService) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.jsonSchemes = this.jsonSchemaService.listJsonSchemes();
+        this.jsonSchemaService.listBatches().subscribe((data) => {
+	        this.batches = data;
+        });
     }
 
 	ngOnInit() {

@@ -1,30 +1,22 @@
 import { Injectable } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 @Injectable()
 export class AlertService {
 
-	constructor() { }
+	constructor(private http: Http) { }
 
 	listAlerts(){
-		return [{
-			"batchId":"21213",
-			"userId":"123322",
-			"databaseUrl":"mongodb://192.168.0.1/testbd",
-			"collection":"contatos",
-			"status":"DONE"
-		},{
-			"batchId":"111111",
-			"userId":"333333333",
-			"databaseUrl":"mongodb://10.0.0.1/test",
-			"collection":"usuarios",
-			"status":"IN_PROGRESS"
-		},{
-			"batchId":"111111",
-			"userId":"333333333",
-			"databaseUrl":"mongodb://10.0.0.1/test",
-			"collection":"usuarios",
-			"status":"ERROR"
-		}]
+		return this.http.get('/api/alerts', this.jwt())
+			.map((response: Response) => response.json());
+	}
+
+	private jwt() {
+		const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+		if (currentUser && currentUser.token) {
+			const headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
+			return new RequestOptions({ headers: headers });
+		}
 	}
 
 }

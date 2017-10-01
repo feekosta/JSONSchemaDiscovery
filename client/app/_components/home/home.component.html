@@ -1,6 +1,11 @@
 <md-list>
-  <md-list-item *ngFor="let jsonSchema of jsonSchemes">
-  	<h4 md-line>{{jsonSchema.databaseUrl}}</h4>
+  <md-list-item *ngFor="let batch of batches">
+  	<h4 md-line>{{batch.dbUri}}</h4>
+  	<h6 md-line>{{batch.collectionName}}</h6>
+  	<md-icon md-list-icon *ngIf="batch.status == 'DONE'">done</md-icon>
+	<md-icon md-list-icon *ngIf="batch.status != 'DONE'">
+		<md-spinner></md-spinner>
+	</md-icon>
   </md-list-item>
 </md-list>
 

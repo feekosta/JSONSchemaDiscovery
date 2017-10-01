@@ -8,18 +8,18 @@ import { AlertService } from '../../_services/services';
 })
 export class AlertComponent implements OnInit {
 
-	alerts: Array<any>;
+	alerts: any;
 
 	constructor(private alertService:AlertService) { }
 
 	ngOnInit() {
-		this.alerts = this.alertService.listAlerts();
+		this.alertService.listAlerts().subscribe((data) => {
+	        this.alerts = data;
+        });
 	}
 
 	getStatusIcon(alertStatus) {
 		switch(alertStatus){
-			case "IN_PROGRESS":
-				return "loop";
 			case "ERROR":
 				return "error";
 			case "DONE":

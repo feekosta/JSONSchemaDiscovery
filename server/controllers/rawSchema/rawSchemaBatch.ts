@@ -9,7 +9,8 @@ import RawSchemaController from './rawSchema';
 import RawSchemaOrderedResultController from './rawSchemaOrderedResult';
 import RawSchemaUnorderedResultController from './rawSchemaUnorderedResult';
 import RawSchemaUnionController from './rawSchemaUnion';
-import JsonSchemaExtractedController from '../jsonSchema/jsonSchemaExtracted'
+import JsonSchemaExtractedController from '../jsonSchema/jsonSchemaExtracted';
+import AlertController from '../alert/alert'
 
 export default class RawSchemaBatchController extends BaseController {
   
@@ -24,8 +25,10 @@ export default class RawSchemaBatchController extends BaseController {
       rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
       rawSchemaBatch.userId = databaseParam.userId;
       rawSchemaBatch.startDate = new Date();
-
-      this.connect(databaseParam).then((data) => {
+      rawSchemaBatch.status = "CONNECT_DATABASE";
+      rawSchemaBatch.save().then((data) => {
+        return this.connect(databaseParam);  
+      }).then((data) => {
         return this.getCollection(data, rawSchemaBatch);
       }).then((data) => {
         return this.executeStepOne(data, rawSchemaBatch);
@@ -36,13 +39,18 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         return this.executeStepFour(rawSchemaBatch);
       }).then((data) => {
+        return this.generateAlert(data);
+      }).then((data) => {
         return resolv(data);
       }).catch((error) => {
         if(rawSchemaBatch){  
           rawSchemaBatch.status = "ERROR";
           rawSchemaBatch.statusMessage = error;
-          rawSchemaBatch.save();
-          return reject(error);
+          rawSchemaBatch.save().then((data) => {
+            return this.generateAlert(rawSchemaBatch);
+          }).then((data) => {
+            return reject(error);
+          });
         } else {
           return reject(error);
         }
@@ -71,7 +79,6 @@ export default class RawSchemaBatchController extends BaseController {
           rawSchemaBatch.status = "ERROR";
           rawSchemaBatch.statusMessage = error;
           rawSchemaBatch.save();
-          return reject(error);
         } else {
           return reject(error);
         }
@@ -130,6 +137,10 @@ export default class RawSchemaBatchController extends BaseController {
 
   private executeStepFour = (rawSchemaBatch) => {
     return new JsonSchemaExtractedController().generate(rawSchemaBatch._id);
+  }
+
+  private generateAlert = (rawSchemaBatch) => {
+    return new AlertController().generate(rawSchemaBatch);
   }
 
   getDatabaseConnection = (databaseParam, callback) => {
@@ -255,6 +266,11 @@ export default class RawSchemaBatchController extends BaseController {
 
   getById = (id) => {
   	return this.model.findById(id);
+  }
+
+  listByUserId = (userId) => {
+    console.log("userId",userId);
+    return this.model.find({"userId":userId});
   }
 
 }

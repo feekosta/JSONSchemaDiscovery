@@ -3,11 +3,8 @@ class AuthenticationParam {
 	userName:String;
 	password:String;
 	authMechanism:String;
-	
-	isValid = (): boolean => {
-		if(this.authDatabase && this.userName && this.password && this.authMechanism)
-			return true;
-		return false;
+	constructor(){
+		this.authMechanism = "MONGODB-CR"
 	}
 }
 export default AuthenticationParam;
