@@ -1,12 +1,15 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthenticationService, FeedbackService, RegistrationService } from '../../_services/services';
 
-import { AlertService, RegistrationService, AuthenticationService } from '../../_services/services';
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  templateUrl: 'register.component.html',
+  styleUrls: ['register.component.css']
 })
 export class RegisterComponent implements OnInit {
 
@@ -15,9 +18,14 @@ export class RegisterComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private registrationService: RegistrationService,
 		private authenticationService: AuthenticationService,
-		private alertService: AlertService) { }
+		private registrationService: RegistrationService,
+		private feedbackService: FeedbackService) { }
+
+	emailFormControl = new FormControl('', [
+	    Validators.required,
+	    Validators.pattern(EMAIL_REGEX)
+	]);
 
 	ngOnInit() {
 	}
@@ -30,16 +38,18 @@ export class RegisterComponent implements OnInit {
 					this.authenticationService.login(this.model.email, this.model.password)
 						.subscribe(
 							data => { 
-								this.alertService.success('Bem Vindo', true);
+								this.feedbackService.success('Bem Vindo', true);
 								this.router.navigate(['/']);
 							}
 						);
 				},
 				error => {
-					this.alertService.error(error.json().error);
+					this.feedbackService.error(error.json().error);
 					this.loading = false;
 				}
 			);
 	}
+
+
 
 }

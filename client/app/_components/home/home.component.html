@@ -1,3 +1,9 @@
-<div>
-	<p>Home</p>
-</div>
+<md-list>
+  <md-list-item *ngFor="let jsonSchema of jsonSchemes">
+  	<h4 md-line>{{jsonSchema.databaseUrl}}</h4>
+  </md-list-item>
+</md-list>
+
+<span class="app-action">
+  <button md-fab [routerLink]="['/discovery']"><md-icon>add</md-icon></button>
+</span>

@@ -1,0 +1,53 @@
+.mat-drawer-container {
+  position: fixed;
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  min-width: 100%;
+}
+
+.mat-drawer {
+  padding: 10px;
+  min-width: 150px;
+  background: rgba(0,0,0,0.1);
+}
+
+.mat-card {
+  background: rgba(0,0,0,0.0);
+  box-shadow: none !important;
+  color: hsla(0,0%,100%,.87);
+  padding: 14px;
+}
+
+.mat-button {
+  min-width: 0px;
+  padding: 0px;
+}
+
+.mat-icon-button {
+  padding: 6px;
+}
+
+.app-toolbar-title {
+  margin-left: 10px;
+}
+
+.app-toolbar-filler {
+  flex: 1 1 auto;
+}
+
+.app-toolbar-notification {
+  top: 8px;
+  background: #f36;
+  border-radius: 3px;
+  left: 10px;
+  padding: 0 3px;
+  position: absolute;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+button.mat-menu-item{
+  width: auto;
+  color: hsla(0,0%,100%,.87);
+}

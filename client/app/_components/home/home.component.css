@@ -1,0 +1,6 @@
+.app-action {
+  display: inline-block;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}

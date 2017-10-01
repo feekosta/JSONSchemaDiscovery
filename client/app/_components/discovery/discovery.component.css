@@ -1,0 +1,9 @@
+.mat-form-field {
+	display: inline;
+}
+
+.mat-stepper-horizontal {
+	width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}

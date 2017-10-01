@@ -1,0 +1,47 @@
+<md-sidenav-container >
+
+	<app-feedback></app-feedback>
+
+	<md-sidenav mode="side" #sidenav>
+		SIDENAV
+	</md-sidenav>
+
+	<md-toolbar color="primary" *ngIf="showNavBar">
+
+		<button class="mat-icon-button" (click)="sidenav.toggle()">
+			<i class="material-icons">menu</i>
+		</button>
+
+		<button class="app-toolbar-title" md-menu-item [routerLink]="['/']">JSONSchema Discovery</button>
+
+		<span class="app-toolbar-filler"></span>
+
+		<md-card>
+			<button class="md-icon-button" md-button [routerLink]="['/alert']">
+				<i class="material-icons">notifications</i>
+				<span class="app-toolbar-notification">6</span>
+			</button>
+		</md-card>
+
+		<md-card>
+			<button class="md-icon-button" md-button [routerLink]="['/alert']">
+				<i class="material-icons">notifications_none</i>
+			</button>
+		</md-card>
+
+		<md-card>
+			<button class="md-icon-button" md-button [md-menu-trigger-for]="menu">
+				<i class="material-icons">account_circle</i>
+			</button>
+		</md-card>
+
+		<md-menu #menu="mdMenu">
+			<button md-menu-item [routerLink]="['/user']">Perfil</button>
+			<button md-menu-item (click)="logout()">Sair</button>
+		</md-menu>
+
+	</md-toolbar>
+
+	<router-outlet></router-outlet>
+
+</md-sidenav-container>

@@ -1,0 +1,13 @@
+<md-list>
+  <md-list-item *ngFor="let alert of alerts">
+	<md-icon md-list-icon *ngIf="!isInprogress(alert.status)">{{getStatusIcon(alert.status)}}</md-icon>
+	<md-icon md-list-icon *ngIf="isInprogress(alert.status)">
+		<md-spinner></md-spinner>
+	</md-icon>
+	<h4 md-line>{{alert.collection}}</h4>
+	<p md-line> {{alert.databaseUrl}} </p>
+	<button md-icon-button>
+        <md-icon>info</md-icon>
+     </button>
+  </md-list-item>
+</md-list>

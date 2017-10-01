@@ -1,0 +1,61 @@
+<md-horizontal-stepper [linear]="isLinear">
+  
+  <md-step [stepControl]="firstFormGroup">
+    
+    <form [formGroup]="firstFormGroup">
+      <ng-template mdStepLabel>Conexão</ng-template>
+      <md-form-field>
+        <input mdInput placeholder="Endereço" formControlName="firstCtrl" required>
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Porta" formControlName="firstCtrl" required>
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Nome do banco" formControlName="firstCtrl" required>
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Nome da coleção" formControlName="firstCtrl" required>
+      </md-form-field>
+      <div>
+        <button md-button mdStepperNext >Próximo</button>
+      </div>
+    </form>
+
+  </md-step>
+  
+  <md-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template mdStepLabel>Autenticação</ng-template>
+      <md-form-field>
+        <input mdInput placeholder="Nome do banco de dados de administração" formControlName="secondCtrl" required>
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Usuário" formControlName="secondCtrl" required>
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Senha" formControlName="secondCtrl" required>
+      </md-form-field>
+      <md-select placeholder="Mecanismo de autenticação" formControlName="secondCtrl" required>
+        <md-option [value]="SCRAM-SHA-1">SCRAM-SHA-1</md-option>
+        <md-option [value]="MONGODB-CR">MONGODB-CR</md-option>
+      </md-select>
+      <div>
+        <button md-button mdStepperPrevious>Voltar</button>
+        <button md-button mdStepperNext>Próximo</button>
+      </div>
+    </form>
+  </md-step>
+  
+  <md-step>
+    <ng-template mdStepLabel>Pronto</ng-template>
+    <p>
+    Esse processo pode demorar de acordo com o tamanho da coleção de documentos informado.
+    Você receberá uma notificação assim que o JSONSchema for extraído. </p>
+    <h4>Extrair JSONSchema?</h4>
+    <div>
+      <button md-button mdStepperPrevious>Voltar</button>
+      <button md-button>Extrair</button>
+    </div>
+  </md-step>
+
+</md-horizontal-stepper>
