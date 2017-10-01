@@ -1,44 +1,135 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule }    from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import {BrowserModule}             from '@angular/platform-browser';
+import {BrowserAnimationsModule}   from '@angular/platform-browser/animations';
+import {NgModule}                  from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpModule}                from '@angular/http';
+import {CdkTableModule}            from '@angular/cdk/table';
+import {
+  MdAutocompleteModule,
+  MdButtonModule,
+  MdButtonToggleModule,
+  MdCardModule,
+  MdCheckboxModule,
+  MdChipsModule,
+  MdDatepickerModule,
+  MdDialogModule,
+  MdExpansionModule,
+  MdGridListModule,
+  MdIconModule,
+  MdInputModule,
+  MdListModule,
+  MdMenuModule,
+  MdNativeDateModule,
+  MdPaginatorModule,
+  MdProgressBarModule,
+  MdProgressSpinnerModule,
+  MdRadioModule,
+  MdRippleModule,
+  MdSelectModule,
+  MdSidenavModule,
+  MdSliderModule,
+  MdSlideToggleModule,
+  MdSnackBarModule,
+  MdSortModule,
+  MdTableModule,
+  MdTabsModule,
+  MdToolbarModule,
+  MdTooltipModule,
+  MdStepperModule
+} from '@angular/material';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
-import { AppComponent } from './app.component';
+import { AppComponent }     from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
-import { AlertComponent } from './_directives/directives';
-
-import { AuthGuard } from './_guards/auth.guard';
-
-import { AlertService, AuthenticationService, RegistrationService, EventService } from './_services/services';
-
-import { LoginComponent, RegisterComponent, HomeComponent } from './_components/components';
+import { AuthGuard }        from './_guards/auth.guard';
+import { 
+  AlertService, 
+  AuthenticationService, 
+  EventService,
+  FeedbackService,
+  RegistrationService,
+  JsonSchemaService
+} from './_services/services';
+import { 
+  FeedbackComponent,
+  NavbarComponent,
+  LoginComponent, 
+  RegisterComponent, 
+  HomeComponent,
+  DiscoveryComponent,
+  UserComponent,
+  AlertComponent,
+  SchemesComponent
+} from './_components/components';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AlertComponent,
-    HomeComponent,
-    LoginComponent,
-    RegisterComponent
-  ],
+  exports: [
+    CdkTableModule,
+    MdAutocompleteModule,
+    MdButtonModule,
+    MdButtonToggleModule,
+    MdCardModule,
+    MdCheckboxModule,
+    MdChipsModule,
+    MdStepperModule,
+    MdDatepickerModule,
+    MdDialogModule,
+    MdExpansionModule,
+    MdGridListModule,
+    MdIconModule,
+    MdInputModule,
+    MdListModule,
+    MdMenuModule,
+    MdNativeDateModule,
+    MdPaginatorModule,
+    MdProgressBarModule,
+    MdProgressSpinnerModule,
+    MdRadioModule,
+    MdRippleModule,
+    MdSelectModule,
+    MdSidenavModule,
+    MdSliderModule,
+    MdSlideToggleModule,
+    MdSnackBarModule,
+    MdSortModule,
+    MdTableModule,
+    MdTabsModule,
+    MdToolbarModule,
+    MdTooltipModule
+  ]
+})
+export class AppMaterialModule {}
+
+@NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
+    AppMaterialModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    ReactiveFormsModule
+  ],
+  declarations: [
+    AlertComponent,
+    DiscoveryComponent,
+    FeedbackComponent,
+    HomeComponent,
+    LoginComponent,
+    NavbarComponent,
+    RegisterComponent,
+    SchemesComponent,
+    UserComponent,
+    AppComponent
   ],
   providers: [
     AuthGuard,
     AlertService,
     AuthenticationService,
     RegistrationService,
-    EventService
+    EventService,
+    FeedbackService,
+    JsonSchemaService
   ],
   bootstrap: [AppComponent]
 })
-
 export class AppModule { }
