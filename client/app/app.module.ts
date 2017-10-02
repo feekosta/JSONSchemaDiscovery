@@ -4,6 +4,7 @@ import {NgModule}                  from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule}                from '@angular/http';
 import {CdkTableModule}            from '@angular/cdk/table';
+import { FyAngularJsonViewerModule } from '@gofynd/angular-json-viewer';
 import {
   MdAutocompleteModule,
   MdButtonModule,
@@ -58,12 +59,15 @@ import {
   DiscoveryComponent,
   UserComponent,
   AlertComponent,
-  SchemesComponent
+  SchemesComponent,
+  BatchComponent,
+  BatchDeleteModalComponent,
+  JsonSchemaComponent
 } from './_components/components';
+import PrettyJsonPipe from './_pipes/pretty-json.pipe';
 
 @NgModule({
   exports: [
-    CdkTableModule,
     MdAutocompleteModule,
     MdButtonModule,
     MdButtonToggleModule,
@@ -107,7 +111,8 @@ export class AppMaterialModule {}
     HttpModule,
     AppMaterialModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FyAngularJsonViewerModule
   ],
   declarations: [
     AlertComponent,
@@ -119,6 +124,10 @@ export class AppMaterialModule {}
     RegisterComponent,
     SchemesComponent,
     UserComponent,
+    BatchComponent,
+    BatchDeleteModalComponent,
+    JsonSchemaComponent,
+    PrettyJsonPipe,
     AppComponent
   ],
   providers: [
@@ -129,6 +138,9 @@ export class AppMaterialModule {}
     EventService,
     FeedbackService,
     JsonSchemaService
+  ],
+  entryComponents: [
+    BatchDeleteModalComponent
   ],
   bootstrap: [AppComponent]
 })

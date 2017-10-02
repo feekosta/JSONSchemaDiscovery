@@ -6,6 +6,12 @@
 	<md-icon md-list-icon *ngIf="batch.status != 'DONE'">
 		<md-spinner></md-spinner>
 	</md-icon>
+	<button class="mat-icon-button" [routerLink]="['/batch', batch._id]">
+		<md-icon>visibility</md-icon>
+	</button>
+	<button class="mat-icon-button" (click)="delete(batch._id)">
+		<md-icon>delete</md-icon>
+	</button>
   </md-list-item>
 </md-list>
 

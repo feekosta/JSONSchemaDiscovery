@@ -13,9 +13,24 @@ export class JsonSchemaService {
 	}
 
   listBatches(){
-  		return this.http.get('/api/batches', this.jwt())
+		return this.http.get('/api/batches', this.jwt())
 			.map((response: Response) => response.json());
 	}
+
+  delete(batchId){
+    return this.http.delete(`/api/batch/${batchId}`, this.jwt())
+      .map((response: Response) => "OK");
+  }
+
+  getBatchById(batchId){
+    return this.http.get(`/api/batch/${batchId}`, this.jwt())
+      .map((response: Response) => response.json());
+  }
+
+  getJsonSchemaByBatchId(batchId){
+    return this.http.get(`/api/batch/jsonschema/generate/${batchId}`, this.jwt())
+      .map((response: Response) => response.json());
+  }
 
   private jwt() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));

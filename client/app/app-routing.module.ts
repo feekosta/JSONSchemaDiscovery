@@ -8,6 +8,8 @@ import {
 	LoginComponent, 
 	RegisterComponent, 
 	UserComponent,
+	BatchComponent,
+	JsonSchemaComponent
 } from './_components/components';
 
 const routes: Routes = [
@@ -17,6 +19,8 @@ const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
 	{ path: 'user', component: UserComponent, canActivate: [AuthGuard] },
+	{ path: 'batch/:id', component: BatchComponent, canActivate: [AuthGuard] },
+	{ path: 'jsonschema/:id', component: JsonSchemaComponent, canActivate: [AuthGuard] },
     // otherwise redirect to home
     { path: '**', redirectTo: '' }
 ];

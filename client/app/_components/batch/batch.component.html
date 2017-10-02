@@ -1,0 +1,44 @@
+<md-card>
+
+	<md-card-header>
+		<md-icon md-list-icon>description</md-icon>
+    	<md-card-title>{{batch?.collectionName}}</md-card-title>
+    </md-card-header>
+
+    <md-card-content>
+    	<md-list>
+	  		<md-list-item>
+		  		<md-icon md-list-icon>cloud</md-icon>
+				<h4 md-line>Url</h4>
+				<p md-line>{{batch?.dbUri}}</p>
+			</md-list-item>
+			<md-list-item>
+		  		<md-icon md-list-icon>info</md-icon>
+				<h4 md-line>Quantidade de registros na coleção</h4>
+				<p md-line>{{batch?.collectionCount}}</p>
+			</md-list-item>
+			<md-list-item>
+		  		<md-icon md-list-icon>info</md-icon>
+				<h4 md-line>Registros com mesma estrutura original</h4>
+				<p md-line>{{batch?.uniqueUnorderedCount}}</p>
+			</md-list-item>
+			<md-list-item>
+		  		<md-icon md-list-icon>info</md-icon>
+				<h4 md-line>Registros com mesma estrutura ordenada</h4>
+				<p md-line>{{batch?.uniqueOrderedCount}}</p>
+			</md-list-item>
+			<md-list-item>
+		  		<md-icon md-list-icon>description</md-icon>
+				<h4 md-line>JSONSchema</h4>
+				<button class="mat-icon-button" [routerLink]="['/jsonschema', batch?._id]">
+					<md-icon>visibility</md-icon>
+				</button>
+				<button class="mat-icon-button">
+					<md-icon>get_app</md-icon>
+				</button>
+			</md-list-item>
+		</md-list>
+
+    </md-card-content>
+
+</md-card>
