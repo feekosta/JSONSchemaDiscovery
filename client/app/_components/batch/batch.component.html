@@ -33,7 +33,7 @@
 				<button class="mat-icon-button" [routerLink]="['/jsonschema', batch?._id]">
 					<md-icon>visibility</md-icon>
 				</button>
-				<button class="mat-icon-button">
+				<button class="mat-icon-button" (click)="download()">
 					<md-icon>get_app</md-icon>
 				</button>
 			</md-list-item>
