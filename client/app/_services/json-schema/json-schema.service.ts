@@ -17,7 +17,7 @@ export class JsonSchemaService {
 			.map((response: Response) => response.json());
 	}
 
-  delete(batchId){
+  deleteBatch(batchId){
     return this.http.delete(`/api/batch/${batchId}`, this.jwt())
       .map((response: Response) => "OK");
   }

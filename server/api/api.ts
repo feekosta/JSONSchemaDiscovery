@@ -103,6 +103,14 @@ export default class ApiController {
   		});
 	}
 
+	public deleteBatch = (req, res) => {
+		return new RawSchemaBatchController().deleteBatch(req.params.id).then((data) => {
+  			return this.success(res, data);
+  		}, (error) => {
+			return this.error(res, error.message, error.code);
+  		});
+	}
+
 	private error(res, err, code){
 		return res.status(code).json({ 'error': err });
 	}

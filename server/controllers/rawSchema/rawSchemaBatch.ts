@@ -58,6 +58,28 @@ export default class RawSchemaBatchController extends BaseController {
     });
   }
   
+  deleteBatch = (batchId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      this.model.findOneAndRemove({ _id: batchId }).then((data) =>{
+        return new RawSchemaController().deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return new RawSchemaOrderedResultController().deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return new RawSchemaUnorderedResultController(batchId).deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return new RawSchemaUnionController().deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return new JsonSchemaExtractedController().deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return new AlertController().deleteEntitiesByBatchId(batchId);
+      }).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        return reject(error);
+      });
+    });
+  }
+
   discovery = (params): Promise<any> => {
     return new Promise((resolv, reject) => {
       

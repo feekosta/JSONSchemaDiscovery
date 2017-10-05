@@ -38,15 +38,12 @@ export class HomeComponent implements OnInit {
 		});
 		deleteModal.afterClosed().subscribe((result) => {
 			if(result){
-				console.log("vai deletar");
-				this.jsonSchemaService.delete(batchId).subscribe((data) => {
+				this.jsonSchemaService.deleteBatch(batchId).subscribe((data) => {
 					this.feedbackService.success("Deletado");
 					this.jsonSchemaService.listBatches().subscribe((data) => {
 				        this.batches = data;
 			        });
 				});
-			} else {
-				console.log("nao vai deletar");
 			}
 		});
 	}

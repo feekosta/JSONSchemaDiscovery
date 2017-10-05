@@ -3,6 +3,6 @@
   <p>Deseja realmente deletar?</p>
 </div>
 <div md-dialog-actions>
-  <button md-button [md-dialog-close]="'true'" tabindex="2">Sim</button>
   <button md-button (click)="onNoClick()" tabindex="-1">Não</button>
+  <button md-raised-button color="primary" [md-dialog-close]="'true'" tabindex="2">Sim</button>
 </div>
