@@ -1,47 +1,42 @@
-<md-sidenav-container >
+<mat-sidenav-container >
 
-	<md-sidenav mode="side" #sidenav>
+	<mat-sidenav mode="side" #sidenav>
 		SIDENAV
-	</md-sidenav>
+	</mat-sidenav>
 
-	<md-toolbar color="primary" *ngIf="showNavBar">
+	<mat-toolbar color="primary" *ngIf="isLogged">
 
 		<button class="mat-icon-button" (click)="sidenav.toggle()">
 			<i class="material-icons">menu</i>
 		</button>
 
-		<button class="app-toolbar-title" md-menu-item [routerLink]="['/']">JSONSchema Discovery</button>
+		<button class="app-toolbar-title" mat-menu-item [routerLink]="['/']">JSONSchema Discovery</button>
 
 		<span class="app-toolbar-filler"></span>
 
-		<md-card>
-			<button class="md-icon-button" md-button [routerLink]="['/alert']">
-				<i class="material-icons">notifications</i>
-				<span class="app-toolbar-notification">6</span>
+		<mat-card>
+			<button class="mat-icon-button" mat-button [routerLink]="['/alert']">
+				<i class="material-icons" [hidden]="!alertsCount">notifications</i>
+				<i class="material-icons" [hidden]="alertsCount">notifications_none</i>
+				<span class="app-toolbar-notification" [hidden]="!alertsCount">{{alertsCount}}</span>
 			</button>
-		</md-card>
+		</mat-card>
 
-		<md-card>
-			<button class="md-icon-button" md-button [routerLink]="['/alert']">
-				<i class="material-icons">notifications_none</i>
-			</button>
-		</md-card>
-
-		<md-card>
-			<button class="md-icon-button" md-button [md-menu-trigger-for]="menu">
+		<mat-card>
+			<button class="mat-icon-button" mat-button [mat-menu-trigger-for]="menu">
 				<i class="material-icons">account_circle</i>
 			</button>
-		</md-card>
+		</mat-card>
 
-		<md-menu #menu="mdMenu">
-			<button md-menu-item [routerLink]="['/user']">Perfil</button>
-			<button md-menu-item (click)="logout()">Sair</button>
-		</md-menu>
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item [routerLink]="['/user']">Perfil</button>
+			<button mat-menu-item (click)="logout()">Sair</button>
+		</mat-menu>
 
-	</md-toolbar>
+	</mat-toolbar>
 
 	<app-feedback></app-feedback>
 
 	<router-outlet></router-outlet>
 
-</md-sidenav-container>
+</mat-sidenav-container>

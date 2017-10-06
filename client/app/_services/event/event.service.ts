@@ -5,13 +5,13 @@ import { Observable } from "rxjs/Observable";
 @Injectable()
 export class EventService {
 
-	private showNavBar: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-    public showNavBarEmitter: Observable<boolean> = this.showNavBar.asObservable();
+	private isLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+    public isLoggedEmitter: Observable<boolean> = this.isLogged.asObservable();
 
  	constructor() { }
 
- 	setShowNavBar(ifShow: boolean) {
-        this.showNavBar.next(ifShow);
+ 	setIsLogged(isLogged: boolean) {
+        this.isLogged.next(isLogged);
     }
 
 }

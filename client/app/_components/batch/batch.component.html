@@ -1,44 +1,44 @@
-<md-card>
+<mat-card>
 
-	<md-card-header>
-		<md-icon md-list-icon>description</md-icon>
-    	<md-card-title>{{batch?.collectionName}}</md-card-title>
-    </md-card-header>
+	<mat-card-header>
+		<mat-icon mat-list-icon>description</mat-icon>
+    	<mat-card-title>{{batch?.collectionName}}</mat-card-title>
+    </mat-card-header>
 
-    <md-card-content>
-    	<md-list>
-	  		<md-list-item>
-		  		<md-icon md-list-icon>cloud</md-icon>
-				<h4 md-line>Url</h4>
-				<p md-line>{{batch?.dbUri}}</p>
-			</md-list-item>
-			<md-list-item>
-		  		<md-icon md-list-icon>info</md-icon>
-				<h4 md-line>Quantidade de registros na coleção</h4>
-				<p md-line>{{batch?.collectionCount}}</p>
-			</md-list-item>
-			<md-list-item>
-		  		<md-icon md-list-icon>info</md-icon>
-				<h4 md-line>Registros com mesma estrutura original</h4>
-				<p md-line>{{batch?.uniqueUnorderedCount}}</p>
-			</md-list-item>
-			<md-list-item>
-		  		<md-icon md-list-icon>info</md-icon>
-				<h4 md-line>Registros com mesma estrutura ordenada</h4>
-				<p md-line>{{batch?.uniqueOrderedCount}}</p>
-			</md-list-item>
-			<md-list-item>
-		  		<md-icon md-list-icon>description</md-icon>
-				<h4 md-line>JSONSchema</h4>
+    <mat-card-content>
+    	<mat-list>
+	  		<mat-list-item>
+		  		<mat-icon mat-list-icon>cloud</mat-icon>
+				<h4 mat-line>Url</h4>
+				<p mat-line>{{batch?.dbUri}}</p>
+			</mat-list-item>
+			<mat-list-item>
+		  		<mat-icon mat-list-icon>info</mat-icon>
+				<h4 mat-line>Quantidade de registros na coleção</h4>
+				<p mat-line>{{batch?.collectionCount}}</p>
+			</mat-list-item>
+			<mat-list-item>
+		  		<mat-icon mat-list-icon>info</mat-icon>
+				<h4 mat-line>Registros com mesma estrutura original</h4>
+				<p mat-line>{{batch?.uniqueUnorderedCount}}</p>
+			</mat-list-item>
+			<mat-list-item>
+		  		<mat-icon mat-list-icon>info</mat-icon>
+				<h4 mat-line>Registros com mesma estrutura ordenada</h4>
+				<p mat-line>{{batch?.uniqueOrderedCount}}</p>
+			</mat-list-item>
+			<mat-list-item>
+		  		<mat-icon mat-list-icon>description</mat-icon>
+				<h4 mat-line>JSONSchema</h4>
 				<button class="mat-icon-button" [routerLink]="['/jsonschema', batch?._id]">
-					<md-icon>visibility</md-icon>
+					<mat-icon>visibility</mat-icon>
 				</button>
 				<button class="mat-icon-button" (click)="download()">
-					<md-icon>get_app</md-icon>
+					<mat-icon>get_app</mat-icon>
 				</button>
-			</md-list-item>
-		</md-list>
+			</mat-list-item>
+		</mat-list>
 
-    </md-card-content>
+    </mat-card-content>
 
-</md-card>
+</mat-card>

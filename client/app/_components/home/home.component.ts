@@ -1,7 +1,7 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 import { User } from '../../_models/user';
 import { JsonSchemaService, FeedbackService } from "../../_services/services";
@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
 
 	constructor(
 		private jsonSchemaService:JsonSchemaService, 
-		private dialog:MdDialog,
+		private dialog:MatDialog,
 		private feedbackService: FeedbackService) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.jsonSchemaService.listBatches().subscribe((data) => {

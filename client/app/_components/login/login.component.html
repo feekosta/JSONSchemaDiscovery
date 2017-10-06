@@ -1,38 +1,38 @@
-<md-card>
+<mat-card>
 
   <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
 
-    <md-card-header>
-      <md-card-title>Entrar</md-card-title>
-    </md-card-header>
+    <mat-card-header>
+      <mat-card-title>Entrar</mat-card-title>
+    </mat-card-header>
 
-    <md-card-content>
+    <mat-card-content>
 
-  		<md-input-container class="md-block" >
-        <input mdInput type="email" placeholder="Email" required [formControl]="emailFormControl" [(ngModel)]="model.email" />
-        <md-error *ngIf="emailFormControl.hasError('pattern')">
+  		<mat-input-container class="mat-block" >
+        <input matInput type="email" placeholder="Email" required [formControl]="emailFormControl" [(ngModel)]="model.email" />
+        <mat-error *ngIf="emailFormControl.hasError('pattern')">
           Por favor, digite um email válido
-        </md-error>
-        <md-error *ngIf="emailFormControl.hasError('required')">
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
           Email é <strong>obrigatório</strong>
-        </md-error>
-      </md-input-container>
+        </mat-error>
+      </mat-input-container>
 
-  		<md-input-container class="md-block">
-        <input mdInput type="password" placeholder="Senha" required [(ngModel)]="model.password" #password="ngModel" name="password"/>
-        <md-error *ngIf="!password.valid">
+  		<mat-input-container class="mat-block">
+        <input matInput type="password" placeholder="Senha" required [(ngModel)]="model.password" #password="ngModel" name="password"/>
+        <mat-error *ngIf="!password.valid">
           Senha é <strong>obrigatório</strong>
-        </md-error>
-      </md-input-container>
+        </mat-error>
+      </mat-input-container>
 
-    </md-card-content>
+    </mat-card-content>
 
-    <md-card-actions>
-      <button md-raised-button color="primary" [disabled]="loading">Entrar</button>          
-        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-        <a md-raised-button [routerLink]="['/register']">Criar conta</a>
-    </md-card-actions>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" [disabled]="loading">Entrar</button>          
+        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmatEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fmatgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmatsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        <a mat-raised-button [routerLink]="['/register']">Criar conta</a>
+    </mat-card-actions>
 
   </form>
   
-</md-card>
+</mat-card>

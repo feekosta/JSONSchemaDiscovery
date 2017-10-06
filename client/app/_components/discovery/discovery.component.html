@@ -1,55 +1,55 @@
 <form name="form" #f="ngForm"> 
-  <md-horizontal-stepper [linear]="isLinear">
+  <mat-horizontal-stepper [linear]="isLinear">
     
-    <md-step>
-      <ng-template mdStepLabel>Conexão</ng-template>
-      <md-form-field>
-        <input mdInput placeholder="Endereço" [(ngModel)]="model.address" name="address" required>
-      </md-form-field>
-      <md-form-field>
-        <input mdInput placeholder="Porta" [(ngModel)]="model.port" name="port" required>
-      </md-form-field>
-      <md-form-field>
-        <input mdInput placeholder="Nome do banco" [(ngModel)]="model.databaseName" name="databaseName" required>
-      </md-form-field>
-      <md-form-field>
-        <input mdInput placeholder="Nome da coleção" [(ngModel)]="model.collectionName" name="collectionName" required>
-      </md-form-field>
+    <mat-step>
+      <ng-template matStepLabel>Conexão</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Endereço" [(ngModel)]="model.address" name="address" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Porta" [(ngModel)]="model.port" name="port" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Nome do banco" [(ngModel)]="model.databaseName" name="databaseName" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Nome da coleção" [(ngModel)]="model.collectionName" name="collectionName" required>
+      </mat-form-field>
       <div>
-        <button md-button [routerLink]="['/']">Cancelar</button>
-        <button md-raised-button color="primary" mdStepperNext [disabled]="f.form.invalid">Próximo</button>
+        <button mat-button [routerLink]="['/']">Cancelar</button>
+        <button mat-raised-button color="primary" matStepperNext [disabled]="f.form.invalid">Próximo</button>
       </div>
-    </md-step>
+    </mat-step>
     
-    <md-step>
-      <ng-template mdStepLabel>Autenticação</ng-template>
-      <md-form-field>
-        <input mdInput placeholder="Nome do banco de dados de administração" [(ngModel)]="model.authentication.authDatabase" name="authDatabase">
-      </md-form-field>
-      <md-form-field>
-        <input mdInput placeholder="Usuário" [(ngModel)]="model.authentication.userName" name="userName">
-      </md-form-field>
-      <md-form-field>
-        <input mdInput type="password" placeholder="Senha" [(ngModel)]="model.authentication.password" name="password"> 
-      </md-form-field>
-      <md-select placeholder="Mecanismo de autenticação" [(ngModel)]="model.authentication.authMechanism" name="authMechanism">
-        <md-option *ngFor="let authMechanism of authMechanisms" [value]="authMechanism">{{authMechanism}}</md-option>
-      </md-select>
+    <mat-step>
+      <ng-template matStepLabel>Autenticação</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Nome do banco de dados de administração" [(ngModel)]="model.authentication.authDatabase" name="authDatabase">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Usuário" [(ngModel)]="model.authentication.userName" name="userName">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Senha" [(ngModel)]="model.authentication.password" name="password"> 
+      </mat-form-field>
+      <mat-select placeholder="Mecanismo de autenticação" [(ngModel)]="model.authentication.authMechanism" name="authMechanism">
+        <mat-option *ngFor="let authMechanism of authMechanisms" [value]="authMechanism">{{authMechanism}}</mat-option>
+      </mat-select>
       <div>
-        <button md-button mdStepperPrevious>Voltar</button>
-        <button md-raised-button color="primary" mdStepperNext [disabled]="f.form.invalid">Próximo</button>
+        <button mat-button matStepperPrevious>Voltar</button>
+        <button mat-raised-button color="primary" matStepperNext [disabled]="f.form.invalid">Próximo</button>
       </div>
-    </md-step>
+    </mat-step>
     
-    <md-step>
-      <ng-template mdStepLabel>Pronto</ng-template>
+    <mat-step>
+      <ng-template matStepLabel>Pronto</ng-template>
       <p>
       Esse processo pode demorar de acordo com o tamanho da coleção de documentos informado.
       Você receberá uma notificação assim que o JSONSchema for extraído. </p>
       <div>
-        <button md-button mdStepperPrevious>Voltar</button>
-        <button md-raised-button color="primary" [disabled]="f.form.invalid" (click)="f.form.valid && discovery()">Extrair JSONSchema</button>
+        <button mat-button matStepperPrevious>Voltar</button>
+        <button mat-raised-button color="primary" [disabled]="f.form.invalid" (click)="f.form.valid && discovery()">Extrair JSONSchema</button>
       </div>
-    </md-step>
-  </md-horizontal-stepper>
+    </mat-step>
+  </mat-horizontal-stepper>
 </form>

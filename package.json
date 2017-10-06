@@ -33,6 +33,7 @@
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
     "@types/node": "~6.0.60",
+    "angular2-moment": "^1.7.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "bootstrap": "^3.3.7",

@@ -1,20 +1,20 @@
-<md-list>
-  <md-list-item *ngFor="let batch of batches">
-  	<h4 md-line>{{batch.dbUri}}</h4>
-  	<h6 md-line>{{batch.collectionName}}</h6>
-  	<md-icon md-list-icon *ngIf="batch.status == 'DONE'">done</md-icon>
-	<md-icon md-list-icon *ngIf="batch.status != 'DONE'">
-		<md-spinner></md-spinner>
-	</md-icon>
+<mat-list>
+  <mat-list-item *ngFor="let batch of batches">
+  	<h4 mat-line>{{batch.dbUri}}</h4>
+  	<h6 mat-line>{{batch.collectionName}}</h6>
+  	<mat-icon mat-list-icon *ngIf="batch.status == 'DONE'">done</mat-icon>
+	<mat-icon mat-list-icon *ngIf="batch.status != 'DONE'">
+		<mat-spinner></mat-spinner>
+	</mat-icon>
 	<button class="mat-icon-button" [routerLink]="['/batch', batch._id]">
-		<md-icon>visibility</md-icon>
+		<mat-icon>visibility</mat-icon>
 	</button>
 	<button class="mat-icon-button" (click)="delete(batch._id)">
-		<md-icon>delete</md-icon>
+		<mat-icon>delete</mat-icon>
 	</button>
-  </md-list-item>
-</md-list>
+  </mat-list-item>
+</mat-list>
 
 <span class="app-action">
-  <button md-fab [routerLink]="['/discovery']"><md-icon>add</md-icon></button>
+  <button mat-fab [routerLink]="['/discovery']"><mat-icon>add</mat-icon></button>
 </span>

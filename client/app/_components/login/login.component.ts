@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 		this.authenticationService.login(this.model.email, this.model.password)
 			.subscribe(
 				data => {
-					this.eventService.setShowNavBar(true);
+					this.eventService.setIsLogged(true);
 					this.router.navigate([this.returnUrl]); 
 				},
 				error => {
