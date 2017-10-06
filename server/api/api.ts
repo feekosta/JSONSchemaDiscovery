@@ -43,6 +43,19 @@ export default class ApiController {
 		}
   	}
 
+  	public countAlertsByUserId = (req, res) => {
+  		const user = this.getUserByToken(req);
+		if(user && user.user){
+			return new AlertController().countByUserId(user.user._id).then((data) => {
+				return this.success(res, data);
+			}, (error) => {
+				return this.error(res, error, 500);
+			});
+		} else {
+			return this.error(res, "invalid token", 403);
+		}
+  	}
+
 	public allSteps = (req, res) => {
 		const user = this.getUserByToken(req);
 		if(user && user.user){

@@ -6,5 +6,6 @@ const AlertSchema = new mongoose.Schema({
   'status': { type: String, required:true },
   'dbUri': { type: String, required:true },
   'collectionName': { type: String, required:true },
+  'date': { type: Date, required:true },
 },{ timestamps: { createdAt: 'createdAt' } });
 export default mongoose.model('Alert', AlertSchema);

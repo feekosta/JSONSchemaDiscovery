@@ -38,6 +38,7 @@ export default function setRoutes(app) {
 	router.route('/batch/:id').delete(apiController.deleteBatch);
 	router.route('/batches').get(apiController.listBatchesByUserId);
 	router.route('/alerts').get(apiController.listAlertsByUserId);
+	router.route('/alerts/count').get(apiController.countAlertsByUserId);
 
 	router.route('/batch/rawschema/steps/all').post(apiController.allSteps);
 

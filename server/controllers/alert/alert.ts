@@ -13,7 +13,8 @@ export default class AlertController extends BatchBaseController {
         "status":"NEW",
         "type":rawSchemaBatch.status,
         "dbUri": rawSchemaBatch.dbUri,
-        "collectionName": rawSchemaBatch.collectionName
+        "collectionName": rawSchemaBatch.collectionName,
+        "date": new Date()
       });
       this.model.save().then((data) => {
         return resolv(data);
@@ -32,5 +33,16 @@ export default class AlertController extends BatchBaseController {
       });
     });
   }
+
+  countByUserId = (userId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      return this.model.find({"userId":userId}).count().then((data) => {
+        return resolv(data);
+      }, (error) => {
+        return reject(error);
+      });
+    });
+  }
+
 
 }
