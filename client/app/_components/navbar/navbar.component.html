@@ -1,41 +1,69 @@
 <mat-sidenav-container >
 
 	<mat-sidenav mode="side" #sidenav>
-		SIDENAV
+
+		<mat-list>
+		
+			<mat-list-item class="app-logo-side-nav"> 
+				<img src="" alt="">	
+			</mat-list-item>
+
+			<mat-list-item class="app-divider"></mat-list-item>
+
+			<mat-list-item> 
+				<button mat-button class="app-side-nav-button" [routerLink]="['/']">
+					<i class="material-icons">home</i>
+					WORKSPACE
+				</button>
+			</mat-list-item>
+			
+			<mat-list-item>
+				<button mat-button class="app-side-nav-button" [routerLink]="['/alert']">
+					<i class="material-icons">notifications</i>
+					ALERTAS
+				</button>
+			</mat-list-item>
+			
+			<mat-list-item class="app-divider"></mat-list-item>
+
+			<mat-list-item>
+				<button mat-button class="app-side-nav-button" (click)="logout();sidenav.close()">
+					<i class="material-icons">exit_to_app</i>
+					LOGOUT
+				</button>
+			</mat-list-item>
+
+		</mat-list>
 	</mat-sidenav>
 
 	<mat-toolbar color="primary" *ngIf="isLogged">
 
 		<button class="mat-icon-button" (click)="sidenav.toggle()">
-			<i class="material-icons">menu</i>
+			<i class="material-icons button-open-side-nav">menu</i>
 		</button>
 
-		<button class="app-toolbar-title" mat-menu-item [routerLink]="['/']">JSONSchema Discovery</button>
+		<button class="app-toolbar-title" mat-menu-item [routerLink]="['/']">JSONSchema Discovery</button>	
 
-		<span class="app-toolbar-filler"></span>
+		<button class="mat-icon-button" mat-button [routerLink]="['/alert']">
+			<i class="material-icons" [hidden]="!alertsCount">notifications</i>
+			<i class="material-icons" [hidden]="alertsCount">notifications_none</i>
+			<span class="app-toolbar-notification" [hidden]="!alertsCount">{{alertsCount}}</span>
+		</button>
 
-		<mat-card>
-			<button class="mat-icon-button" mat-button [routerLink]="['/alert']">
-				<i class="material-icons" [hidden]="!alertsCount">notifications</i>
-				<i class="material-icons" [hidden]="alertsCount">notifications_none</i>
-				<span class="app-toolbar-notification" [hidden]="!alertsCount">{{alertsCount}}</span>
-			</button>
-		</mat-card>
-
-		<mat-card>
-			<button class="mat-icon-button" mat-button [mat-menu-trigger-for]="menu">
-				<i class="material-icons">account_circle</i>
-			</button>
-		</mat-card>
+		<button class="mat-icon-button" mat-button [mat-menu-trigger-for]="menu">
+			<i class="material-icons">account_circle</i>
+		</button>
 
 		<mat-menu #menu="matMenu">
 			<button mat-menu-item [routerLink]="['/user']">Perfil</button>
-			<button mat-menu-item (click)="logout()">Sair</button>
+			<button mat-menu-item (click)="logout();sidenav.close()">Sair</button>
 		</mat-menu>
 
 	</mat-toolbar>
 
 	<app-feedback></app-feedback>
+	
+	<app-loading></app-loading>
 
 	<router-outlet></router-outlet>
 

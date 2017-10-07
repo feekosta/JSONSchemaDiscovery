@@ -1,4 +1,4 @@
-    import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class FeedbackService {
 
-  	private subject = new Subject<any>();
+  	private subject: Subject<any> = new Subject<any>();
 	private keepAfterNavigationChange: boolean = false;
 
 	constructor(private router: Router) {

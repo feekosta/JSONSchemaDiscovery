@@ -6,7 +6,7 @@ import { Observable } from "rxjs/Observable";
 export class EventService {
 
 	private isLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-    public isLoggedEmitter: Observable<boolean> = this.isLogged.asObservable();
+    isLoggedEmitter: Observable<boolean> = this.isLogged.asObservable();
 
  	constructor() { }
 

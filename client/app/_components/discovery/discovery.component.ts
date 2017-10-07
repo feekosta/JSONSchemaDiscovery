@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import DatabaseParam from '../../_params/databaseParam';
+import { DatabaseParam } from '../../_params/params';
 import { JsonSchemaService, FeedbackService } from '../../_services/services';
 
 @Component({

@@ -1,40 +1,33 @@
 <mat-table #table [dataSource]="dataSource">
-
 	<ng-container matColumnDef="type">
 		<mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
 		<mat-cell *matCellDef="let element">
-			<mat-icon mat-list-icon matTooltip="{{getStatusTooltip(element.type)}}">{{getStatusIcon(element.type)}}</mat-icon>
+			<mat-icon mat-list-icon color="primary" matTooltip="{{getStatusTooltip(element.type)}}" matTooltipPosition="right">{{getStatusIcon(element.type)}}</mat-icon>
 		</mat-cell>
 	</ng-container>
-
 	<ng-container matColumnDef="dbUri">
 		<mat-header-cell *matHeaderCellDef> URL </mat-header-cell>
 		<mat-cell *matCellDef="let element"> {{element.dbUri}} </mat-cell>
 	</ng-container>
-
 	<ng-container matColumnDef="collectionName">
 		<mat-header-cell *matHeaderCellDef> Coleção </mat-header-cell>
 		<mat-cell *matCellDef="let element"> {{element.collectionName}} </mat-cell>
 	</ng-container>
-
-	<ng-container matColumnDef="actions">
-		<mat-header-cell *matHeaderCellDef> Ações </mat-header-cell>
-		<mat-cell *matCellDef="let element"> 
-			<button class="mat-icon-button" [routerLink]="['/batch', element.batchId]">
-				<mat-icon matTooltip="Visualizar resultado">visibility</mat-icon>
-			</button>
-			<button class="mat-icon-button" (click)="delete(element._id)">
-				<mat-icon matTooltip="Excluir alerta">delete</mat-icon>
-			</button>
-		</mat-cell>
-	</ng-container>
-
 	<ng-container matColumnDef="date">
 		<mat-header-cell *matHeaderCellDef> Data </mat-header-cell>
 		<mat-cell *matCellDef="let element"> {{element.date|amCalendar}} </mat-cell>
 	</ng-container>
-
+	<ng-container matColumnDef="actions">
+		<mat-header-cell *matHeaderCellDef> Ações </mat-header-cell>
+		<mat-cell *matCellDef="let element"> 
+			<button mat-mini-fab color="primary" [routerLink]="['/batch', element.batchId]">
+				<mat-icon matTooltip="Visualizar resultado">visibility</mat-icon>
+			</button>
+			<button mat-mini-fab color="warn" (click)="delete(element._id)">
+				<mat-icon matTooltip="Excluir alerta">delete</mat-icon>
+			</button>
+		</mat-cell>
+	</ng-container>
 	<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 	<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-	
 </mat-table>

@@ -1,8 +1,5 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import {DataSource} from '@angular/cdk/collections';
-import {Observable} from 'rxjs/Observable';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
 import { User } from '../../_models/user';
 import { JsonSchemaService, FeedbackService } from "../../_services/services";
 import { BatchDeleteModalComponent } from "../batch-delete-modal/batch-delete-modal.component";
@@ -18,17 +15,15 @@ export class HomeComponent implements OnInit {
 	batches: any;
 
 	constructor(
-		private jsonSchemaService:JsonSchemaService, 
 		private dialog:MatDialog,
-		private feedbackService: FeedbackService) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.jsonSchemaService.listBatches().subscribe((data) => {
-	        this.batches = data;
-        });
-    }
+		private jsonSchemaService:JsonSchemaService, 
+		private feedbackService: FeedbackService) { }
 
 	ngOnInit() {
-		console.log("usuário logado",this.currentUser);
+		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+		this.jsonSchemaService.listBatches().subscribe((data) => {
+	        this.batches = data;
+        });
 	}
 
 	delete(batchId) {

@@ -1,31 +1,33 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
+import { LoadingService } from '../loading/loading.service';
+import { AuthorizationParam } from '../../_params/params';
 
 @Injectable()
 export class AlertService {
 
-	private _baseUrl: string = "/api/";
-	private _allAlertsUrl: string = this._baseUrl + "alerts";
-	private _allAlertsCountUrl: string = this._baseUrl + "alerts/count";
+	private baseUrl: string = "/api/";
+	private allAlertsUrl: string = this.baseUrl+"alerts";
+	private allAlertsCountUrl: string = this.allAlertsUrl+"/count";
 
-	constructor(private http: Http) { }
+	constructor(private http: Http, private loadingService: LoadingService) { }
 
 	listAlerts(){
-		return this.http.get(this._allAlertsUrl, this.jwt())
-			.map((response: Response) => response.json());
+		this.loadingService.show();
+		return this.http.get(this.allAlertsUrl, this.jwt())
+			.map((response: Response) => response.json())
+			.finally(() => this.loadingService.hide());
 	}
 
 	countAlerts(){
-		return this.http.get(this._allAlertsCountUrl, this.jwt())
-			.map((response: Response) => response.json());
+		this.loadingService.show();
+		return this.http.get(this.allAlertsCountUrl, this.jwt())
+			.map((response: Response) => response.json())
+			.finally(() => this.loadingService.hide());
 	}
 
 	private jwt() {
-		const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-		if (currentUser && currentUser.token) {
-			const headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
-			return new RequestOptions({ headers: headers });
-		}
+		return new AuthorizationParam();
 	}
 
 }

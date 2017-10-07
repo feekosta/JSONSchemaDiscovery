@@ -1,43 +1,49 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
-import DatabaseParam from '../../_params/databaseParam';
+import { AuthorizationParam, DatabaseParam } from '../../_params/params';
+import { LoadingService } from '../loading/loading.service';
 
 @Injectable()
 export class JsonSchemaService {
 
- 	constructor(private http: Http) { }
+ 	constructor(private http: Http, private loadingService: LoadingService) { }
 
 	discovery(databaseParam: DatabaseParam) {
+    this.loadingService.show();
 		return this.http.post('/api/batch/rawschema/steps/all', databaseParam, this.jwt())
 			.map((response: Response) => response.json());
 	}
 
   listBatches(){
+    this.loadingService.show();
 		return this.http.get('/api/batches', this.jwt())
-			.map((response: Response) => response.json());
+			.map((response: Response) => response.json())
+      .finally(() => this.loadingService.hide());
 	}
 
   deleteBatch(batchId){
+    this.loadingService.show();
     return this.http.delete(`/api/batch/${batchId}`, this.jwt())
-      .map((response: Response) => "OK");
+      .map((response: Response) => "OK")
+      .finally(() => this.loadingService.hide());
   }
 
   getBatchById(batchId){
+    this.loadingService.show();
     return this.http.get(`/api/batch/${batchId}`, this.jwt())
-      .map((response: Response) => response.json());
+      .map((response: Response) => response.json())
+      .finally(() => this.loadingService.hide());
   }
 
   getJsonSchemaByBatchId(batchId){
+    this.loadingService.show();
     return this.http.get(`/api/batch/jsonschema/generate/${batchId}`, this.jwt())
-      .map((response: Response) => response.json());
+      .map((response: Response) => response.json())
+      .finally(() => this.loadingService.hide());
   }
 
   private jwt() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (currentUser && currentUser.token) {
-          const headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
-          return new RequestOptions({ headers: headers });
-      }
+    return new AuthorizationParam();
   }
 
 }

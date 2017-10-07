@@ -26,7 +26,8 @@
       </mat-input-container>
 
       <mat-input-container class="mat-block">
-        <input type="password" matInput placeholder="Criar senha" [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="6"/>
+        <input matInput placeholder="Criar senha" [type]="show ? 'text' : 'password'" required [(ngModel)]="model.password" #password="ngModel" name="password" minlength="6">
+        <mat-icon matSuffix (click)="show = !show">{{show ? 'visibility_off' : 'visibility'}}</mat-icon>
         <mat-error *ngIf="!password.valid">
           Senha é <strong>obrigatório</strong>
         </mat-error>

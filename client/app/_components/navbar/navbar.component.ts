@@ -25,12 +25,13 @@ export class NavbarComponent implements OnInit {
         if (mode !== null) {
           this.isLogged = mode;
         }
+        if(this.isLogged){
+          this.alertService.countAlerts().subscribe((count)=>{
+            this.alertsCount = count;
+          });
+        }
     });
-    if(this.isLogged){
-      this.alertService.countAlerts().subscribe((count)=>{
-        this.alertsCount = count;
-      });
-    }
+
   }
 
   logout(){

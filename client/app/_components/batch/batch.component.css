@@ -1,0 +1,30 @@
+.mat-card {
+    width: 450px;
+	position:absolute;
+	top:50%;
+	left:50%;
+	-ms-transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+}
+
+.app-card-header-title{
+	display: inline-flex;
+}
+
+.app-card-header-title > .material-icons{
+	height: 50px;
+    width: 50px;
+    font-size: 50px;
+}
+
+.app-card-header-title > .mat-card-title{
+	font-size: 40px;
+	margin-bottom: 0px;
+	width: 306px;
+    text-align: center;
+}
+
+.mat-mini-fab{
+	margin: 5px;
+}

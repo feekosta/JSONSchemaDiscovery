@@ -13,7 +13,7 @@ export class AlertComponent implements OnInit {
 
 	dataSource: AlertSource | null;
   	dataSubject = new BehaviorSubject<any[]>([]);
-  	displayedColumns = ['type', 'dbUri', 'collectionName', 'actions', 'date'];
+  	displayedColumns = ['type', 'dbUri', 'collectionName', 'date', 'actions'];
 
 	constructor(private alertService:AlertService) { }
 

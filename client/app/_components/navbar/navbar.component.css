@@ -1,3 +1,26 @@
+.app-divider {
+    height: 1px;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.app-logo-side-nav {
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.app-side-nav-button{
+  text-align: left;
+  width: 100%;
+  height: 100%;
+}
+
+.button-open-side-nav{
+  line-height: 40px;
+}
+
 .mat-drawer-container {
   position: fixed;
   height: 100%;
@@ -8,8 +31,7 @@
 
 .mat-drawer {
   padding: 10px;
-  min-width: 150px;
-  background: rgba(0,0,0,0.1);
+  min-width: 270px;
 }
 
 .mat-card {
@@ -24,12 +46,16 @@
   padding: 0px;
 }
 
-.mat-icon-button {
-  padding: 6px;
+.app-toolbar-title {
+  background: #3f51b5;
+  margin-left: 10px;
+  color: hsla(0,0%,100%,.87);
 }
 
-.app-toolbar-title {
-  margin-left: 10px;
+.app-toolbar-title:focus,
+.app-toolbar-title:hover,
+.app-toolbar-title:active{
+  background: #3f51b5;
 }
 
 .app-toolbar-filler {
@@ -40,14 +66,9 @@
   top: 8px;
   background: #f36;
   border-radius: 3px;
-  left: 10px;
+  left: 20px;
   padding: 0 3px;
   position: absolute;
   font-size: 10px;
   line-height: 13px;
-}
-
-button.mat-menu-item{
-  width: auto;
-  color: hsla(0,0%,100%,.87);
 }
