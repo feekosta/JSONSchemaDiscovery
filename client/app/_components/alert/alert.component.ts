@@ -27,16 +27,25 @@ export class AlertComponent implements OnInit {
 	getStatusIcon(alertStatus) {
 		switch(alertStatus){
 			case "ERROR":
-				return "error";
+				return "report_problem";
 			case "DONE":
 				return "check_circle";
+		}	
+	}
+
+	getStatusColor(alertStatus) {
+		switch(alertStatus){
+			case "ERROR":
+				return "warn";
+			case "DONE":
+				return "primary";
 		}	
 	}
 
 	getStatusTooltip(alertStatus) {
 		switch(alertStatus){
 			case "ERROR":
-				return "Houve algum erro. Tente novamente.";
+				return "Não foi possível concluir a extração. Tente novamente.";
 			case "DONE":
 				return "Finalizado com sucesso";
 		}		

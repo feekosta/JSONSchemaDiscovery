@@ -43,4 +43,34 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+	getStatusIcon(batchStatus) {
+		switch(batchStatus){
+			case "ERROR":
+				return "report_problem";
+			case "DONE":
+				return "check_circle";
+		}	
+	}
+
+	getStatusColor(batchStatus) {
+		switch(batchStatus){
+			case "ERROR":
+				return "warn";
+			default:
+				return "primary";
+		}	
+	}
+
+	getStatusTooltip(batchStatus) {
+		switch(batchStatus){
+			case "ERROR":
+				return "Não foi possível concluir a extração. Tente novamente.";
+			case "DONE":
+				return "Finalizado com sucesso.";
+			default:
+				return "Em andamento.";
+		}		
+	}
+
+
 }

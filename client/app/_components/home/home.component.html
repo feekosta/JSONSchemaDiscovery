@@ -2,19 +2,18 @@
   <mat-list-item *ngFor="let batch of batches">
   	<h4 mat-line>{{batch.dbUri}}</h4>
   	<h6 mat-line>{{batch.collectionName}}</h6>
-  	<mat-icon mat-list-icon *ngIf="batch.status == 'DONE'">done</mat-icon>
-	<mat-icon mat-list-icon *ngIf="batch.status != 'DONE'">
+  	<mat-icon matTooltip="{{getStatusTooltip(batch.status)}}" matTooltipPosition="right" [color]="getStatusColor(batch.status)" mat-list-icon *ngIf="batch.status == 'DONE'||batch.status == 'ERROR'">{{getStatusIcon(batch.status)}}</mat-icon>
+	<mat-icon matTooltip="{{getStatusTooltip(batch.status)}}" matTooltipPosition="right" mat-list-icon *ngIf="batch.status != 'DONE'&&batch.status != 'ERROR'">
 		<mat-spinner></mat-spinner>
 	</mat-icon>
-	<button mat-mini-fab color="primary" [routerLink]="['/batch', batch._id]">
+	<button matTooltip="Visualizar" mat-mini-fab color="primary" [routerLink]="['/batch', batch._id]" *ngIf="batch.status == 'DONE'">
 		<mat-icon>visibility</mat-icon>
 	</button>
-	<button mat-mini-fab color="warn" (click)="delete(batch._id)">
+	<button matTooltip="Deletar" mat-mini-fab color="warn" (click)="delete(batch._id)" *ngIf="batch.status == 'DONE'||batch.status == 'ERROR'">
 		<mat-icon>delete</mat-icon>
 	</button>
   </mat-list-item>
 </mat-list>
-
 <span class="app-action">
-  <button mat-fab [routerLink]="['/discovery']"><mat-icon>add</mat-icon></button>
+  <button mat-fab matTooltip="Executar nova extração de JSON Schema" matTooltipPosition="left" [routerLink]="['/discovery']"><mat-icon>add</mat-icon></button>
 </span>
