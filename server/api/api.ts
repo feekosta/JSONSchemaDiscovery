@@ -17,6 +17,19 @@ export default class ApiController {
 	    });
   	}
 
+  	public getUser = (req, res) => {
+  		const user = this.getUserByToken(req);
+		if(user && user.user){
+		    return new UserController().getUser(user.user._id).then((data) => {
+		      return this.success(res, data);
+		    }, (error) => {
+		      return this.error(res, error.message, error.code);
+		    });
+		} else {
+			return this.error(res, "invalid token", 403);
+		}
+  	}
+
   	public listBatchesByUserId = (req, res) => {
   		const user = this.getUserByToken(req);
 		if(user && user.user){
@@ -133,6 +146,7 @@ export default class ApiController {
 			return res.status(200).json(obj);
 		return res.sendStatus(200);
 	}
+
 	private getUserByToken(req){
 		const authorization = req.headers.authorization;
 		if(!authorization)

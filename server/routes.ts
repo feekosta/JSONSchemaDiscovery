@@ -26,14 +26,8 @@ export default function setRoutes(app) {
 
 	router.route('/login').post(apiController.login);
 	router.route('/register').post(userController.register);
-
-	router.route('/users').get(userController.listAll);
-	router.route('/users/count').get(userController.count);
-	router.route('/user').post(userController.insert);
-	router.route('/user/:id').get(userController.get);
-	router.route('/user/:id').put(userController.update);
-	router.route('/user/:id').delete(userController.delete);
-
+	router.route('/user').get(apiController.getUser);
+	
 	router.route('/batch/:id').get(rawSchemaBatchController.get);
 	router.route('/batch/:id').delete(apiController.deleteBatch);
 	router.route('/batches').get(apiController.listBatchesByUserId);

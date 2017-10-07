@@ -49,7 +49,8 @@ import {
   FeedbackService,
   RegistrationService,
   JsonSchemaService,
-  LoadingService
+  LoadingService,
+  UserService
 } from './_services/services';
 import { 
   FeedbackComponent,
@@ -142,7 +143,8 @@ export class AppMaterialModule {}
     EventService,
     FeedbackService,
     JsonSchemaService,
-    LoadingService
+    LoadingService,
+    UserService
   ],
   entryComponents: [
     BatchDeleteModalComponent

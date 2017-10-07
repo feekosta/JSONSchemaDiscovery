@@ -1,4 +1,3 @@
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -31,23 +30,25 @@ export class RegisterComponent implements OnInit {
 	}
 
 	register() {
-		this.loading = true;
-		this.registrationService.register(this.model)
-			.subscribe(
-				data => { 
-					this.authenticationService.login(this.model.email, this.model.password)
-						.subscribe(
-							data => { 
-								this.feedbackService.success('Bem Vindo', true);
-								this.router.navigate(['/']);
-							}
-						);
-				},
-				error => {
-					this.feedbackService.error(error.json().error);
-					this.loading = false;
-				}
-			);
+		if(this.model.email && this.model.password && this.model.username){
+			this.loading = true;
+			this.registrationService.register(this.model)
+				.subscribe(
+					data => { 
+						this.authenticationService.login(this.model.email, this.model.password)
+							.subscribe(
+								data => { 
+									this.feedbackService.success('Bem Vindo', true);
+									this.router.navigate(['/']);
+								}
+							);
+					},
+					error => {
+						this.feedbackService.error(error.json().error);
+						this.loading = false;
+					}
+				);
+		}
 	}
 
 

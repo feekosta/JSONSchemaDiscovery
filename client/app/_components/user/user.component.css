@@ -1,0 +1,26 @@
+.mat-card {
+    width: 400px;
+	position:absolute;
+	top:50%;
+	left:50%;
+	-ms-transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+}
+
+.mat-card-actions {
+	margin-left: 0px;
+    margin-right: 0px;
+    padding: 0px 0;
+}
+
+.mat-form-field {
+	display: inline;
+}
+
+
+.app-user-edit-button{
+	position: absolute;
+	right: 0px;
+	top: 10px;
+}

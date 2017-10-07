@@ -1,3 +1,21 @@
-<p>
-  user works!
-</p>
+<mat-card >
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        <mat-icon mat-list-icon color="primary">person</mat-icon>
+        <h4 mat-line>Nome</h4>
+        <p mat-line>{{user?.username}}</p>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon mat-list-icon color="primary">email</mat-icon>
+        <h4 mat-line>Email</h4>
+        <p mat-line>{{user?.email}}</p>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon mat-list-icon color="primary">vpn_key</mat-icon>
+        <h4 mat-line>Senha</h4>
+        <p mat-line><mat-icon matTooltip="Editar senha">more_horiz</mat-icon></p>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

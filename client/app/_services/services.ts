@@ -5,3 +5,4 @@ export * from './feedback/feedback.service';
 export * from './registration/registration.service';
 export * from './json-schema/json-schema.service';
 export * from './loading/loading.service';
+export * from './user/user.service';

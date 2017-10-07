@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../../_services/services';
 
 @Component({
   selector: 'app-user',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserComponent implements OnInit {
 
-  constructor() { }
+  	user: any = {};
 
-  ngOnInit() {
-  }
+	constructor(private userService: UserService) { }
+
+	ngOnInit() {
+		this.userService.get().subscribe((data) => {
+			if(data){
+				this.user = data;
+			}
+		});
+	}
 
 }
