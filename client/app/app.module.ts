@@ -1,9 +1,9 @@
-import {BrowserModule}             from '@angular/platform-browser';
-import {BrowserAnimationsModule}   from '@angular/platform-browser/animations';
-import {NgModule}                  from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule}                from '@angular/http';
-import {CdkTableModule}            from '@angular/cdk/table';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { HttpModule} from '@angular/http';
+import { CdkTableModule} from '@angular/cdk/table';
 import { MomentModule } from 'angular2-moment';
 import {
   MatAutocompleteModule,
@@ -39,17 +39,17 @@ import {
   MatStepperModule,
   NoConflictStyleCompatibilityMode
 } from '@angular/material';
-
-import { AppComponent }     from './app.component';
+import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthGuard }        from './_guards/auth.guard';
+import { AuthGuard } from './_guards/auth.guard';
 import { 
   AlertService, 
   AuthenticationService, 
   EventService,
   FeedbackService,
   RegistrationService,
-  JsonSchemaService
+  JsonSchemaService,
+  LoadingService
 } from './_services/services';
 import { 
   FeedbackComponent,
@@ -63,7 +63,8 @@ import {
   SchemesComponent,
   BatchComponent,
   BatchDeleteModalComponent,
-  JsonSchemaComponent
+  JsonSchemaComponent,
+  LoadingComponent
 } from './_components/components';
 import PrettyJsonPipe from './_pipes/pretty-json.pipe';
 
@@ -129,6 +130,7 @@ export class AppMaterialModule {}
     BatchComponent,
     BatchDeleteModalComponent,
     JsonSchemaComponent,
+    LoadingComponent,
     PrettyJsonPipe,
     AppComponent
   ],
@@ -139,7 +141,8 @@ export class AppMaterialModule {}
     RegistrationService,
     EventService,
     FeedbackService,
-    JsonSchemaService
+    JsonSchemaService,
+    LoadingService
   ],
   entryComponents: [
     BatchDeleteModalComponent
