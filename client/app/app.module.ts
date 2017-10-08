@@ -65,7 +65,8 @@ import {
   BatchComponent,
   BatchDeleteModalComponent,
   JsonSchemaComponent,
-  LoadingComponent
+  LoadingComponent,
+  BatchElapsedTimeModalComponent
 } from './_components/components';
 import PrettyJsonPipe from './_pipes/pretty-json.pipe';
 
@@ -132,6 +133,7 @@ export class AppMaterialModule {}
     BatchDeleteModalComponent,
     JsonSchemaComponent,
     LoadingComponent,
+    BatchElapsedTimeModalComponent,
     PrettyJsonPipe,
     AppComponent
   ],
@@ -147,7 +149,8 @@ export class AppMaterialModule {}
     UserService
   ],
   entryComponents: [
-    BatchDeleteModalComponent
+    BatchDeleteModalComponent,
+    BatchElapsedTimeModalComponent
   ],
   bootstrap: [AppComponent]
 })

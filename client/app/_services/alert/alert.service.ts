@@ -26,6 +26,13 @@ export class AlertService {
 			.finally(() => {this.loadingService.hide()});
 	}
 
+	deleteAlert(alertId){
+		this.loadingService.show();
+		return this.http.delete(`/api/alert/${alertId}`, this.jwt())
+		  .map((response: Response) => "OK")
+		  .finally(() => this.loadingService.hide());
+	}
+
 	private jwt() {
 		return new AuthorizationParam();
 	}

@@ -1,6 +1,8 @@
 import * as FileSaver from 'file-saver';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { BatchElapsedTimeModalComponent } from "../batch-elapsed-time-modal/batch-elapsed-time-modal.component";
 import { JsonSchemaService } from '../../_services/services';
 
 @Component({
@@ -13,6 +15,7 @@ export class BatchComponent implements OnInit {
 	batch: any;
 
 	constructor(
+		private dialog:MatDialog,
 		private route: ActivatedRoute, 
 		private jsonSchemaService:JsonSchemaService) { }
 
@@ -35,6 +38,15 @@ export class BatchComponent implements OnInit {
 				FileSaver.saveAs(fileToSave, fileName);		
 			}
 		});
+	}
+
+	openElapsedTimeModal(){
+		const batchElapsedTimeModal = this.dialog.open(BatchElapsedTimeModalComponent, {
+			height: '500px',
+			width: '500px',
+			data: this.batch
+		});
+		batchElapsedTimeModal.afterClosed().subscribe((result) => {});
 	}
 
 }

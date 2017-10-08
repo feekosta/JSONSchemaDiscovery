@@ -69,15 +69,24 @@ export default class ApiController {
 		}
   	}
 
+  	public deleteAlert = (req, res) => {
+  		const user = this.getUserByToken(req);
+		if(user && user.user){
+			return new AlertController().deleteAlert(req.params.id).then((data) => {
+				return this.success(res, data);
+			}, (error) => {
+				return this.error(res, error, 500);
+			});
+		} else {
+			return this.error(res, "invalid token", 403);
+		}
+  	}
+
 	public allSteps = (req, res) => {
 		const user = this.getUserByToken(req);
 		if(user && user.user){
 			req.body.userId = user.user._id;
-			new RawSchemaBatchController().allSteps(req.body).then((data) => {
-				console.log("data",data);
-			}, (error) => {
-				console.log("error",error);
-			});
+			new RawSchemaBatchController().allSteps(req.body);
 		    return this.success(res, "OK");
 		} else {
 			return this.error(res, "invalid token", 403);

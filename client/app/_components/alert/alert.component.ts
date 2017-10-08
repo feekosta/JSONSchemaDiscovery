@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/table';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { AlertService } from '../../_services/services';
+import { AlertService, FeedbackService } from '../../_services/services';
 
 @Component({
   selector: 'app-alert',
@@ -15,9 +15,13 @@ export class AlertComponent implements OnInit {
   	dataSubject = new BehaviorSubject<any[]>([]);
   	displayedColumns = ['status', 'dbUri', 'collectionName', 'date', 'actions'];
 
-	constructor(private alertService:AlertService) { }
+	constructor(private alertService:AlertService, private feedbackService:FeedbackService) { }
 
 	ngOnInit() {
+		this.loadAlerts();
+	}
+
+	loadAlerts(){
 		this.alertService.listAlerts().subscribe({
 			next: value => this.dataSubject.next(value)
 		});
@@ -57,6 +61,13 @@ export class AlertComponent implements OnInit {
 			default:
 				return "Não foi possível concluir a extração. Tente novamente.";			
 		}		
+	}
+
+	delete(alertId){
+		this.alertService.deleteAlert(alertId).subscribe((data) => {
+			this.feedbackService.success("Deletado");
+			this.loadAlerts();
+		});
 	}
 
 }

@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Informações detalhadas sobre tempo decorrido em cada uma das etapas de extração do JSON Schema</h1>
+<div mat-dialog-content>
+	<ul>
+	    <li>
+	    	Etapa 1: Carregar a estrutura dos registros (Raw Schema): <br> {{stepOneElapsedTime}}
+	    </li>
+	    <li>
+	    	Etapa 2.1: Reduzir os documentos da etapa 1 com mesma estrutura (Raw Schema): <br>{{stepTwoDotOneElapsedTime}}
+	    </li>
+	    <li>
+	    	Etapa 2.2: Ordenar alfabéticamente a estrutura dos documentos da etapa 2.1 e reduzir: <br>{{stepTwoDotTwoElapsedTime}}
+	    </li>
+	    <li>
+	    	Etapa 3: Unir a estrutura dos documentos da etapa 2.2: <br> {{stepThreeElapsedTime}}
+	    </li>
+	    <li>
+	    	Etapa 4: Mapear estrutura do documento resultante da etapa 3 para JSON Schema: <br>{{stepFourElapsedTime}}
+	    </li>
+	    <li>
+	    	Tempo total: <br> {{allStepsElapsedTime}}
+	    </li>
+  	</ul>
+</div>

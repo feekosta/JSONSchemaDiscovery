@@ -44,5 +44,15 @@ export default class AlertController extends BatchBaseController {
     });
   }
 
+  deleteAlert = (alertId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      this.model.findOneAndRemove({ _id: alertId }).then((data) => {
+        return resolv(data);
+      }, (error) => {
+        return reject(error);
+      });
+    });
+  }
+
 
 }

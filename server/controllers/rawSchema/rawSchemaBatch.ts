@@ -262,12 +262,16 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController().aggregate(batchId);
       }).then((data) => {
+        return new RawSchemaUnorderedResultController(batchId).countEntitiesByBatchId(batchId);
+      }).then((data) => {
+        rawSchemaBatch.uniqueUnorderedCount = data;
         rawSchemaBatch.unorderedAggregationDate = new Date();
         rawSchemaBatch.save();
         return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
       }).then((data) => {
         return new RawSchemaOrderedResultController().saveResults(data, batchId);
       }).then((data) => {
+        rawSchemaBatch.uniqueOrderedCount = data.length;
         rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedMapReduceDate = new Date();
         rawSchemaBatch.save();

@@ -8,6 +8,7 @@ export * from './register/register.component';
 export * from './schemes/schemes.component';
 export * from './user/user.component';
 export * from './batch/batch.component';
+export * from './batch-elapsed-time-modal/batch-elapsed-time-modal.component';
 export * from './batch-delete-modal/batch-delete-modal.component';
 export * from './json-schema/json-schema.component';
 export * from './loading/loading.component';
