@@ -142,9 +142,9 @@ export default class ApiController {
 	}
 
 	private success(res, obj){
-		if(obj) 
-			return res.status(200).json(obj);
-		return res.sendStatus(200);
+		if(obj == null)
+			return res.sendStatus(200);
+		return res.status(200).json(obj);
 	}
 
 	private getUserByToken(req){

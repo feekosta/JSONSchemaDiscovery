@@ -16,14 +16,14 @@ export class AlertService {
 		this.loadingService.show();
 		return this.http.get(this.allAlertsUrl, this.jwt())
 			.map((response: Response) => response.json())
-			.finally(() => this.loadingService.hide());
+			.finally(() => {this.loadingService.hide()});
 	}
 
 	countAlerts(){
 		this.loadingService.show();
 		return this.http.get(this.allAlertsCountUrl, this.jwt())
 			.map((response: Response) => response.json())
-			.finally(() => this.loadingService.hide());
+			.finally(() => {this.loadingService.hide()});
 	}
 
 	private jwt() {

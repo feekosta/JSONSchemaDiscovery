@@ -31,7 +31,6 @@ export class NavbarComponent implements OnInit {
           });
         }
     });
-
   }
 
   logout(){

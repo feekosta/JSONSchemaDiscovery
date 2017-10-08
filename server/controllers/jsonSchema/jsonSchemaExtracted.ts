@@ -21,6 +21,7 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
       }).then((data) => {
         rawSchemaBatch.endDate = new Date();
         rawSchemaBatch.status = "DONE";
+        rawSchemaBatch.statusType = "DONE";
         return rawSchemaBatch.save();
       }).then((data) => {
         return resolv(data);

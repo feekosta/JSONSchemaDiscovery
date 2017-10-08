@@ -13,7 +13,7 @@ export class AlertComponent implements OnInit {
 
 	dataSource: AlertSource | null;
   	dataSubject = new BehaviorSubject<any[]>([]);
-  	displayedColumns = ['type', 'dbUri', 'collectionName', 'date', 'actions'];
+  	displayedColumns = ['status', 'dbUri', 'collectionName', 'date', 'actions'];
 
 	constructor(private alertService:AlertService) { }
 
@@ -21,7 +21,9 @@ export class AlertComponent implements OnInit {
 		this.alertService.listAlerts().subscribe({
 			next: value => this.dataSubject.next(value)
 		});
-		this.dataSource = new AlertSource(this.dataSubject);
+		if(this.dataSubject){
+			this.dataSource = new AlertSource(this.dataSubject);
+		}
 	}
 
 	getStatusIcon(alertStatus) {

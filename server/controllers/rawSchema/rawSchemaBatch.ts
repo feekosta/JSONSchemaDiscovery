@@ -1,4 +1,3 @@
-import * as co from 'co';
 import * as mongodb from 'mongodb';
 import {MongoClient} from 'mongodb'
 import RawSchemaBatch from '../../models/rawSchema/rawSchemaBatch';
@@ -45,10 +44,13 @@ export default class RawSchemaBatchController extends BaseController {
       }).catch((error) => {
         if(rawSchemaBatch){  
           rawSchemaBatch.status = "ERROR";
-          rawSchemaBatch.statusMessage = error;
+          rawSchemaBatch.statusType = error.type;
+          rawSchemaBatch.statusMessage = error.message;
           rawSchemaBatch.save().then((data) => {
             return this.generateAlert(rawSchemaBatch);
           }).then((data) => {
+            return resolv(data);
+          }).catch((error) => {
             return reject(error);
           });
         } else {
@@ -110,10 +112,10 @@ export default class RawSchemaBatchController extends BaseController {
 
   private connect = (databaseParam): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.getDatabaseConnection(databaseParam, (connectionError, database) => {
-        if(connectionError)
-          return reject({"message":connectionError, "code":404});
+      MongoClient.connect(databaseParam.getURI(), { connectTimeoutMS: 5000 }).then((database) => {
         return resolv(database);
+      }).catch((error) => {
+        return reject({"type":"DATABASE_CONNECTION_ERROR", "message": error.message, "code":400});
       });
     });
   }
@@ -121,8 +123,17 @@ export default class RawSchemaBatchController extends BaseController {
   private getCollection = (database, rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
       const collection = database.collection(rawSchemaBatch.collectionName);
-      this.setCollectionSize(collection, rawSchemaBatch);
-      return resolv(collection);
+      collection.count().then((count) => {
+        if(count === 0)
+          return reject({"message":"EMPTY_COLLECTION_ERROR", "code":400});
+        rawSchemaBatch.collectionCount = count;
+        rawSchemaBatch.status = "LOADING_DOCUMENTS";
+        return rawSchemaBatch.save();
+      }).then((data) => {
+        return resolv(collection);
+      }).catch((error) => {
+        return reject({"type":"COLLECTION_COUNT_ERROR", "message": "coleção não encontrada", "code":400});
+      });
     });
   }
 
@@ -138,6 +149,7 @@ export default class RawSchemaBatchController extends BaseController {
           return resolv(rawSchemaBatch);
         })
         .on('error', (error) => {
+
           return reject(error);
         })
         .on('lastObjectId', (lastObjectId) => {
@@ -163,29 +175,6 @@ export default class RawSchemaBatchController extends BaseController {
 
   private generateAlert = (rawSchemaBatch) => {
     return new AlertController().generate(rawSchemaBatch);
-  }
-
-  getDatabaseConnection = (databaseParam, callback) => {
-    return co(function*() {
-      const url = databaseParam.getURI();
-      const database = yield MongoClient.connect(url);
-      return database;
-    }).then((resp) => {
-      return callback(null, resp);
-    }).catch((err) => {
-      return callback(err, null);
-    });
-  }
-
-  setCollectionSize = (collection, rawSchemaBatch) => {
-    return co(function*() {
-      const count = yield collection.count();
-      return count;
-    }).then((resp) => {
-      rawSchemaBatch.collectionCount = resp;
-      rawSchemaBatch.status = "LOADING_DOCUMENTS";
-      rawSchemaBatch.save();
-    }).catch((err) => {});
   }
 
   mapReduce = (batchId): Promise<any> => {
@@ -291,7 +280,6 @@ export default class RawSchemaBatchController extends BaseController {
   }
 
   listByUserId = (userId) => {
-    console.log("userId",userId);
     return this.model.find({"userId":userId});
   }
 

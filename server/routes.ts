@@ -16,12 +16,10 @@ export default function setRoutes(app) {
 	const apiController = new ApiController();
 
 	const userController = new UserController();
-
 	const rawSchemaController = new RawSchemaController();
 	const rawSchemaBatchController = new RawSchemaBatchController();
 	const rawSchemaOrderedResultController = new RawSchemaOrderedResultController();
 	const rawSchemaUnionController = new RawSchemaUnionController();
-
 	const jsonSchemaExtractedController = new JsonSchemaExtractedController();
 
 	router.route('/login').post(apiController.login);

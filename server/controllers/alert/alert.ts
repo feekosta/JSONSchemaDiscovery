@@ -8,10 +8,10 @@ export default class AlertController extends BatchBaseController {
   generate = (rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
       this.model = new Alert({
-        "userId":rawSchemaBatch.userId,
         "batchId":rawSchemaBatch._id,
-        "status":"NEW",
-        "type":rawSchemaBatch.status,
+        "userId":rawSchemaBatch.userId,
+        "status":rawSchemaBatch.status,
+        "type":rawSchemaBatch.statusType,
         "dbUri": rawSchemaBatch.dbUri,
         "collectionName": rawSchemaBatch.collectionName,
         "date": new Date()
