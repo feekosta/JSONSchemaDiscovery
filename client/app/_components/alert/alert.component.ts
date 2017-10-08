@@ -44,12 +44,18 @@ export class AlertComponent implements OnInit {
 		}	
 	}
 
-	getStatusTooltip(alertStatus) {
-		switch(alertStatus){
-			case "ERROR":
-				return "Não foi possível concluir a extração. Tente novamente.";
+	getTypeTooltip(alertType) {
+		switch(alertType){
 			case "DONE":
 				return "Finalizado com sucesso";
+			case "DATABASE_CONNECTION_ERROR":
+				return "Não foi possível conectar ao banco de dados. Verifique o endereço informado e tente novamente.";
+			case "EMPTY_COLLECTION_ERROR":
+				return "Não há documentos na coleção informada. Verifique a coleção informada e tente novamente.";
+			case "LOADING_DOCUMENTS_ERROR":
+				return "Houve um problema durante a leitura dos documentos. Tente novamente.";
+			default:
+				return "Não foi possível concluir a extração. Tente novamente.";			
 		}		
 	}
 

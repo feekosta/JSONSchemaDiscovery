@@ -12,18 +12,20 @@ export default class RawSchemaOrderedResultController extends BatchBaseControlle
 			let rawSchemaBatch;
 			new RawSchemaBatch().getById(batchId).then((data) => {
 				if(!data)
-					reject({"message":`no results for batchId: ${batchId}`,"code":404});
+					return reject({"message":`no results for batchId: ${batchId}`,"code":404});
 				rawSchemaBatch = data;
 				return this.listEntitiesByBatchId(batchId);
 			}).then((data) => {
 				return new RawSchemaUnionController().union(data, batchId);
 			}).then((data) => {
+				console.log("ordered data",data);
 				rawSchemaBatch.unionDate = new Date();
 				rawSchemaBatch.status = "MAPPER_JSONSCHEMA";
-				rawSchemaBatch.save();
+				return rawSchemaBatch.save();
+			}).then((data) => {
 				return resolv(data);
 			}).catch((error) => {
-				return reject({"message":error,"code":404});
+				return reject({"type":"UNION_DOCUMENTS_ERROR", "message": error.message, "code":500});
 			});
 		});
 	}

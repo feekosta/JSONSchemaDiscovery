@@ -19,7 +19,7 @@ export default class AlertController extends BatchBaseController {
       this.model.save().then((data) => {
         return resolv(data);
       }).catch((error) => {
-        return reject({"message": error, "code": 500});
+        return reject({"type":"ALERT_GENERATE_ERROR", "message": error.message, "code":500});
       });
     });
   }

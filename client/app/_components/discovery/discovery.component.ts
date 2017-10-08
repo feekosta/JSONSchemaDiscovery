@@ -23,8 +23,6 @@ export class DiscoveryComponent implements OnInit {
 		private jsonSchemaService: JsonSchemaService,
 		private feedbackService: FeedbackService) {
   		this.model = new DatabaseParam();
-  		let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-		this.model.userId = "123";
 		this.model.port = "27017";
 		this.authMechanisms = [
 			"DEFAULT", "GSSAPI", "PLAIN", "MONGODB-X509", "SCRAM-SHA-1", "MONGODB-CR"

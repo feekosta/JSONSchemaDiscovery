@@ -9,6 +9,7 @@ const rawSchemaBatchSchema = new mongoose.Schema({
   'uniqueOrderedCount':{ type: Number },
   'status': { type: String, required: true },
   'statusMessage': { type: String },
+  'statusType': { type: String },
   'reduceType': { type: String },
   'startDate': { type: Date },
   'extractionDate': { type: Date },

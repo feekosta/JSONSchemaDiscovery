@@ -42,6 +42,7 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         return resolv(data);
       }).catch((error) => {
+        console.log("error",error)
         if(rawSchemaBatch){  
           rawSchemaBatch.status = "ERROR";
           rawSchemaBatch.statusType = error.type;
@@ -125,14 +126,14 @@ export default class RawSchemaBatchController extends BaseController {
       const collection = database.collection(rawSchemaBatch.collectionName);
       collection.count().then((count) => {
         if(count === 0)
-          return reject({"message":"EMPTY_COLLECTION_ERROR", "code":400});
+          return reject({"type":"EMPTY_COLLECTION_ERROR", "message": "coleção não encontrada", "code":400});
         rawSchemaBatch.collectionCount = count;
         rawSchemaBatch.status = "LOADING_DOCUMENTS";
         return rawSchemaBatch.save();
       }).then((data) => {
         return resolv(collection);
       }).catch((error) => {
-        return reject({"type":"COLLECTION_COUNT_ERROR", "message": "coleção não encontrada", "code":400});
+        return reject({"type":"EMPTY_COLLECTION_ERROR", "message": "coleção não encontrada", "code":400});
       });
     });
   }
@@ -145,12 +146,14 @@ export default class RawSchemaBatchController extends BaseController {
         .on('done',() => {
           rawSchemaBatch.status = "REDUCE_DOCUMENTS";
           rawSchemaBatch.extractionDate = new Date();
-          rawSchemaBatch.save();
-          return resolv(rawSchemaBatch);
+          rawSchemaBatch.save().then((data) => {
+            return resolv(data);
+          }).catch((error) => {
+            return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
+          });
         })
         .on('error', (error) => {
-
-          return reject(error);
+          return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
         })
         .on('lastObjectId', (lastObjectId) => {
           worker.work(rawSchemaBatch, collection, lastObjectId);
@@ -206,7 +209,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.save();
         return resolv(data);
       }).catch((error) => {
-        return reject({"message":error, "code":400});
+        return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
       });
     });
   }
@@ -238,7 +241,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.save();
         return resolv(data);
       }).catch((error) => {
-        return reject({"message":error, "code":400});
+        return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
       });
     });
   }
@@ -270,7 +273,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.save();
         return resolv(rawSchemaBatch);
       }).catch((error) => {
-        return reject({"message":error, "code":400});
+        return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
       });
     });
   }

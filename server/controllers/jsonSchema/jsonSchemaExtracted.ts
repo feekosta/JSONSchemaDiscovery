@@ -13,7 +13,7 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
       let rawSchemaBatch;
       new RawSchemaBatch().getById(batchId).then((data) => {
         if(!data)
-          reject({"message":`no results for batchId: ${batchId}`,"code":404});
+          return reject({"message":`no results for batchId: ${batchId}`,"code":404});
         rawSchemaBatch = data;
         return new RawSchemaUnion().listEntitiesByBatchId(batchId);
       }).then((data) => {
@@ -26,7 +26,7 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
       }).then((data) => {
         return resolv(data);
       }).catch((error) => {
-        return reject({"message": error, "code": 500});
+        return reject({"type":"MAPPER_JSONSCHEMA_ERROR", "message": error.message, "code":500});
       });
     });
   }
