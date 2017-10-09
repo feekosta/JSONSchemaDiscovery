@@ -1,8 +1,8 @@
 .app-action {
-  display: inline-block;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+	display: inline-block;
+	position: fixed;
+  	bottom: 20px;
+  	right: 20px;
 }
 
 .mat-progress-spinner {
@@ -13,3 +13,7 @@
 .mat-mini-fab{
 	margin: 5px;
 }	
+
+.mat-list{
+	margin-right: 80px;
+}

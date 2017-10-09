@@ -1,10 +1,8 @@
 <mat-card>
 
+  <img src="../../../assets/jsd_logo.png" alt="JSON Schema Discovery" class="app-logo">
+  
   <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
-
-    <mat-card-header>
-      <mat-card-title>Entrar</mat-card-title>
-    </mat-card-header>
 
     <mat-card-content>
 
@@ -20,7 +18,7 @@
 
   		<mat-input-container class="mat-block">
         <input matInput placeholder="Senha" [type]="showPassword ? 'text' : 'password'" required [(ngModel)]="model.password" #password="ngModel" name="password">
-        <mat-icon matSuffix (click)="showPassword = !showPassword">{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-icon matSuffix (click)="showPassword = !showPassword">{{showPassword ? 'visibility' : 'visibility_off'}}</mat-icon>
         <mat-error *ngIf="!password.valid">
           Senha é <strong>obrigatório</strong>
         </mat-error>
