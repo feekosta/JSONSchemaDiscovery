@@ -14,6 +14,7 @@ export class RegisterComponent implements OnInit {
 
 	model: any = {};
     loading = false;
+    showPassword: boolean = false;
 
 	constructor(
 		private router: Router,

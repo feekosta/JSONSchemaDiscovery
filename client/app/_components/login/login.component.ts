@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
 	
 	model: any = {};
     loading: boolean = false;
+    showPassword: boolean = false;
     returnUrl: string;
 
 	constructor(

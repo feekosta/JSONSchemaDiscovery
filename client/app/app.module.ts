@@ -68,7 +68,7 @@ import {
   LoadingComponent,
   BatchElapsedTimeModalComponent
 } from './_components/components';
-import PrettyJsonPipe from './_pipes/pretty-json.pipe';
+import { PrettyJsonPipe } from './_pipes/pretty-json.pipe';
 
 @NgModule({
   exports: [
