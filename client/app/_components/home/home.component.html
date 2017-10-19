@@ -4,7 +4,7 @@
   	<h6 mat-line>{{batch.collectionName}}</h6>
   	<mat-icon matTooltip="{{getTypeTooltip(batch.statusType)}}" matTooltipPosition="right" [color]="getStatusColor(batch.status)" mat-list-icon *ngIf="batch.status == 'DONE'||batch.status == 'ERROR'">{{getStatusIcon(batch.status)}}</mat-icon>
 	<mat-icon matTooltip="Em andamento" matTooltipPosition="right" mat-list-icon *ngIf="batch.status != 'DONE'&&batch.status != 'ERROR'">
-		<mat-spinner></mat-spinner>
+		<mat-spinner class="app-mat-spinner"></mat-spinner>
 	</mat-icon>
 	<button matTooltip="Visualizar" mat-mini-fab color="primary" [routerLink]="['/batch', batch._id]" *ngIf="batch.status == 'DONE'">
 		<mat-icon>visibility</mat-icon>
