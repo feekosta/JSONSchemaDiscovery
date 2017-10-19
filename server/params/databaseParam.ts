@@ -1,17 +1,17 @@
 import AuthenticationParam from './authenticationParam';
 class DatabaseParam {
-	address:String;
-	port:String;
+	address:string;
+	port:string;
 	authentication:AuthenticationParam;
-	userId:String;
-	databaseName:String;
-	collectionName:String;
+	userId:string;
+	databaseName:string;
+	collectionName:string;
 	constructor(data) {
 		Object.assign(this, data);
+		this.address = this.address.replace(/(^\w+:|^)\/\//, '');
 	}
 	public getURI() {
 		let uri;
-		console.log("this.authentication",this.authentication);
 		if(this.hasAuthentication()){
 			uri = this.getURIWithAuthentication(`${this.address}:${this.port}/${this.databaseName}`);
 		} else {
