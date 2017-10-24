@@ -23,9 +23,27 @@ export class BatchElapsedTimeModalComponent implements OnInit {
 
 	ngOnInit() {
 		this.stepOneElapsedTime = this.getTimeDiff(this.batch.startDate, this.batch.extractionDate);
-		this.stepTwoDotOneElapsedTime = this.getTimeDiff(this.batch.extractionDate, this.batch.unorderedAggregationDate);
-		this.stepTwoDotTwoElapsedTime = this.getTimeDiff(this.batch.unorderedAggregationDate, this.batch.orderedMapReduceDate);
-		this.stepThreeElapsedTime = this.getTimeDiff(this.batch.orderedMapReduceDate, this.batch.unionDate);
+		
+		switch (this.batch.reduceType) {
+			case "MAP_REDUCE":
+				this.stepTwoDotOneElapsedTime = this.getTimeDiff(this.batch.extractionDate, this.batch.unorderedMapReduceDate);
+				this.stepTwoDotTwoElapsedTime = this.getTimeDiff(this.batch.unorderedMapReduceDate, this.batch.orderedMapReduceDate);
+				this.stepThreeElapsedTime = this.getTimeDiff(this.batch.orderedMapReduceDate, this.batch.unionDate);
+				break;
+
+			case "AGGREGATE":
+				this.stepTwoDotOneElapsedTime = this.getTimeDiff(this.batch.extractionDate, this.batch.unorderedAggregationDate);
+				this.stepTwoDotTwoElapsedTime = this.getTimeDiff(this.batch.unorderedAggregationDate, this.batch.orderedAggregationDate);
+				this.stepThreeElapsedTime = this.getTimeDiff(this.batch.orderedAggregationDate, this.batch.unionDate);
+				break;
+
+			case "AGGREGATE_AND_MAP_REDUCE":
+				this.stepTwoDotOneElapsedTime = this.getTimeDiff(this.batch.extractionDate, this.batch.unorderedAggregationDate);
+				this.stepTwoDotTwoElapsedTime = this.getTimeDiff(this.batch.unorderedAggregationDate, this.batch.orderedMapReduceDate);
+				this.stepThreeElapsedTime = this.getTimeDiff(this.batch.orderedMapReduceDate, this.batch.unionDate);
+				break;
+		}
+		
 		this.stepFourElapsedTime = this.getTimeDiff(this.batch.unionDate, this.batch.endDate);
 		this.allStepsElapsedTime = this.getTimeDiff(this.batch.startDate, this.batch.endDate);
 	}

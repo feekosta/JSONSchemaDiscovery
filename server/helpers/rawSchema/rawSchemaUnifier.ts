@@ -12,12 +12,12 @@ class RawSchemaUnifier {
 	};
 	private buildRawSchema = (document, count, fields, parent) => {
 		Object.keys(document).forEach((key) => {
-			const path = parent != null ? `${parent}.${key}` : key;
+			const path = parent != null ? `${parent}'_PATH_JSONSCHEMADISCOVERY_REGEX_'${key}` : key;
 			this.addToField(path, document[key], fields, count);
 		});
 	};
 	private addToField = (path, value, fields, count) => {
-		const lastPath = path.split('.').pop();
+		const lastPath = path.split("'_PATH_JSONSCHEMADISCOVERY_REGEX_'").pop();
 		let field = fields.find((field) => { 
 			return field.path === path; 
 		});
@@ -69,7 +69,7 @@ class RawSchemaUnifier {
 		if(!instance){
 			instance = {
 				"name":name,
-				"path":path,
+				"path":path.replace(/'_PATH_JSONSCHEMADISCOVERY_REGEX_'/g/, "."),
 				"count":Number(count)
 			};
 			instances.push(instance);
