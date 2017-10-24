@@ -19,23 +19,12 @@ export default class RawSchemaController extends BaseController {
 
   saveAll = (rawSchemas, batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      const rawSchemes = this.buildRawSchemes(rawSchemas, batchId);
-      this.model.insertMany(rawSchemes, { ordered: true }).then((data) => {
+      this.model.insertMany(rawSchemas, { ordered: true }).then((data) => {
         return resolv(data);
       }, (error) => {
         return reject(error);
       });
     });
-  }
-
-  private buildRawSchemes = (results, batchId) => {
-    const rawSchemes = [];
-    results.forEach((result) => {
-      const rawSchema = new this.model(result);
-      rawSchema.batchId = batchId;
-      rawSchemes.push(rawSchema);
-    });
-    return rawSchemes;
   }
 
   aggregate = (batchId): Promise<any> => {

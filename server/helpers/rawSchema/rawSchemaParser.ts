@@ -1,6 +1,6 @@
 import * as es          from 'event-stream';
 import RawSchemaBuilder from './rawSchemaBuilder';
-let parse = function(){
+let parse = function(batchId: string){
   const rawSchemes = [];
   const mapper = es.through(function write(document) {
     const documentRawSchema = {};
@@ -9,7 +9,8 @@ let parse = function(){
     });
     rawSchemes.push({ 
       "docId":document._id, 
-      "docRawSchema":JSON.stringify(documentRawSchema) 
+      "docRawSchema":JSON.stringify(documentRawSchema),
+      "batchId":batchId
     });
     this.emit('progress', document);
   }, function end() {
