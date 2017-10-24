@@ -28,21 +28,28 @@ export default class RawSchemaBatchController extends BaseController {
       rawSchemaBatch.save().then((data) => {
         return this.connect(databaseParam);  
       }).then((data) => {
+        console.log("CONNECT: DONE");
         return this.getCollection(data, rawSchemaBatch);
       }).then((data) => {
+        console.log("GET COLLECTION: DONE");
         return this.executeStepOne(data, rawSchemaBatch);
       }).then((data) => {
+        console.log("STEP1: DONE");
         return this.executeStepTwo(rawSchemaBatch);
       }).then((data) => {
+        console.log("STEP2: DONE");
         return this.executeStepThree(rawSchemaBatch);
       }).then((data) => {
+        console.log("STEP3: DONE");
         return this.executeStepFour(rawSchemaBatch);
       }).then((data) => {
+        console.log("STEP4: DONE");
         return this.generateAlert(data);
       }).then((data) => {
+        console.log("ALERT: DONE");
         return resolv(data);
       }).catch((error) => {
-        console.log("error",error)
+        console.error("STEPS error",error)
         if(rawSchemaBatch){  
           rawSchemaBatch.status = "ERROR";
           rawSchemaBatch.statusType = error.type;
@@ -66,9 +73,9 @@ export default class RawSchemaBatchController extends BaseController {
       this.model.findOneAndRemove({ _id: batchId }).then((data) =>{
         return new RawSchemaController().deleteEntitiesByBatchId(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController().deleteEntitiesByBatchId(batchId);
+        return new RawSchemaOrderedResultController(batchId).deleteAll();
       }).then((data) => {
-        return new RawSchemaUnorderedResultController(batchId).deleteEntitiesByBatchId(batchId);
+        return new RawSchemaUnorderedResultController(batchId).deleteAll();
       }).then((data) => {
         return new RawSchemaUnionController().deleteEntitiesByBatchId(batchId);
       }).then((data) => {
@@ -165,11 +172,13 @@ export default class RawSchemaBatchController extends BaseController {
   }
 
   private executeStepTwo = (rawSchemaBatch) => {
-    return this.aggregateAndReduce(rawSchemaBatch._id);
+    // return this.mapReduce(rawSchemaBatch._id);
+    return this.aggregate(rawSchemaBatch._id);
+    // return this.aggregateAndReduce(rawSchemaBatch._id);
   }
 
   private executeStepThree = (rawSchemaBatch) => {
-    return new RawSchemaOrderedResultController().union(rawSchemaBatch._id);
+    return new RawSchemaOrderedResultController(rawSchemaBatch._id).union(rawSchemaBatch._id);
   }
 
   private executeStepFour = (rawSchemaBatch) => {
@@ -196,14 +205,18 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController().mapReduce(batchId);
       }).then((data) => {
-        return  new RawSchemaUnorderedResultController(batchId).saveResults(data, batchId);
+        return  new RawSchemaUnorderedResultController(batchId).countAllEntities();
       }).then((data) => {
+        console.log("STEP2.1: DONE");
+        rawSchemaBatch.uniqueUnorderedCount = data;
         rawSchemaBatch.unorderedMapReduceDate = new Date();
         rawSchemaBatch.save();
         return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController().saveResults(data, batchId);
+        return new RawSchemaOrderedResultController(batchId).countAllEntities();
       }).then((data) => {
+        console.log("STEP2.2: DONE");
+        rawSchemaBatch.uniqueOrderedCount = data;
         rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedMapReduceDate = new Date();
         rawSchemaBatch.save();
@@ -230,12 +243,18 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController().aggregate(batchId);
       }).then((data) => {
+        return new RawSchemaUnorderedResultController(batchId).countAllEntities();
+      }).then((data) => {
+        console.log("STEP2.1: DONE");
+        rawSchemaBatch.uniqueUnorderedCount = data;
         rawSchemaBatch.unorderedAggregationDate = new Date();
         rawSchemaBatch.save();
         return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController().saveResults(data, batchId);
+        return new RawSchemaOrderedResultController(batchId).countAllEntities();
       }).then((data) => {
+        console.log("STEP2.2: DONE");
+        rawSchemaBatch.uniqueOrderedCount = data;
         rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedAggregationDate = new Date();
         rawSchemaBatch.save();
@@ -262,16 +281,18 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController().aggregate(batchId);
       }).then((data) => {
-        return new RawSchemaUnorderedResultController(batchId).countEntitiesByBatchId(batchId);
+        return new RawSchemaUnorderedResultController(batchId).countAllEntities();
       }).then((data) => {
+        console.log("STEP2.1: DONE");
         rawSchemaBatch.uniqueUnorderedCount = data;
         rawSchemaBatch.unorderedAggregationDate = new Date();
         rawSchemaBatch.save();
         return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController().saveResults(data, batchId);
+        return new RawSchemaOrderedResultController(batchId).countAllEntities();
       }).then((data) => {
-        rawSchemaBatch.uniqueOrderedCount = data.length;
+        console.log("STEP2.2: DONE");
+        rawSchemaBatch.uniqueOrderedCount = data;
         rawSchemaBatch.status = "UNION_DOCUMENTS";
         rawSchemaBatch.orderedMapReduceDate = new Date();
         rawSchemaBatch.save();

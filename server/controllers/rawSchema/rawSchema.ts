@@ -48,6 +48,7 @@ export default class RawSchemaController extends BatchBaseController {
   mapReduce = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
       options.query = { 'batchId':batchId };
+      options.out = { 'inline':1 };
       options.map = function() {
         emit(this.docRawSchema, 1); 
       };

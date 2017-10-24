@@ -4,7 +4,7 @@ let options = {
 	reduce: null,
 	scope: null,
 	finalize: null,
-	out: {inline:1},
+	out: {},
 	query: {}
 };
 export default options;

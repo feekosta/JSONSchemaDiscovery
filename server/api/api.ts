@@ -123,7 +123,7 @@ export default class ApiController {
   	}
 
   	public union = (req, res) => {
-  		return new RawSchemaOrderedResultController().union(req.body.batchId).then((data) => {
+  		return new RawSchemaOrderedResultController(req.body.batchId).union(req.body.batchId).then((data) => {
   			return this.success(res, data);
   		}, (error) => {
 			return this.error(res, error.message, error.code);

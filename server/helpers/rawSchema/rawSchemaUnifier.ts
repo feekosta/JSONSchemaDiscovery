@@ -5,8 +5,8 @@ class RawSchemaUnifier {
 	};
 	union = (documents) => {
 		documents.forEach((document) => {
-			this.buildRawSchema(JSON.parse(document.rawSchema), Number(document.count), this.rootSchema.fields, null);
-			this.rootSchema.count = this.sum(this.rootSchema.count, document.count);
+			this.buildRawSchema(JSON.parse(document._id), Number(document.value), this.rootSchema.fields, null);
+			this.rootSchema.count = this.sum(this.rootSchema.count, document.value);
 		});
 		return this.rootSchema;
 	};

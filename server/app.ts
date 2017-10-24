@@ -69,6 +69,8 @@ mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }, (err, databa
 	db = database;
 	console.log("Database connection ready");
 
+	// mongoose.connection.db.admin().command({ setParameter: 1, failIndexKeyTooLong: false });
+
 	// Listen on provided port, on all network interfaces.
 	try {
 		server.listen(port, () => console.log(`API running on localhost:${port}`));
