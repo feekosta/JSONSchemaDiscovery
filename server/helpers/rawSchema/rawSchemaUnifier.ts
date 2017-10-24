@@ -12,12 +12,14 @@ class RawSchemaUnifier {
 	};
 	private buildRawSchema = (document, count, fields, parent) => {
 		Object.keys(document).forEach((key) => {
-			const path = parent != null ? `${parent}'_PATH_JSONSCHEMADISCOVERY_REGEX_'${key}` : key;
+			const path = parent != null ? `${parent}.JSONSCHEMADISCOVERY.${key}` : key;
 			this.addToField(path, document[key], fields, count);
 		});
 	};
-	private addToField = (path, value, fields, count) => {
-		const lastPath = path.split("'_PATH_JSONSCHEMADISCOVERY_REGEX_'").pop();
+	private addToField = (specialPath, value, fields, count) => {
+		const lastPath = specialPath.split(".JSONSCHEMADISCOVERY.").pop();
+		const regexp = new RegExp(".JSONSCHEMADISCOVERY.", 'g');
+		const path = specialPath.replace(regexp, ".");
 		let field = fields.find((field) => { 
 			return field.path === path; 
 		});
@@ -69,7 +71,7 @@ class RawSchemaUnifier {
 		if(!instance){
 			instance = {
 				"name":name,
-				"path":path.replace(/'_PATH_JSONSCHEMADISCOVERY_REGEX_'/g/, "."),
+				"path":path,
 				"count":Number(count)
 			};
 			instances.push(instance);
