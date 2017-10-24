@@ -1,13 +1,21 @@
+import * as mongoose from 'mongoose';
 import {ObjectId}           from 'mongodb';
-import RawSchema            from '../../models/rawSchema/rawSchema';
+import rawSchemaSchema      from '../../models/rawSchema/rawSchema';
 import options              from '../../params/mapReduceParam';
-import BatchBaseController  from '../batchBase';
+import BaseController  from '../base';
 
 declare var emit;
 
-export default class RawSchemaController extends BatchBaseController {
+export default class RawSchemaController extends BaseController {
   
-  model = RawSchema;
+  model = null;
+
+  constructor(batchId: String) {
+    super();
+    const rawSchemaCollectionName = `rawSchema${batchId}`;
+    const RawSchema = mongoose.model(rawSchemaCollectionName, rawSchemaSchema);
+    this.model = RawSchema;
+  }
 
   saveAll = (rawSchemas, batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
@@ -33,7 +41,6 @@ export default class RawSchemaController extends BatchBaseController {
   aggregate = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
       this.model.aggregate([
-        { $match: { batchId:ObjectId(batchId) } },
         { $project: { batchId: 1 , docRawSchema: 1, value:1 } },
         { $group: { _id:"$docRawSchema", value:{$sum:1}, batchId: { $last: "$batchId" }, docRawSchema: { $last: "$docRawSchema" } } },
         { $out: `rawschemaunordered${batchId}results` }
@@ -47,7 +54,6 @@ export default class RawSchemaController extends BatchBaseController {
 
   mapReduce = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      options.query = { 'batchId':batchId };
       options.out = { 'inline':1 };
       options.map = function() {
         emit(this.docRawSchema, 1); 

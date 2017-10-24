@@ -71,7 +71,7 @@ export default class RawSchemaBatchController extends BaseController {
   deleteBatch = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
       this.model.findOneAndRemove({ _id: batchId }).then((data) =>{
-        return new RawSchemaController().deleteEntitiesByBatchId(batchId);
+        return new RawSchemaController(batchId).deleteAll();
       }).then((data) => {
         return new RawSchemaOrderedResultController(batchId).deleteAll();
       }).then((data) => {
@@ -148,7 +148,7 @@ export default class RawSchemaBatchController extends BaseController {
   private executeStepOne = (collection, rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
       const worker = new RawSchemaProcessWorker();
-      const saver = new RawSchemaController();
+      const saver = new RawSchemaController(rawSchemaBatch._id);
       worker.work(rawSchemaBatch, collection, null)
         .on('done',() => {
           rawSchemaBatch.status = "REDUCE_DOCUMENTS";
@@ -203,7 +203,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedMapReduceDate = null;
         rawSchemaBatch.unorderedAggregationDate = null;
         rawSchemaBatch.orderedAggregationDate = null;
-        return new RawSchemaController().mapReduce(batchId);
+        return new RawSchemaController(batchId).mapReduce(batchId);
       }).then((data) => {
         return  new RawSchemaUnorderedResultController(batchId).countAllEntities();
       }).then((data) => {
@@ -241,7 +241,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedMapReduceDate = null;
         rawSchemaBatch.unorderedAggregationDate = null;
         rawSchemaBatch.orderedAggregationDate = null;
-        return new RawSchemaController().aggregate(batchId);
+        return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
         return new RawSchemaUnorderedResultController(batchId).countAllEntities();
       }).then((data) => {
@@ -279,7 +279,7 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedMapReduceDate = null;
         rawSchemaBatch.unorderedAggregationDate = null;
         rawSchemaBatch.orderedAggregationDate = null;
-        return new RawSchemaController().aggregate(batchId);
+        return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
         return new RawSchemaUnorderedResultController(batchId).countAllEntities();
       }).then((data) => {
