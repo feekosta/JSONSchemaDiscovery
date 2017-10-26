@@ -21,35 +21,6 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 	 	this.model = RawSchemaUnorderedResult;
 	}
 
-	saveResults = (mapReduceResults, batchId): Promise<any> => {
-		return new Promise((resolv, reject) => {
-			this.deleteEntitiesByBatchId(batchId).then((data) => {
-				const rawSchemaUnorderedResults = this.buildRawSchemaUnorderedResults(mapReduceResults, batchId);
-				this.model.insertMany(rawSchemaUnorderedResults, { ordered: true }).then((data) => {
-					return resolv(data);
-				}, (error) => {
-					return reject(error);
-				});
-			}, (error) => {
-				return reject(error);
-			});
-		});
-	}
-
-	private buildRawSchemaUnorderedResults = (results, batchId) => {
-		const rawSchemaUnorderedResults = [];
-		results.forEach((result) => {
-			const rawSchemaUnorderedResult = this.model({
-				"batchId": batchId,
-				"docRawSchema": result._id,
-				"value": result.value,
-				"_id": result._id
-			});
-			rawSchemaUnorderedResults.push(rawSchemaUnorderedResult);
-		});
-		return rawSchemaUnorderedResults;
-	}
-
 	mapReduce = (batchId): Promise<any> => {
 		return new Promise((resolv, reject) => {
 			const sort = new ObjectKeysSorter().sort;
@@ -68,10 +39,11 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 		      return count;
 		    };
 		    options.scope = { 'sort': sort, 'sortObject': sortObject }
-		 	this.model.mapReduce(options, (mapReduceError, mapReduceResult) => {
-		      if (mapReduceError)
-		      	return reject(mapReduceError);
-		      return resolv(mapReduceResult);
+		 	this.model.mapReduce(options).then((data) => {
+				return resolv(data);
+		 	}).catch((error) => {
+		 		console.error("error",error);
+				return reject(error);
 		    });
 		});
   	}
@@ -91,16 +63,16 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 					{ $set: { 'docRawSchema': data.docRawSchema } }
 				).then((data) => {
 					updateQuantity++;
-					if(quantity >= 0 && updateQuantity === quantity){
+					if(quantity >= 0 && updateQuantity >= quantity){
 						this.model.aggregate([
-							{ $match: { batchId:ObjectId(batchId) } },
 							{ $project: { batchId: 1 , docRawSchema: 1, value:1 } },
-							{ $group: { _id:"$docRawSchema", value:{$sum:1}, batchId: { $last: "$batchId" }, docRawSchema: { $last: "$docRawSchema" } } },
+							{ $group: { _id:"$docRawSchema", value:{$sum:"$value"}, batchId: { $last: "$batchId" }, docRawSchema: { $last: "$docRawSchema" } } },
 							{ $out: `rawschemaordered${batchId}results` }
-							]).allowDiskUse(true).exec((aggregateError, aggregateResult) => {
-								if (aggregateError)
-									return reject(aggregateError);
-								return resolv(aggregateResult);
+							]).allowDiskUse(true).exec().then((data) => {
+								return resolv(data);
+							}).catch((error) => {
+								console.error("error",error);
+								return reject(error);
 							});
 					}
 				}).catch((error) => {

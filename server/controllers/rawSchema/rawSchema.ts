@@ -21,7 +21,7 @@ export default class RawSchemaController extends BaseController {
     return new Promise((resolv, reject) => {
       this.model.insertMany(rawSchemas, { ordered: true }).then((data) => {
         return resolv(data);
-      }, (error) => {
+      }).catch((error) => {
         return reject(error);
       });
     });
@@ -33,10 +33,11 @@ export default class RawSchemaController extends BaseController {
         { $project: { batchId: 1 , docRawSchema: 1, value:1 } },
         { $group: { _id:"$docRawSchema", value:{$sum:1}, batchId: { $last: "$batchId" }, docRawSchema: { $last: "$docRawSchema" } } },
         { $out: `rawschemaunordered${batchId}results` }
-      ]).allowDiskUse(true).exec((aggregateError, aggregateResult) => {
-        if (aggregateError)
-          return reject(aggregateError); 
-        return resolv(aggregateResult);
+      ]).allowDiskUse(true).exec().then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        console.error("error",error);
+        return reject(error);
       });
     });
   }
@@ -54,10 +55,11 @@ export default class RawSchemaController extends BaseController {
         });
         return count;
       };
-      this.model.mapReduce(options, (mapReduceError, mapReduceResult) => {
-        if (mapReduceError)
-          return reject(mapReduceError);
-        return resolv(mapReduceResult);
+      this.model.mapReduce(options).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+         console.error("error",error);
+         return reject(error);
       });
     });
   }
