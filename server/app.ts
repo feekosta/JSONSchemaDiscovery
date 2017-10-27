@@ -7,10 +7,13 @@ import * as path from 'path';
 import * as http from 'http';
 import * as fs from 'fs';
 import * as rfs from 'rotating-file-stream';
+import * as SegfaultHandler from 'segfault-handler';
 
 import setRoutes from './routes';
 
 const app = express();
+
+SegfaultHandler.registerHandler("crash.log");
 
 // Logging middleware
 // You can set morgan to log differently depending on your environment
@@ -69,7 +72,11 @@ mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }, (err, databa
 	db = database;
 	console.log("Database connection ready");
 
-	// mongoose.connection.db.admin().command({ setParameter: 1, failIndexKeyTooLong: false });
+	mongoose.connection.db.admin().command({ setParameter: 1, failIndexKeyTooLong: false }).then((data) => {
+		console.log("setParameter done");
+	}).catch((error) => {
+		console.error("setParameter error",error);
+	});
 
 	// Listen on provided port, on all network interfaces.
 	try {

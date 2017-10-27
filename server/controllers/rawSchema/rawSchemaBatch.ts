@@ -149,15 +149,10 @@ export default class RawSchemaBatchController extends BaseController {
     return new Promise((resolv, reject) => {
       const worker = new RawSchemaProcessWorker();
       const saver = new RawSchemaController(rawSchemaBatch._id);
+      let totalDocuments = rawSchemaBatch.collectionCount;
+      let totalImported = 0;
       worker.work(rawSchemaBatch, collection, null)
         .on('done',() => {
-          rawSchemaBatch.status = "REDUCE_DOCUMENTS";
-          rawSchemaBatch.extractionDate = new Date();
-          rawSchemaBatch.save().then((data) => {
-            return resolv(data);
-          }).catch((error) => {
-            return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
-          });
         })
         .on('error', (error) => {
           return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
@@ -166,7 +161,22 @@ export default class RawSchemaBatchController extends BaseController {
           worker.work(rawSchemaBatch, collection, lastObjectId);
         })
         .on('save', (rawSchemes) => {
-          saver.saveAll(rawSchemes, rawSchemaBatch._id);
+          saver.saveAll(rawSchemes, rawSchemaBatch._id).then((data) => {
+            console.log("vai salvar");
+            totalImported += rawSchemes.length;
+            if(totalImported >= totalDocuments){
+              console.log("terminou né");
+              rawSchemaBatch.status = "REDUCE_DOCUMENTS";
+              rawSchemaBatch.extractionDate = new Date();
+              rawSchemaBatch.save().then((data) => {
+                return resolv(data);
+              }).catch((error) => {
+                return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
+              });
+            }
+          }).catch((error) => {
+
+          });
         });
     });
   }
@@ -243,21 +253,31 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
-        return new RawSchemaUnorderedResultController(batchId).countAllEntities();
-      }).then((data) => {
         console.log("STEP2.1: DONE");
-        rawSchemaBatch.uniqueUnorderedCount = data;
-        rawSchemaBatch.unorderedAggregationDate = new Date();
-        rawSchemaBatch.save();
+        new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
+          console.log("vai salvar a contagem");
+          rawSchemaBatch.uniqueUnorderedCount = data;
+          rawSchemaBatch.unorderedAggregationDate = new Date();
+          rawSchemaBatch.save().then((data) => {
+            console.log("salvou quantidade");
+          });
+        }).catch((error) => {
+
+        });
+        console.log("STEP2.1: INPROGRESS");
         return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController(batchId).countAllEntities();
-      }).then((data) => {
         console.log("STEP2.2: DONE");
-        rawSchemaBatch.uniqueOrderedCount = data;
-        rawSchemaBatch.status = "UNION_DOCUMENTS";
-        rawSchemaBatch.orderedAggregationDate = new Date();
-        rawSchemaBatch.save();
+        new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
+          console.log("vai salvar a contagem");
+          rawSchemaBatch.uniqueOrderedCount = data;
+          rawSchemaBatch.status = "UNION_DOCUMENTS";
+          rawSchemaBatch.orderedAggregationDate = new Date();
+          rawSchemaBatch.save().then((data) => {
+            console.log("salvou quantidade");
+          });  
+        });
+        console.log("STEP3: INPROGRESS");
         return resolv(data);
       }).catch((error) => {
         return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});

@@ -6,7 +6,7 @@
 			"folder_exclude_patterns":
 			[
 				"node_modules",
-				"dist",
+				//"dist",
 				"examples",
 			],
 			"file_exclude_patterns":

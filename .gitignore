@@ -16,6 +16,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
 
 # IDE - VSCode
 .vscode/*
@@ -33,6 +34,7 @@ npm-debug.log
 testem.log
 /typings
 yarn-error.log
+crash.log
 
 # e2e
 /e2e/*.js
