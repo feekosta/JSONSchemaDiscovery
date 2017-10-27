@@ -3,7 +3,7 @@ class JsonSchemaBuilder {
 	rootSchema = new JSONSchema();
 	usedDefinitions = [];
 	build = (fields, count) => {
-		this.rootSchema.properties = this.buildProperties(fields, count);
+		this.rootSchema.properties = this.getFieldsTypeSchema(fields, count);
 		this.rootSchema.required = [];
 		Object.keys(this.rootSchema.properties).forEach((property) => {
 			if(this.rootSchema.properties[property].count === count)
@@ -13,34 +13,26 @@ class JsonSchemaBuilder {
 		this.removeUnusedDefinitions();
 		return this.rootSchema;
 	}
-	buildProperties = (fields, count) => {
+	private getFieldsTypeSchema = (fields, count) => {
 		const properties = {};
 		fields.forEach((field) => {
-			properties[field.name] = this.buildInstance(field, count);
+			properties[field.name] = this.getSchemaFromValue(field, count);
 		});
 		return properties;
 	}
-	buildInstance = (value, count) => {
+	private getSchemaFromValue = (value, count) => {
 		let instance;
 		if(value.types){
 			if(value.types.length === 1){
 				const type = value.types[0];
 				if(this.isBSON(type)){
-					this.addToUsedDefinitions(type.name);
-					instance = {
-						"$ref": `#/definitions/${type.name}`,
-						"count": type.count
-					};
+					instance = this.getExtendedTypeSchema(type);
 				} else if(this.isPrimitive(type)){
-					instance = {
-						"name": value.name,
-						"type": type.name.toLowerCase(),
-						"count": value.count
-					}
+					instance = this.getPrimitiveTypeSchema(value.name, type.name, value.count);
 				} else if(type.name === "Array"){
-					instance = this.buildInstance(type, 0);
+					instance = this.getSchemaFromValue(type, 0);
 				} else {
-					instance = this.buildInstance(type, 0);
+					instance = this.getSchemaFromValue(type, 0);
 					instance.name = type.path;
 				}
 			} else {
@@ -55,69 +47,90 @@ class JsonSchemaBuilder {
 			}
 		} else {
 			if(this.isBSON(value)){
-				this.addToUsedDefinitions(value.name);
-				instance = {"$ref": `#/definitions/${value.name}`};
+				instance = this.getExtendedTypeSchema(value);
 			} else if(this.isPrimitive(value)){
-				instance = {
-					"type": value.name.toLowerCase(),
-					"count": value.count
-				}
+				instance = this.getPrimitiveTypeSchema(null, value.name, value.count);
 			} else if(value.name === "Array"){
-				let items, totalCount;
-				const itemsArray = this.buildItems(value.items);
-				if(itemsArray.length === 1){
-					items = itemsArray.pop();
-					totalCount = items.count;
-					delete items.count;
-				} else {
-					items = {
-						"anyOf": itemsArray
-					}
-					totalCount = itemsArray.map((item) => item.count).reduce((preVal, elem) => preVal + elem, 0);
-					itemsArray.forEach((item) => {
-						delete item.count;
-					});
-				}
-				instance = {
-					"name": value.path,
-					"type": value.name.toLowerCase(),
-					"items": items,
-					"minItems":0,
-					"count": value.count,
-					"additionalItems":true
-				}
-				if(totalCount === value.count)
-					instance.minItems = 1;
+				instance = this.getArrayTypeSchema(value);
 			} else {
-				instance = {
-					"type": "object",
-					"properties": this.buildProperties(value.fields, value.count),
-					"count": value.count,
-					"additionalProperties": false,
-					"required":[]
-				}
-				Object.keys(instance.properties).forEach((property) => {
-					if(instance.properties[property].count === value.count){
-						instance.required.push(property);
-					}
-					delete instance.properties[property].count;
-				});
+				instance = this.getObjectTypeSchema(value);
 			}
 		}
 		return instance;
 	}
-	buildItems = (values) => {
+	private getExtendedTypeSchema = (type) => {
+		this.addToUsedDefinitions(type.name);
+		const schema = {
+			"$ref": `#/definitions/${type.name}`,
+			"count": type.count
+		};
+		return schema;
+	}
+	private getPrimitiveTypeSchema = (name, type, count) => {
+		const schema = {
+			"type": type.toLowerCase(),
+			"count": count
+		}
+		if(name)
+			schema.name = name;
+		return schema;
+	}
+	private getObjectTypeSchema = (object) => {
+		const schema = {
+			"type": "object",
+			"properties": this.getFieldsTypeSchema(object.fields, object.count),
+			"count": object.count,
+			"additionalProperties": false,
+			"required":[]
+		}
+		Object.keys(schema.properties).forEach((property) => {
+			if(schema.properties[property].count === object.count){
+				schema.required.push(property);
+			}
+			delete schema.properties[property].count;
+		});
+		return schema;
+	}
+	private getArrayTypeSchema = (array) => {
+		let items, totalCount;
+		const itemsArray = this.buildItems(array.items);
+		if(itemsArray.length === 1){
+			items = itemsArray.pop();
+			totalCount = items.count;
+			delete items.count;
+		} else {
+			items = {
+				"anyOf": itemsArray
+			}
+			totalCount = itemsArray.map((item) => item.count).reduce((preVal, elem) => preVal + elem, 0);
+			itemsArray.forEach((item) => {
+				delete item.count;
+			});
+		}
+		const schema = {
+			"name": array.path,
+			"type": array.name.toLowerCase(),
+			"items": items,
+			"minItems":0,
+			"count": array.count,
+			"additionalItems":true
+		}
+		if(totalCount === array.count)
+			schema.minItems = 1;
+		return schema;
+	}
+	private buildItems = (values) => {
 		const items = [];
 		values.forEach((value) => {
-			items.push(this.buildInstance(value, 0));
+			items.push(this.getSchemaFromValue(value, 0));
 		});
 		return items;
-	};
-	addToUsedDefinitions = (bsonType) => {
+	}
+	private addToUsedDefinitions = (bsonType) => {
 		if (this.usedDefinitions.indexOf(bsonType) < 0)
 			this.usedDefinitions.push(bsonType);
 	}
-	isBSON = (value) => {
+	private isBSON = (value) => {
 		switch(value.name){
 			case "Boolean":
 			case "Null":
@@ -130,8 +143,8 @@ class JsonSchemaBuilder {
 			default:
 				return true;
 		}
-	};
-	isPrimitive = (value) => {
+	}
+	private isPrimitive = (value) => {
 		switch(value.name){
 			case "Boolean":
 			case "Null":
@@ -142,8 +155,8 @@ class JsonSchemaBuilder {
 			default:
 				return false;
 		}
-	};
-	removeUnusedDefinitions = () => {
+	}
+	private removeUnusedDefinitions = () => {
 		Object.keys(this.rootSchema.definitions).forEach((definition) => {
 			const definitionUsed = this.usedDefinitions.find((bsonType) => {
 				return bsonType === definition;
@@ -151,6 +164,6 @@ class JsonSchemaBuilder {
 			if(!definitionUsed)
 				delete this.rootSchema.definitions[definition];
 		});
-	};
+	}
 }
 export default JsonSchemaBuilder;
