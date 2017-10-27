@@ -3,7 +3,7 @@ class JsonSchemaBuilder {
 	rootSchema = new JSONSchema();
 	usedDefinitions = [];
 	build = (fields, count) => {
-		this.rootSchema.properties = this.getFieldsTypeSchema(fields, count);
+		this.rootSchema.properties = this.getFieldsSchema(fields);
 		this.rootSchema.required = [];
 		Object.keys(this.rootSchema.properties).forEach((property) => {
 			if(this.rootSchema.properties[property].count === count)
@@ -13,50 +13,55 @@ class JsonSchemaBuilder {
 		this.removeUnusedDefinitions();
 		return this.rootSchema;
 	}
-	private getFieldsTypeSchema = (fields, count) => {
+	private getFieldsSchema = (fields) => {
 		const properties = {};
 		fields.forEach((field) => {
-			properties[field.name] = this.getSchemaFromValue(field, count);
+			properties[field.name] = this.getSchemaFromValue(field);
 		});
 		return properties;
 	}
-	private getSchemaFromValue = (value, count) => {
-		let instance;
+	private getSchemaFromValue = (value) => {
+		let schema;
 		if(value.types){
-			if(value.types.length === 1){
-				const type = value.types[0];
-				if(this.isBSON(type)){
-					instance = this.getExtendedTypeSchema(type);
-				} else if(this.isPrimitive(type)){
-					instance = this.getPrimitiveTypeSchema(value.name, type.name, value.count);
-				} else if(type.name === "Array"){
-					instance = this.getSchemaFromValue(type, 0);
-				} else {
-					instance = this.getSchemaFromValue(type, 0);
-					instance.name = type.path;
-				}
-			} else {
-				instance = {
-					"name": value.name,
-					"anyOf": this.buildItems(value.types),
-					"count": value.count
-				}
-				instance.anyOf.forEach((item) => {
-					delete item.count;
-				});
-			}
+			schema = this.getFieldSchema(value);
 		} else {
 			if(this.isBSON(value)){
-				instance = this.getExtendedTypeSchema(value);
+				schema = this.getExtendedTypeSchema(value);
 			} else if(this.isPrimitive(value)){
-				instance = this.getPrimitiveTypeSchema(null, value.name, value.count);
+				schema = this.getPrimitiveTypeSchema(null, value.name, value.count);
 			} else if(value.name === "Array"){
-				instance = this.getArrayTypeSchema(value);
+				schema = this.getArrayTypeSchema(value);
 			} else {
-				instance = this.getObjectTypeSchema(value);
+				schema = this.getObjectTypeSchema(value);
 			}
 		}
-		return instance;
+		return schema;
+	}
+	private getFieldSchema = (field) => {
+		let schema;
+		if(field.types.length === 1){
+			const type = field.types[0];
+			if(this.isBSON(type)){
+				schema = this.getExtendedTypeSchema(type);
+			} else if(this.isPrimitive(type)){
+				schema = this.getPrimitiveTypeSchema(field.name, type.name, field.count);
+			} else if(type.name === "Array"){
+				schema = this.getSchemaFromValue(type);
+			} else {
+				schema = this.getSchemaFromValue(type);
+				schema.name = type.path;
+			}
+		} else {
+			schema = {
+				"name": field.name,
+				"anyOf": this.buildItems(field.types),
+				"count": field.count
+			}
+			schema.anyOf.forEach((item) => {
+				delete item.count;
+			});
+		}
+		return schema;
 	}
 	private getExtendedTypeSchema = (type) => {
 		this.addToUsedDefinitions(type.name);
@@ -67,18 +72,25 @@ class JsonSchemaBuilder {
 		return schema;
 	}
 	private getPrimitiveTypeSchema = (name, type, count) => {
-		const schema = {
-			"type": type.toLowerCase(),
-			"count": count
+		let schema;
+		if(name){
+			schema = {
+				"name":name,
+				"type": type.toLowerCase(),
+				"count": count
+			}
+		} else {
+			schema = {
+				"type": type.toLowerCase(),
+				"count": count
+			}
 		}
-		if(name)
-			schema.name = name;
 		return schema;
 	}
 	private getObjectTypeSchema = (object) => {
 		const schema = {
 			"type": "object",
-			"properties": this.getFieldsTypeSchema(object.fields, object.count),
+			"properties": this.getFieldsSchema(object.fields),
 			"count": object.count,
 			"additionalProperties": false,
 			"required":[]
@@ -122,7 +134,7 @@ class JsonSchemaBuilder {
 	private buildItems = (values) => {
 		const items = [];
 		values.forEach((value) => {
-			items.push(this.getSchemaFromValue(value, 0));
+			items.push(this.getSchemaFromValue(value));
 		});
 		return items;
 	}
