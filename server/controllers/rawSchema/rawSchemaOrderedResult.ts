@@ -28,8 +28,11 @@ export default class RawSchemaOrderedResultController extends BaseController {
 			}).then((data) => {
 				rawSchemaBatch.unionDate = new Date();
 				rawSchemaBatch.status = "MAPPER_JSONSCHEMA";
-				return rawSchemaBatch.save();
-			}).then((data) => {
+				rawSchemaBatch.save().then((data) => {
+
+				}).catch((error => {
+					
+				}));
 				return resolv(data);
 			}).catch((error) => {
 				console.error("union error",error);

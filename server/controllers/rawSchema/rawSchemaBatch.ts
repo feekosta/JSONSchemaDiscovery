@@ -1,7 +1,7 @@
 import * as mongodb from 'mongodb';
 import {MongoClient} from 'mongodb'
 import RawSchemaBatch from '../../models/rawSchema/rawSchemaBatch';
-import RawSchemaProcessWorker from '../../helpers/rawSchema/rawSchemaProcessWorker';
+import Executor from '../../helpers/rawSchema/executor';
 import DatabaseParam from '../../params/databaseParam';
 import BaseController from '../base';
 import RawSchemaController from './rawSchema';
@@ -146,39 +146,7 @@ export default class RawSchemaBatchController extends BaseController {
   }
 
   private executeStepOne = (collection, rawSchemaBatch): Promise<any> => {
-    return new Promise((resolv, reject) => {
-      const worker = new RawSchemaProcessWorker();
-      const saver = new RawSchemaController(rawSchemaBatch._id);
-      let totalDocuments = rawSchemaBatch.collectionCount;
-      let totalImported = 0;
-      worker.work(rawSchemaBatch, collection, null)
-        .on('done',() => {
-        })
-        .on('error', (error) => {
-          return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
-        })
-        .on('lastObjectId', (lastObjectId) => {
-          worker.work(rawSchemaBatch, collection, lastObjectId);
-        })
-        .on('save', (rawSchemes) => {
-          saver.saveAll(rawSchemes, rawSchemaBatch._id).then((data) => {
-            console.log("vai salvar");
-            totalImported += rawSchemes.length;
-            if(totalImported >= totalDocuments){
-              console.log("terminou né");
-              rawSchemaBatch.status = "REDUCE_DOCUMENTS";
-              rawSchemaBatch.extractionDate = new Date();
-              rawSchemaBatch.save().then((data) => {
-                return resolv(data);
-              }).catch((error) => {
-                return reject({"type":"LOADING_DOCUMENTS_ERROR", "message": error.message, "code":400});
-              });
-            }
-          }).catch((error) => {
-
-          });
-        });
-    });
+    return new Executor().execute(collection, rawSchemaBatch);
   }
 
   private executeStepTwo = (rawSchemaBatch) => {

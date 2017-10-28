@@ -14,7 +14,7 @@
     "e2e": "ng e2e",
     "predev": "tsc -p server",
     "dev": "concurrently \"mongod\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
-    "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/app.js\"",
+    "prod": "concurrently \"ng build -aot -prod && tsc -p server && node dist/server/app.js\"",
     "postinstall": "tsc -p server && ng build --aot -prod"
   },
   "private": true,
