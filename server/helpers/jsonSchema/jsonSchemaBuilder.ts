@@ -127,7 +127,7 @@ class JsonSchemaBuilder {
 			"count": array.count,
 			"additionalItems":true
 		}
-		if(totalCount === array.count)
+		if(totalCount >= array.count)
 			schema.minItems = 1;
 		return schema;
 	}
