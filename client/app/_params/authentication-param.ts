@@ -4,6 +4,6 @@ export class AuthenticationParam {
 	password:string;
 	authMechanism:string;
 	constructor(){
-		this.authMechanism = "MONGODB-CR"
+		this.authMechanism = "SCRAM-SHA-1"
 	}
 }
