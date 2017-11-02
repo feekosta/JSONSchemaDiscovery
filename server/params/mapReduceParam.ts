@@ -5,6 +5,8 @@ let options = {
 	scope: null,
 	finalize: null,
 	out: {},
-	query: {}
+	query: {},
+	sort: null,
+	jsMode: false
 };
 export default options;

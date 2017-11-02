@@ -79,6 +79,8 @@ if (cluster.isMaster) {
 	let db;
 
 	// Connect to the database before starting the application server.
+
+	mongoose.Promise = global.Promise;
 	mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }, (err, database) => {
 		if (err) {
 			console.error.bind(console, 'connection error:')

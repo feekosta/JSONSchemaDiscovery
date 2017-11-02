@@ -44,7 +44,7 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
       });
       jsonSchemaExtracted.save().then((data) => {
         return resolv(data);
-      }, (error) => {
+      }).catch((error) => {
         return reject(error);
       });
     });

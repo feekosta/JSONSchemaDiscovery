@@ -18,7 +18,7 @@ class ObjectKeysSorter {
 						ordered[key].forEach((item) => {
 							items.push(this.sort(item));
 						});
-						ordered[key] = items;
+						ordered[key] = items.sort();
 					} else if(typeof ordered[key] === 'object') {
 						ordered[key] = this.sort(ordered[key]);
 					}

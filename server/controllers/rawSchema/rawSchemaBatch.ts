@@ -151,8 +151,8 @@ export default class RawSchemaBatchController extends BaseController {
 
   private executeStepTwo = (rawSchemaBatch) => {
     // return this.mapReduce(rawSchemaBatch._id);
-    return this.aggregate(rawSchemaBatch._id);
-    // return this.aggregateAndReduce(rawSchemaBatch._id);
+    // return this.aggregate(rawSchemaBatch._id);
+    return this.aggregateAndReduce(rawSchemaBatch._id);
   }
 
   private executeStepThree = (rawSchemaBatch) => {
@@ -183,21 +183,25 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController(batchId).mapReduce(batchId);
       }).then((data) => {
-        return  new RawSchemaUnorderedResultController(batchId).countAllEntities();
-      }).then((data) => {
         console.log("STEP2.1: DONE");
-        rawSchemaBatch.uniqueUnorderedCount = data;
-        rawSchemaBatch.unorderedMapReduceDate = new Date();
-        rawSchemaBatch.save();
+        new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
+          rawSchemaBatch.uniqueUnorderedCount = data;
+          rawSchemaBatch.unorderedMapReduceDate = new Date();
+          return rawSchemaBatch.save();
+        }).catch((error) => {
+          console.log("error",error);
+        })
         return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
       }).then((data) => {
-        return new RawSchemaOrderedResultController(batchId).countAllEntities();
-      }).then((data) => {
         console.log("STEP2.2: DONE");
-        rawSchemaBatch.uniqueOrderedCount = data;
-        rawSchemaBatch.status = "UNION_DOCUMENTS";
-        rawSchemaBatch.orderedMapReduceDate = new Date();
-        rawSchemaBatch.save();
+        new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
+          rawSchemaBatch.uniqueOrderedCount = data;
+          rawSchemaBatch.status = "UNION_DOCUMENTS";
+          rawSchemaBatch.orderedMapReduceDate = new Date();
+          return rawSchemaBatch.save();
+        }).catch((error) => {
+          console.log("error",error);
+        })
         return resolv(data);
       }).catch((error) => {
         return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
@@ -223,29 +227,23 @@ export default class RawSchemaBatchController extends BaseController {
       }).then((data) => {
         console.log("STEP2.1: DONE");
         new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
-          console.log("vai salvar a contagem");
           rawSchemaBatch.uniqueUnorderedCount = data;
           rawSchemaBatch.unorderedAggregationDate = new Date();
-          rawSchemaBatch.save().then((data) => {
-            console.log("salvou quantidade");
-          });
+          return rawSchemaBatch.save()
         }).catch((error) => {
-
+          console.log("error",error);
         });
-        console.log("STEP2.1: INPROGRESS");
         return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
       }).then((data) => {
         console.log("STEP2.2: DONE");
         new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
-          console.log("vai salvar a contagem");
           rawSchemaBatch.uniqueOrderedCount = data;
           rawSchemaBatch.status = "UNION_DOCUMENTS";
           rawSchemaBatch.orderedAggregationDate = new Date();
-          rawSchemaBatch.save().then((data) => {
-            console.log("salvou quantidade");
-          });  
+          return rawSchemaBatch.save();
+        }).catch((error) => {
+          console.log("error",error);
         });
-        console.log("STEP3: INPROGRESS");
         return resolv(data);
       }).catch((error) => {
         return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
@@ -269,24 +267,45 @@ export default class RawSchemaBatchController extends BaseController {
         rawSchemaBatch.orderedAggregationDate = null;
         return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
-        return new RawSchemaUnorderedResultController(batchId).countAllEntities();
-      }).then((data) => {
         console.log("STEP2.1: DONE");
-        rawSchemaBatch.uniqueUnorderedCount = data;
-        rawSchemaBatch.unorderedAggregationDate = new Date();
-        rawSchemaBatch.save();
-        return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
-      }).then((data) => {
-        return new RawSchemaOrderedResultController(batchId).countAllEntities();
-      }).then((data) => {
-        console.log("STEP2.2: DONE");
-        rawSchemaBatch.uniqueOrderedCount = data;
-        rawSchemaBatch.status = "UNION_DOCUMENTS";
-        rawSchemaBatch.orderedMapReduceDate = new Date();
-        rawSchemaBatch.save();
-        return resolv(rawSchemaBatch);
+        new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
+          rawSchemaBatch.uniqueUnorderedCount = data;
+          rawSchemaBatch.unorderedAggregationDate = new Date();
+          return rawSchemaBatch.save();
+        }).catch((error) => {
+          console.log("error",error);
+        });
+          return this.executeMapReduceOrAggregate(batchId);
+        }).then((data) => {
+          console.log("STEP2.2: DONE");
+          new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
+            rawSchemaBatch.uniqueOrderedCount = data;
+            rawSchemaBatch.status = "UNION_DOCUMENTS";
+            rawSchemaBatch.orderedMapReduceDate = new Date();
+            return rawSchemaBatch.save();  
+          }).catch((error) => {
+            console.log("error",error);
+          });
+          return resolv(rawSchemaBatch);
       }).catch((error) => {
         return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
+      });
+    });
+  }
+
+  executeMapReduceOrAggregate = (batchId): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      new RawSchemaUnorderedResultController(batchId).mapReduce(batchId).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        console.log("deu erro no mapreduce",error);
+        new RawSchemaUnorderedResultController(batchId).aggregate(batchId).then((data) => {
+          console.log("sucesso no agregate");
+          return resolv(data);
+        }).catch((error) => {
+          console.log("deu erro no aggregate",error);
+          return reject(error);
+        });
       });
     });
   }

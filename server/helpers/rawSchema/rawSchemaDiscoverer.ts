@@ -1,6 +1,5 @@
-import * as es 			from 'event-stream';
-import {EventEmitter} 	from 'events';
-import rawSchemaParser 	from './rawSchemaParser';
+import {EventEmitter} from 'events';
+import rawSchemaParser from './rawSchemaParser';
 class RawSchemaDiscoverer extends EventEmitter {
 	discovery(collection, batchId): EventEmitter {
 		let result;

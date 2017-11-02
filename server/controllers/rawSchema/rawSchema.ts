@@ -44,7 +44,7 @@ export default class RawSchemaController extends BaseController {
 
   mapReduce = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      options.out = { 'inline':1 };
+      options.out = { 'replace':`rawschemaunordered${batchId}results` };
       options.map = function() {
         emit(this.docRawSchema, 1); 
       };

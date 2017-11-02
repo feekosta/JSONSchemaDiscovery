@@ -5,7 +5,13 @@ let order = function(){
     try {
       let unorderedObject = JSON.parse(document.docRawSchema);
       let orderedObject = new ObjectKeysSorter().sort(unorderedObject);
-      this.emit('progress', {'_id': document._id, 'docRawSchema': JSON.stringify(orderedObject) });  
+      let orderedObjectJson = JSON.stringify(orderedObject);
+      if(document.docRawSchema === orderedObjectJson){
+        console.log("ficou igual");
+        this.emit('ignore');
+      } else {
+        this.emit('progress', {'_id': document._id, 'docRawSchema': orderedObjectJson, 'batchId': document.batchId, 'value': document.value});
+      }
     } catch (error) {
       console.error("grave error >>> ",error);
       console.error("document error >>> ",document);
