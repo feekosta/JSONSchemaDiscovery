@@ -151,8 +151,8 @@ export default class RawSchemaBatchController extends BaseController {
 
   private executeStepTwo = (rawSchemaBatch) => {
     // return this.mapReduce(rawSchemaBatch._id);
-    // return this.aggregate(rawSchemaBatch._id);
-    return this.aggregateAndReduce(rawSchemaBatch._id);
+    return this.aggregate(rawSchemaBatch._id);
+    // return this.aggregateAndReduce(rawSchemaBatch._id);
   }
 
   private executeStepThree = (rawSchemaBatch) => {
