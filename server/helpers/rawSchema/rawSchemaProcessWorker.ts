@@ -8,11 +8,7 @@ import {ObjectID} from 'mongodb';
 export default class RawSchemaProcessWorker extends EventEmitter {
 	
 	limit = 5000;
-	maxQuantity = -1;
 	totalImported = 0;
-	maxInterations = 20;
-	currentInterations = 0;
-	anErrorOcurred = false;
 
 	work = (collection, rawSchemaBatch): EventEmitter => {
 		const saver = new RawSchemaController(rawSchemaBatch._id);
@@ -21,7 +17,7 @@ export default class RawSchemaProcessWorker extends EventEmitter {
 			saver.saveAll(data, rawSchemaBatch._id).then((data) => {
 				this.totalImported += data.length;
 				console.log(this.totalImported," de ",rawSchemaBatch.collectionCount);
-				if(this.totalImported >= rawSchemaBatch.collectionCount || (this.maxQuantity != -1 && this.totalImported >= this.maxQuantity)){
+				if(this.totalImported >= rawSchemaBatch.collectionCount){
 					rawSchemaBatch.status = "REDUCE_DOCUMENTS";
 					rawSchemaBatch.extractionDate = new Date();
 					rawSchemaBatch.save().then((data) => {
@@ -29,19 +25,14 @@ export default class RawSchemaProcessWorker extends EventEmitter {
 					});
 				}
 			}).catch((error) => {
-				this.anErrorOcurred = true;
 				this.emit('error', error);
 			});
 		})
 		.on('lastObjectId', (lastObjectId) => {
-			this.currentInterations++;
-			if(this.maxQuantity === -1 || this.currentInterations < this.maxInterations && !this.anErrorOcurred){
-				console.log("work in greater than ",lastObjectId);
-				working = this.workNow(rawSchemaBatch, collection, lastObjectId);
-			}
+			console.log("work in greater than ",lastObjectId);
+			working = this.workNow(rawSchemaBatch, collection, lastObjectId);
 		})
 		.on('error', (error) => {
-			this.anErrorOcurred = true;
 			this.emit('error', error);
 		});
 		return this;

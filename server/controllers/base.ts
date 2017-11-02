@@ -62,6 +62,18 @@ abstract class BaseController {
     });
   }
 
+  public insertEntities = (entities): Promise<any> => {
+    return new Promise((resolv, reject) => {
+      this.model.insertMany(entities).then((data) => {
+        return resolv(data);
+      }).catch((error) => {
+        // 11000 is the code for duplicate key error
+        if (error.code === 11000) { return reject({"type":"DUPLICATE_KEY_ERROR", "message": error.message, "code":400}); }
+        return reject({"type":"INSERT_ENTITY_ERROR", "message": error.message, "code":400});
+      });
+    });
+  }
+
   // Get by id
   public get = (req, res) => {
     this.model.findOne({ '_id': req.params.id }, (err, obj) => {

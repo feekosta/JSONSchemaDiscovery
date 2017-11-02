@@ -275,7 +275,7 @@ export default class RawSchemaBatchController extends BaseController {
         }).catch((error) => {
           console.log("error",error);
         });
-          return this.executeMapReduceOrAggregate(batchId);
+          return new RawSchemaUnorderedResultController(batchId).mapReduce(batchId);
         }).then((data) => {
           console.log("STEP2.2: DONE");
           new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
@@ -289,23 +289,6 @@ export default class RawSchemaBatchController extends BaseController {
           return resolv(rawSchemaBatch);
       }).catch((error) => {
         return reject({"type":"REDUCE_DOCUMENTS_ERROR", "message": error.message, "code":400});
-      });
-    });
-  }
-
-  executeMapReduceOrAggregate = (batchId): Promise<any> => {
-    return new Promise((resolv, reject) => {
-      new RawSchemaUnorderedResultController(batchId).mapReduce(batchId).then((data) => {
-        return resolv(data);
-      }).catch((error) => {
-        console.log("deu erro no mapreduce",error);
-        new RawSchemaUnorderedResultController(batchId).aggregate(batchId).then((data) => {
-          console.log("sucesso no agregate");
-          return resolv(data);
-        }).catch((error) => {
-          console.log("deu erro no aggregate",error);
-          return reject(error);
-        });
       });
     });
   }

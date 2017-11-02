@@ -1,6 +1,7 @@
 import * as mongoose 					from 'mongoose';
 import {ObjectId}          				from 'mongodb';
 import rawSchemaUnorderedResultSchema 	from '../../models/rawSchema/rawSchemaUnorderedResult';
+import RawSchemaOrderedResult 	from '../../controllers/rawSchema/rawSchemaOrderedResult';
 import BatchBaseController  			from '../batchBase';
 import ObjectKeysSorter 				from '../../helpers/objectKeysSorter';
 import rawSchemaOrder					from '../../helpers/rawSchema/rawSchemaOrder';
@@ -9,7 +10,6 @@ import options 							from '../../params/mapReduceParam';
 declare var emit;
 declare var sort;
 declare var docRawSchema;
-declare var print;
 
 export default class RawSchemaUnorderedResultController extends BatchBaseController {
   
@@ -28,33 +28,21 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
 		    const sortObject = new ObjectKeysSorter().sortObject;
 		    options.out = { 'replace':`rawschemaordered${batchId}results` };
 		    options.map = function() {
-		    	let unorderedObject;
-		    	if(this.docRawSchema != null){
-		    		unorderedObject = JSON.parse(this.docRawSchema);
-		    	} else {
-		    		unorderedObject = JSON.parse(this._id);
-		    	}
+		    	const unorderedObject = this.docRawSchema ? JSON.parse(this.docRawSchema) : JSON.parse(this._id);
 		    	const orderedObject = sort(unorderedObject);
-		    	let orderedObjectJson = JSON.stringify(orderedObject);
-		    	print("MAP");
-		    	print(orderedObjectJson);
-		    	print(orderedObjectJson.length);
+		    	const orderedObjectJson = JSON.stringify(orderedObject);
 	      		emit(orderedObjectJson, this.value); 
 		    };
 		    options.reduce = function(key, values) { 
 		      let count = 0;
-		      print("REDUCE");
-		      print(values);
-		      print(key);
 		      values.forEach((value) => {
 		        count += value;
 		      });
 		      return count;
 		    };
-		    options.scope = { 'sort': sort, 'sortObject': sortObject }
+		    options.scope = { 'sort': sort, 'sortObject': sortObject, 'batchId':batchId }
 		 	this.model.mapReduce(options).then((data) => {
-		 		console.log("data",data);
-				return resolv(data);
+	 			return resolv(data);
 		 	}).catch((error) => {
 		 		console.error("error",error);
 				return reject(error);
