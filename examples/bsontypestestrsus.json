@@ -1,0 +1,479 @@
+{
+  "fields": [
+    {
+      "name": "_id",
+      "path": "_id",
+      "count": 5,
+      "types": [
+        {
+          "name": "ObjectID",
+          "path": "_id",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "arrayMultiValues",
+      "path": "arrayMultiValues",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayMultiValues",
+          "count": 5,
+          "items": [
+            {
+              "name": "Number",
+              "path": "arrayMultiValues",
+              "count": 5
+            },
+            {
+              "name": "String",
+              "path": "arrayMultiValues",
+              "count": 5
+            },
+            {
+              "name": "Object",
+              "path": "arrayMultiValues",
+              "count": 5,
+              "fields": [
+                {
+                  "name": "property",
+                  "path": "arrayMultiValues.property",
+                  "count": 5,
+                  "types": [
+                    {
+                      "name": "String",
+                      "path": "arrayMultiValues.property",
+                      "count": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Array",
+              "path": "arrayMultiValues",
+              "count": 5,
+              "items": [
+                {
+                  "name": "Number",
+                  "path": "arrayMultiValues",
+                  "count": 5
+                },
+                {
+                  "name": "String",
+                  "path": "arrayMultiValues",
+                  "count": 5
+                }
+              ]
+            },
+            {
+              "name": "Boolean",
+              "path": "arrayMultiValues",
+              "count": 5
+            },
+            {
+              "name": "Binary",
+              "path": "arrayMultiValues",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrayOfArray",
+      "path": "arrayOfArray",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfArray",
+          "count": 5,
+          "items": [
+            {
+              "name": "Array",
+              "path": "arrayOfArray",
+              "count": 5,
+              "items": [
+                {
+                  "name": "String",
+                  "path": "arrayOfArray",
+                  "count": 5
+                },
+                {
+                  "name": "Number",
+                  "path": "arrayOfArray",
+                  "count": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrayOfBoolean",
+      "path": "arrayOfBoolean",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfBoolean",
+          "count": 5,
+          "items": [
+            {
+              "name": "Boolean",
+              "path": "arrayOfBoolean",
+              "count": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrayOfExtendedType",
+      "path": "arrayOfExtendedType",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfExtendedType",
+          "count": 5,
+          "items": [
+            {
+              "name": "Date",
+              "path": "arrayOfExtendedType",
+              "count": 5
+            },
+            {
+              "name": "Long",
+              "path": "arrayOfExtendedType",
+              "count": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrayOfNumber",
+      "path": "arrayOfNumber",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfNumber",
+          "count": 5,
+          "items": [
+            {
+              "name": "Number",
+              "path": "arrayOfNumber",
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "arrayOfString",
+      "path": "arrayOfString",
+      "count": 5,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfString",
+          "count": 5,
+          "items": [
+            {
+              "name": "String",
+              "path": "arrayOfString",
+              "count": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dateAsTime",
+      "path": "dateAsTime",
+      "count": 5,
+      "types": [
+        {
+          "name": "Date",
+          "path": "dateAsTime",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "doubleType",
+      "path": "doubleType",
+      "count": 5,
+      "types": [
+        {
+          "name": "Number",
+          "path": "doubleType",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "intType",
+      "path": "intType",
+      "count": 5,
+      "types": [
+        {
+          "name": "Number",
+          "path": "intType",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "intType2",
+      "path": "intType2",
+      "count": 5,
+      "types": [
+        {
+          "name": "Number",
+          "path": "intType2",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "maxKeyType",
+      "path": "maxKeyType",
+      "count": 5,
+      "types": [
+        {
+          "name": "MaxKey",
+          "path": "maxKeyType",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "minKeyType",
+      "path": "minKeyType",
+      "count": 5,
+      "types": [
+        {
+          "name": "MinKey",
+          "path": "minKeyType",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "objectType",
+      "path": "objectType",
+      "count": 5,
+      "types": [
+        {
+          "name": "Object",
+          "path": "objectType",
+          "count": 5,
+          "fields": [
+            {
+              "name": "property",
+              "path": "objectType.property",
+              "count": 5,
+              "types": [
+                {
+                  "name": "String",
+                  "path": "objectType.property",
+                  "count": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stringType",
+      "path": "stringType",
+      "count": 5,
+      "types": [
+        {
+          "name": "String",
+          "path": "stringType",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "arrayOfObject",
+      "path": "arrayOfObject",
+      "count": 3,
+      "types": [
+        {
+          "name": "Array",
+          "path": "arrayOfObject",
+          "count": 3,
+          "items": [
+            {
+              "name": "Object",
+              "path": "arrayOfObject",
+              "count": 4,
+              "fields": [
+                {
+                  "name": "property",
+                  "path": "arrayOfObject.property",
+                  "count": 4,
+                  "types": [
+                    {
+                      "name": "Number",
+                      "path": "arrayOfObject.property",
+                      "count": 3
+                    },
+                    {
+                      "name": "String",
+                      "path": "arrayOfObject.property",
+                      "count": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "binaryType",
+      "path": "binaryType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Binary",
+          "path": "binaryType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "booleanType",
+      "path": "booleanType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Boolean",
+          "path": "booleanType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "dateAsISO",
+      "path": "dateAsISO",
+      "count": 3,
+      "types": [
+        {
+          "name": "Date",
+          "path": "dateAsISO",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "dbRefType",
+      "path": "dbRefType",
+      "count": 3,
+      "types": [
+        {
+          "name": "DBRef",
+          "path": "dbRefType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "javascriptType",
+      "path": "javascriptType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Code",
+          "path": "javascriptType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "javascriptWithScopeType",
+      "path": "javascriptWithScopeType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Code",
+          "path": "javascriptWithScopeType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "longType",
+      "path": "longType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Long",
+          "path": "longType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "nullType",
+      "path": "nullType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Null",
+          "path": "nullType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "regexType",
+      "path": "regexType",
+      "count": 3,
+      "types": [
+        {
+          "name": "RegExp",
+          "path": "regexType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "timestampType",
+      "path": "timestampType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Timestamp",
+          "path": "timestampType",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "undefinedType",
+      "path": "undefinedType",
+      "count": 3,
+      "types": [
+        {
+          "name": "Undefined",
+          "path": "undefinedType",
+          "count": 3
+        }
+      ]
+    }
+  ],
+  "count": 5
+}

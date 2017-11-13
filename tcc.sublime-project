@@ -2,16 +2,15 @@
 	"folders":
 	[
 		{
-			"path": "./",
 			"folder_exclude_patterns":
 			[
 				"node_modules",
-				"dist",
-				// "examples",
+				"dist"
 			],
-			"file_exclude_patterns":
-			[
-			]
+			"path": "."
+		},
+		{
+			"path": "/media/feekosta/OneDrive/Onedrive/SISTEMAS DE INFORMAÇÃO/FASE 10/INE5644 - DATA MINING/TRABALHO/Dataset - Dados de intoxicação"
 		}
 	]
 }

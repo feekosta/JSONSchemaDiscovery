@@ -1,0 +1,31 @@
+
+  {
+    "_id": ObjectId("50319491fe4dce143835c555"),
+    "stringType": "some_value",
+    "dateAsTime": { "$date": 
+        { "$numberLong": "1496795859332" } 
+    },
+     "maxKeyType": { "$maxKey": 1 },
+    "minKeyType": { "$minKey": 4 },
+    "intType":1,
+    "doubleType": 12343.44,
+    "intType2": { "$numberInt": "1" },
+    "objectType": { "property": "some_value" },
+    "arrayMultiValues": [ 48, "50",
+        {"property": "teste"}, 
+        [1,"some_value"], 
+        true 
+    ],
+    "arrayOfString": [ "some_value", "some_value" ],
+    "arrayOfNumber": [ ],
+    "arrayOfBoolean": [ true, false ],
+    "arrayOfArray": [ 
+        ["some_value", "some_value"] 
+    ],
+    "arrayOfExtendedType": [ 
+        Date("2014-01-31T22:26:33.000Z"), 
+        NumberLong("9223372036854775807")
+    ]
+  }
+
+  

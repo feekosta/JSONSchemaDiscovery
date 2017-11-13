@@ -1,0 +1,80 @@
+{
+  "_id": {
+    "$oid": "50319491fe4dce143835c552"
+  },
+  "arrayMultiValues": [
+    48,
+    "50",
+    {
+      "property": "teste"
+    },
+    [1,2,4],
+    true,
+    {
+   	 "$binary": "dGVzdGFuZG8=",
+   	 "$type": "00"
+  	}
+  ],
+  "arrayOfObject": [
+    {
+      "property": 48
+    },
+    {
+      "property": "teste"
+    }
+  ],
+  "binaryType": {
+    "$binary": "dGVzdGFuZG8=",
+    "$type": "00"
+  },
+  "booleanType": false,
+  "dateAsISO": {
+    "$date": "2014-01-31T22:26:33.000Z"
+  },
+  "dateAsTime": {
+    "$date": "2017-06-07T00:37:39.332Z"
+  },
+  "dbRefType": {
+    "$id": "50319491fe4dce143835c552",
+    "$ref": "users"
+  },
+  "doubleType": 12343.44,
+  "intType": 1,
+  "intType2": 1,
+  "javascriptType": {
+    "$code": "var a = function(param){console.log(param);};"
+  },
+  "javascriptWithScopeType": {
+    "$code": "int x = y",
+    "$scope": {
+      "y": 1
+    }
+  },
+  "longType": {
+    "$numberLong": "9223372036854775807"
+  },
+  "maxKeyType": {
+    "$maxKey": 1
+  },
+  "minKeyType": {
+    "$minKey": 1
+  },
+  "nullType": null,
+  "objectType": {
+    "property": "value"
+  },
+  "regexType": {
+    "$options": "m",
+    "$regex": "/^S/"
+  },
+  "stringType": "Felipe de Souza da Costa",
+  "timestampType": {
+    "$timestamp": {
+      "i": 4,
+      "t": 1421006159
+    }
+  },
+  "undefinedExample": {
+    "$undefined": true
+  }
+}

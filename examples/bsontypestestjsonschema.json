@@ -1,0 +1,403 @@
+ {
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "definitions": {
+    "Binary": {
+      "title": "Binary",
+      "type": "object",
+      "properties": {
+        "$binary": {
+          "type": "string"
+        },
+        "$type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$binary",
+        "$type"
+      ]
+    },
+    "Undefined": {
+      "title": "Undefined",
+      "type": "object",
+      "properties": {
+        "$undefined": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "$undefined"
+      ]
+    },
+    "ObjectID": {
+      "title": "ObjectID",
+      "type": "object",
+      "properties": {
+        "$oid": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$oid"
+      ]
+    },
+    "Date": {
+      "title": "Date",
+      "type": "object",
+      "properties": {
+        "$date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$date"
+      ]
+    },
+    "RegExp": {
+      "title": "RegExp",
+      "type": "object",
+      "properties": {
+        "$options": {
+          "type": "string"
+        },
+        "$regex": {
+          "$type": "string"
+        }
+      },
+      "required": [
+        "$options",
+        "$regex"
+      ]
+    },
+    "DBRef": {
+      "title": "DBRef",
+      "type": "object",
+      "properties": {
+        "$id": {
+          "type": "string"
+        },
+        "$ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$id",
+        "$ref"
+      ]
+    },
+    "Code": {
+      "title": "Code",
+      "type": "object",
+      "properties": {
+        "$code": {
+          "type": "string"
+        },
+        "$scope": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "$code"
+      ]
+    },
+    "Timestamp": {
+      "title": "Timestamp",
+      "type": "object",
+      "properties": {
+        "$timestamp": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "integer"
+            },
+            "t": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "i",
+            "t"
+          ]
+        }
+      },
+      "required": [
+        "$timestamp"
+      ]
+    },
+    "Long": {
+      "title": "NumberLong",
+      "type": "object",
+      "properties": {
+        "$numberLong": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$numberLong"
+      ]
+    },
+    "MinKey": {
+      "title": "MinKey",
+      "type": "object",
+      "properties": {
+        "$minKey": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "$minKey"
+      ]
+    },
+    "MaxKey": {
+      "title": "MaxKey",
+      "type": "object",
+      "properties": {
+        "$maxKey": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "$maxKey"
+      ]
+    }
+  },
+  "properties": {
+    "_id": {
+      "$ref": "#/definitions/ObjectID"
+    },
+    "arrayMultiValues": {
+      "name": "arrayMultiValues",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "property": {
+                "name": "property",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "property"
+            ]
+          },
+          {
+            "name": "arrayMultiValues",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "minItems": 1,
+            "additionalItems": true
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "$ref": "#/definitions/Binary"
+          }
+        ]
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "arrayOfArray": {
+      "name": "arrayOfArray",
+      "type": "array",
+      "items": {
+        "name": "arrayOfArray",
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "minItems": 1,
+        "additionalItems": true
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "arrayOfBoolean": {
+      "name": "arrayOfBoolean",
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "arrayOfExtendedType": {
+      "name": "arrayOfExtendedType",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/Date"
+          },
+          {
+            "$ref": "#/definitions/Long"
+          }
+        ]
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "arrayOfNumber": {
+      "name": "arrayOfNumber",
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 0,
+      "additionalItems": true
+    },
+    "arrayOfString": {
+      "name": "arrayOfString",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "dateAsTime": {
+      "$ref": "#/definitions/Date"
+    },
+    "doubleType": {
+      "name": "doubleType",
+      "type": "number"
+    },
+    "intType": {
+      "name": "intType",
+      "type": "number"
+    },
+    "intType2": {
+      "name": "intType2",
+      "type": "number"
+    },
+    "maxKeyType": {
+      "$ref": "#/definitions/MaxKey"
+    },
+    "minKeyType": {
+      "$ref": "#/definitions/MinKey"
+    },
+    "objectType": {
+      "type": "object",
+      "properties": {
+        "property": {
+          "name": "property",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "property"
+      ],
+      "name": "objectType"
+    },
+    "stringType": {
+      "name": "stringType",
+      "type": "string"
+    },
+    "arrayOfObject": {
+      "name": "arrayOfObject",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "property": {
+            "name": "property",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "property"
+        ]
+      },
+      "minItems": 1,
+      "additionalItems": true
+    },
+    "binaryType": {
+      "$ref": "#/definitions/Binary"
+    },
+    "booleanType": {
+      "name": "booleanType",
+      "type": "boolean"
+    },
+    "dateAsISO": {
+      "$ref": "#/definitions/Date"
+    },
+    "dbRefType": {
+      "$ref": "#/definitions/DBRef"
+    },
+    "javascriptType": {
+      "$ref": "#/definitions/Code"
+    },
+    "javascriptWithScopeType": {
+      "$ref": "#/definitions/Code"
+    },
+    "longType": {
+      "$ref": "#/definitions/Long"
+    },
+    "nullType": {
+      "name": "nullType",
+      "type": "null"
+    },
+    "regexType": {
+      "$ref": "#/definitions/RegExp"
+    },
+    "timestampType": {
+      "$ref": "#/definitions/Timestamp"
+    },
+    "undefinedType": {
+      "$ref": "#/definitions/Undefined"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "_id",
+    "arrayMultiValues",
+    "arrayOfArray",
+    "arrayOfBoolean",
+    "arrayOfExtendedType",
+    "arrayOfNumber",
+    "arrayOfString",
+    "dateAsTime",
+    "doubleType",
+    "intType",
+    "intType2",
+    "maxKeyType",
+    "minKeyType",
+    "objectType",
+    "stringType"
+  ]
+}

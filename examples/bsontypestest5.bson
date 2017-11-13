@@ -1,0 +1,32 @@
+
+ {
+    "_id": ObjectId("50319491fe4dce143835c556"),
+    "stringType": "other_value",
+    "dateAsTime": { "$date": 
+        { "$numberLong": "1496795859444" } 
+    },
+     "maxKeyType": { "$maxKey": 2 }, 
+     "minKeyType": { "$minKey": 3 },
+    "intType":2,
+    "doubleType": 15.44,
+    "intType2": { "$numberInt": "3" },
+    "objectType": { "property": "other_value" },
+    "arrayMultiValues": [ 30, "15", 
+        {"property": "teste2"}, 
+        [2,"other_value"],
+        false 
+    ],
+    "arrayOfString": [ "other_value", "other_value" ],
+    "arrayOfNumber": [ ],
+    "arrayOfBoolean": [ false, true ],
+    "arrayOfArray": [ 
+        ["other_value", "other_value"] 
+    ],
+    "arrayOfExtendedType": [ 
+        Date("2015-01-31T22:26:33.000Z"), 
+        NumberLong("8223372036854775807") 
+    ]
+  }
+
+
+  

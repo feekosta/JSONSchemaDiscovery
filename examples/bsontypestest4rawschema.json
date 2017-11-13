@@ -1,0 +1,30 @@
+
+{
+  "_id": "ObjectID",
+  "stringType": "String",
+  "dateAsTime": "Date",
+  "maxKeyType": "MaxKey",
+  "minKeyType": "MinKey",
+  "intType": "Number",
+  "doubleType": "Number",
+  "intType2": "Number",
+  "objectType": { 
+    "property": "String" 
+  },
+  "arrayMultiValues": [ 
+    "Number", "String", 
+    { "property": "String" }, 
+    [ "Number", "String" ], 
+    "Boolean" 
+  ],
+  "arrayOfString": [ "String" ],
+  "arrayOfNumber": [],
+  "arrayOfBoolean": [ "Boolean" ],
+  "arrayOfArray": [ [ "String" ] ],
+  "arrayOfExtendedType": [ 
+    "Date",
+    "Long" 
+  ]
+}
+
+
