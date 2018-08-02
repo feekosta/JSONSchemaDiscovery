@@ -1,13 +1,12 @@
-class AuthenticationParam {
-	authDatabase:String;
-	userName:String;
-	password:String;
-	authMechanism:String;
-	
-	isValid = (): boolean => {
-		if(this.authDatabase && this.userName && this.password && this.authMechanism)
-			return true;
-		return false;
-	}
+export default class AuthenticationParam {
+
+  authDatabase: String;
+  userName: String;
+  password: String;
+  authMechanism: String;
+
+  public isValid = (): boolean => {
+    return this.authDatabase != null && this.userName != null && this.password != null && this.authMechanism != null;
+  };
+
 }
-export default AuthenticationParam;
