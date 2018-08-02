@@ -1,8 +1,8 @@
 import * as jwt from 'jsonwebtoken';
 
-export default class Guard {
+export default abstract class Guard {
 
-  public static checkToken = (req): Promise<any> => {
+  static checkToken = (req): Promise<any> => {
     return new Promise((resolv, reject) => {
       const authorization = req.headers.authorization;
       if (!authorization) return reject({'message': 'invalid token', 'code': 403});
