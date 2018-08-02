@@ -37,6 +37,7 @@ export default class AlertController extends BatchBaseController {
   countByUserId = (userId): Promise<any> => {
     return new Promise((resolv, reject) => {
       return this.model.find({"userId":userId}).count().then((data) => {
+        console.log('countByUserId', data);
         return resolv(data);
       }, (error) => {
         return reject(error);
