@@ -2,6 +2,7 @@ import {EventEmitter} from 'events';
 import RawSchemaDiscoverer from './rawSchemaDiscoverer';
 import RawSchemaController from '../../controllers/rawSchema/rawSchema';
 import {ObjectID} from 'mongodb';
+import RawSchemaReader from './rawSchemaReader';
 
 export default class RawSchemaProcessWorker extends EventEmitter {
 
@@ -29,7 +30,12 @@ export default class RawSchemaProcessWorker extends EventEmitter {
 
   workNow = (rawSchemaBatch, collection, lastObjectId): EventEmitter => {
     const collectionToWork = collection.find(this.findBy(lastObjectId)).sort({_id: 1}).limit(this.limit);
-    const discovery = new RawSchemaDiscoverer().discovery(collectionToWork, rawSchemaBatch._id);
+    let discovery;
+    if (rawSchemaBatch.rawSchemaFormat) {
+      discovery = new RawSchemaReader().read(collectionToWork, rawSchemaBatch._id);
+    } else {
+      discovery = new RawSchemaDiscoverer().discovery(collectionToWork, rawSchemaBatch._id);
+    }
     discovery.on('end', rawSchemes => {
       this.emit('save', rawSchemes);
       if (rawSchemes.length > 0) {

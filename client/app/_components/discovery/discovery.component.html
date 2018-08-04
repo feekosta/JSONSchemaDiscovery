@@ -15,6 +15,7 @@
       <mat-form-field>
         <input matInput placeholder="Nome da coleção" [(ngModel)]="model.collectionName" name="collectionName" required>
       </mat-form-field>
+      <mat-checkbox [(ngModel)]="model.rawSchemaFormat" name="rawSchemaFormat">Coleção no formato Raw Schema</mat-checkbox>
       <div>
         <button mat-button [routerLink]="['/']">Cancelar</button>
         <button mat-raised-button color="primary" matStepperNext [disabled]="f.form.invalid">Próximo</button>

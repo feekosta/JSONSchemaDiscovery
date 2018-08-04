@@ -25,7 +25,8 @@ const rawSchemaBatchSchema = new mongoose.Schema({
   'unionDate': {type: Date},
   'unionElapsedTime': {type: Number},
   'endDate': {type: Date},
-  'totalElapsedTime': {type: Number}
+  'totalElapsedTime': {type: Number},
+  'rawSchemaFormat': {type: Boolean}
 }, {timestamps: {createdAt: 'createdAt'}});
 
 export default mongoose.model('RawSchemaBatch', rawSchemaBatchSchema);

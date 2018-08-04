@@ -1,0 +1,71 @@
+{
+  "_id": {
+    "$oid": "50319491fe4dce143835c552"
+  },
+  "rawSchema": {
+    "_id": "ObjectID",
+    "binaryType": "Binary",
+    "dateAsISO": "Date",
+    "timestampType": "Timestamp",
+    "dbRefType": "DBRef",
+    "undefinedType": "Undefined",
+    "longType": "Long",
+    "booleanType": "Boolean",
+    "nullType": "Null",
+    "regexType": "RegExp",
+    "stringType": "String",
+    "dateAsTime": "Date",
+    "objectType": {
+      "property": "String"
+    },
+    "arrayMultiValues": [
+      "Number",
+      "String",
+      {
+        "property": "String"
+      },
+      [
+        "Number",
+        "String"
+      ],
+      "Boolean",
+      "Binary"
+    ],
+    "arrayOfObject": [
+      {
+        "property": "Number"
+      },
+      {
+        "property": "String"
+      }
+    ],
+    "arrayOfString": [
+      "String"
+    ],
+    "arrayOfNumber": [
+      "Number"
+    ],
+    "arrayOfBoolean": [
+      "Boolean"
+    ],
+    "arrayOfArray": [
+      [
+        "Number"
+      ],
+      [
+        "String"
+      ]
+    ],
+    "arrayOfExtendedType": [
+      "Date",
+      "Long"
+    ],
+    "javascriptType": "Code",
+    "javascriptWithScopeType": "Code",
+    "maxKeyType": "MaxKey",
+    "minKeyType": "MinKey",
+    "intType": "Number",
+    "doubleType": "Number",
+    "intType2": "Number"
+  }
+}

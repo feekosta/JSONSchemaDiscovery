@@ -16,7 +16,7 @@ const parse = function (batchId: string) {
     this.emit('data', rawSchemes);
     this.emit('end');
   });
-  mapper.on('close', () => this.destroy());
+  // mapper.on('close', () => this.destroy());
   return mapper;
 };
 

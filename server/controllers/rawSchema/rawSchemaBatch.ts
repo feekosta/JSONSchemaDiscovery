@@ -24,6 +24,7 @@ export default class RawSchemaBatchController extends BaseController {
       rawSchemaBatch.userId = databaseParam.userId;
       rawSchemaBatch.startDate = new Date();
       rawSchemaBatch.status = 'CONNECT_DATABASE';
+      rawSchemaBatch.rawSchemaFormat = databaseParam.rawSchemaFormat;
       rawSchemaBatch.save().then((data) => {
         return this.connect(databaseParam);
       }).then((data) => {

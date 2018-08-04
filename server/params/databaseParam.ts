@@ -8,6 +8,7 @@ export default class DatabaseParam {
   userId: string;
   databaseName: string;
   collectionName: string;
+  rawSchemaFormat: boolean;
 
   constructor(data) {
     Object.assign(this, data);
@@ -35,7 +36,11 @@ export default class DatabaseParam {
   }
 
   private hasAuthentication() {
-    return this.authentication && this.authentication.isValid();
+    return this.authentication != null &&
+      this.authentication.authDatabase != null &&
+      this.authentication.userName != null &&
+      this.authentication.password != null &&
+      this.authentication.authMechanism != null;
   }
 
 }

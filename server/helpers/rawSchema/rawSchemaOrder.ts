@@ -24,7 +24,7 @@ const order = function () {
   }, function end() {
     this.emit('end');
   });
-  mapper.on('close', () => this.destroy());
+  // mapper.on('close', () => this.destroy());
   return mapper;
 };
 

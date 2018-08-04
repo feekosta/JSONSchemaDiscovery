@@ -6,6 +6,7 @@ export class DatabaseParam {
 	userId:string;
 	databaseName:string;
 	collectionName:string;
+	rawSchemaFormat:boolean;
 	constructor() {
 		this.authentication = new AuthenticationParam();
 	}
