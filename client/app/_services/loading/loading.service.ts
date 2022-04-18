@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs';
 
 export interface LoadingState {
-  show: boolean
+  show: boolean;
 }
 
 @Injectable()
@@ -20,5 +20,5 @@ export class LoadingService {
   hide() {
     this.loadingSubject.next(<LoadingState>{ show: false });
   }
-  
+
 }

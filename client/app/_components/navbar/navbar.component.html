@@ -3,27 +3,27 @@
 	<mat-sidenav mode="side" #sidenav>
 
 		<mat-list>
-		
-			<mat-list-item class="app-logo-side-nav"> 
-				<img src="../../../assets/jsd_logo.png" alt="JSON Schema Discovery">	
+
+			<mat-list-item class="app-logo-side-nav">
+				<img src="../../../assets/jsd_logo.png" alt="JSON Schema Discovery">
 			</mat-list-item>
 
 			<mat-list-item class="app-divider"></mat-list-item>
 
-			<mat-list-item> 
+			<mat-list-item>
 				<button mat-button color="primary" class="app-side-nav-button" [routerLink]="['/']">
 					<i class="material-icons">home</i>
 					WORKSPACE
 				</button>
 			</mat-list-item>
-			
+
 			<mat-list-item>
 				<button mat-button color="primary" class="app-side-nav-button" [routerLink]="['/alert']">
 					<i class="material-icons">notifications</i>
 					ALERTAS
 				</button>
 			</mat-list-item>
-			
+
 			<mat-list-item class="app-divider"></mat-list-item>
 
 			<mat-list-item>
@@ -42,12 +42,11 @@
 			<i class="material-icons button-open-side-nav">menu</i>
 		</button>
 
-		<button class="app-toolbar-title" mat-menu-item [routerLink]="['/']">JSONSchema Discovery</button>	
+		<button class="app-toolbar-title" mat-menu-item [routerLink]="['/']">JSONSchema Discovery</button>
 
 		<button class="mat-icon-button" mat-button [routerLink]="['/alert']">
-			<i class="material-icons" [hidden]="!alertsCount">notifications</i>
-			<i class="material-icons" [hidden]="alertsCount">notifications_none</i>
-			<span class="app-toolbar-notification" [hidden]="!alertsCount">{{alertsCount}}</span>
+      <mat-icon *ngIf="alertsCount > 0" [matBadge]="alertsCount" matBadgeColor="warn">notifications</mat-icon>
+      <mat-icon *ngIf="alertsCount == 0">notifications_none</mat-icon>
 		</button>
 
 		<button class="mat-icon-button" mat-button [mat-menu-trigger-for]="menu">
@@ -62,7 +61,7 @@
 	</mat-toolbar>
 
 	<app-feedback></app-feedback>
-	
+
 	<app-loading></app-loading>
 
 	<router-outlet></router-outlet>

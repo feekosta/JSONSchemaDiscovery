@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService, FeedbackService, RegistrationService } from '../../_services/services';
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const EMAIL_REGEX = /^[a-zA-Z\d.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)*$/;
 
 @Component({
   selector: 'app-register',
@@ -12,46 +12,43 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
 })
 export class RegisterComponent implements OnInit {
 
-	model: any = {};
+  model: any = {};
     loading = false;
-    showPassword: boolean = false;
+    showPassword = false;
 
-	constructor(
-		private router: Router,
-		private authenticationService: AuthenticationService,
-		private registrationService: RegistrationService,
-		private feedbackService: FeedbackService) { }
+  constructor(private router: Router,
+              private authenticationService: AuthenticationService,
+              private registrationService: RegistrationService,
+              private feedbackService: FeedbackService) { }
 
-	emailFormControl = new FormControl('', [
-	    Validators.required,
-	    Validators.pattern(EMAIL_REGEX)
-	]);
+  emailFormControl = new FormControl('', [
+      Validators.required,
+      Validators.pattern(EMAIL_REGEX)
+  ]);
 
-	ngOnInit() {
-	}
+  ngOnInit() {
+  }
 
-	register() {
-		if(this.model.email && this.model.password && this.model.username){
-			this.loading = true;
-			this.registrationService.register(this.model)
-				.subscribe(
-					data => { 
-						this.authenticationService.login(this.model.email, this.model.password)
-							.subscribe(
-								data => { 
-									this.feedbackService.success('Bem Vindo', true);
-									this.router.navigate(['/']);
-								}
-							);
-					},
-					error => {
-						this.feedbackService.error(error.json().error);
-						this.loading = false;
-					}
-				);
-		}
-	}
-
-
+  register() {
+    if (this.model.email && this.model.password && this.model.username) {
+      this.loading = true;
+      this.registrationService.register(this.model)
+        .subscribe(
+          user => {
+            this.authenticationService.login(this.model.email, this.model.password)
+              .subscribe(
+                data => {
+                  this.feedbackService.success('Bem Vindo', true);
+                  this.router.navigate(['/']);
+                }
+              );
+          },
+          error => {
+            this.feedbackService.error(error.error.error);
+            this.loading = false;
+          }
+        );
+    }
+  }
 
 }

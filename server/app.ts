@@ -31,12 +31,14 @@ if (cluster.isMaster) {
   SegfaultHandler.registerHandler('crash.log');
   // Logging middleware
   // You can set morgan to log differently depending on your environment
-  if (app.get('env') == 'production') {
-    let morganLogDirectory = path.join(__dirname, '../../logs');
+  if (app.get('env') === 'production') {
+    const morganLogDirectory = path.join(__dirname, '../../logs');
     // ensure log directory exists
-    fs.existsSync(morganLogDirectory) || fs.mkdirSync(morganLogDirectory);
+    if (!fs.existsSync(morganLogDirectory)) {
+      fs.mkdirSync(morganLogDirectory);
+    }
     // create a rotating write stream
-    let morganLogStream = rfs('morgan.log', {
+    const morganLogStream = rfs.createStream('morgan.log', {
       interval: '1d', // rotate daily
       path: morganLogDirectory,
       size: '10M' // rotates the file when size exceeds 10 MegaBytes
@@ -47,7 +49,7 @@ if (cluster.isMaster) {
     // setup the logger
     app.use(morgan('dev'));
     // Load environment development variables
-    dotenv.load({'path': '.env'});
+    dotenv.config();
   }
 
   // Use body parser so we can get info from POST and/or URL parameters
@@ -75,22 +77,11 @@ if (cluster.isMaster) {
 
   // Connect to the database before starting the application server.
 
-  mongoose.Promise = global.Promise;
-  mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true}, (err, database) => {
-    if (err) {
-      console.error.bind(console, 'connection error:');
-      process.exit(1);
-    }
+  mongoose.connect(process.env.MONGODB_URI).then(database => {
 
     // Save database object from the callback for reuse.
     db = database;
     console.log('Database connection ready');
-
-    mongoose.connection.db.admin().command({setParameter: 1, failIndexKeyTooLong: false}).then((data) => {
-      console.log('setParameter done');
-    }).catch((error) => {
-      console.error('setParameter error', error);
-    });
 
     // Listen on provided port, on all network interfaces.
     try {
@@ -99,6 +90,9 @@ if (cluster.isMaster) {
       console.log('GRAVE: ', err);
     }
 
+  }).catch(err => {
+    console.error.bind(console, 'connection error:');
+    process.exit(1);
   });
 
 }

@@ -121,7 +121,7 @@ export default class RawSchemaBatchController extends BaseController {
   private connect = (databaseParam): Promise<any> => {
     return new Promise((resolv, reject) => {
       MongoClient.connect(databaseParam.getURI(), {connectTimeoutMS: 5000}).then((database) => {
-        return resolv(database);
+        return resolv(database.db(databaseParam.databaseName));
       }).catch((error) => {
         return reject({'type': 'DATABASE_CONNECTION_ERROR', 'message': error.message, 'code': 400});
       });

@@ -7,7 +7,7 @@ export default class AlertController extends BatchBaseController {
 
   generate = (rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model = new Alert({
+      const alert = new Alert({
         'batchId': rawSchemaBatch._id,
         'userId': rawSchemaBatch.userId,
         'status': rawSchemaBatch.status,
@@ -16,7 +16,7 @@ export default class AlertController extends BatchBaseController {
         'collectionName': rawSchemaBatch.collectionName,
         'date': new Date()
       });
-      this.model.save().then((data) => {
+      alert.save().then((data) => {
         return resolv(data);
       }).catch((error) => {
         return reject({'type': 'ALERT_GENERATE_ERROR', 'message': error.message, 'code': 500});

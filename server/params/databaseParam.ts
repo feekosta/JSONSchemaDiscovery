@@ -30,9 +30,7 @@ export default class DatabaseParam {
   }
 
   public getURIWithAuthentication(address) {
-    return `${this.authentication.userName}:${this.authentication.password}@${address}
-      ?authSource=${this.authentication.authDatabase}
-      &authMechanism=${this.authentication.authMechanism}`;
+    return `${this.authentication.userName}:${this.authentication.password}@${address}?authSource=${this.authentication.authDatabase}&authMechanism=${this.authentication.authMechanism}`;
   }
 
   private hasAuthentication() {

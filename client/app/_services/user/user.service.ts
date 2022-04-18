@@ -1,26 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { User } from '../../_models/user';
 import { LoadingService } from '../loading/loading.service';
-import { AuthorizationParam } from '../../_params/params';
+import {HttpClient} from '@angular/common/http';
+import {finalize, map} from 'rxjs/operators';
+import {User} from './user';
 
 
 @Injectable()
 export class UserService {
 
-  	private baseUrl: string = "/api/user";
+  private baseUrl = '/api/user';
 
-	constructor(private http: Http, private loadingService: LoadingService) { }
+  constructor(private http: HttpClient, private loadingService: LoadingService) { }
 
-	get() {
-        this.loadingService.show();
-		return this.http.get(this.baseUrl, this.jwt())
-			.map((response: Response) => response.json())
-            .finally(() => this.loadingService.hide());
-	}
-
-	private jwt() {
-		return new AuthorizationParam();
-	}
+  get() {
+    this.loadingService.show();
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = { 'Authorization': `Bearer ${currentUser.token}` };
+    return this.http.get<User>(this.baseUrl, { headers })
+      .pipe(
+        finalize(() => this.loadingService.hide())
+      );
+  }
 
 }
