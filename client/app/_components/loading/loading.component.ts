@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { LoadingState, LoadingService } from '../../_services/loading/loading.service';
 
 @Component({
@@ -9,18 +9,18 @@ import { LoadingState, LoadingService } from '../../_services/loading/loading.se
 })
 export class LoadingComponent implements OnDestroy, OnInit {
 
-	public visible: boolean = false;
-	private _loadingStateChanged: Subscription;
+  public visible = false;
+  private _loadingStateChanged: Subscription;
 
-	constructor(private _loadingService: LoadingService) { }
+  constructor(private _loadingService: LoadingService) { }
 
-	ngOnInit() {
-		this._loadingStateChanged = this._loadingService.loadingState
-			.subscribe((state: LoadingState) => this.visible = state.show);
-	}
+  ngOnInit() {
+    this._loadingStateChanged = this._loadingService.loadingState
+      .subscribe((state: LoadingState) => this.visible = state.show);
+  }
 
-	ngOnDestroy() {
-		this._loadingStateChanged.unsubscribe();
-	}
+  ngOnDestroy() {
+    this._loadingStateChanged.unsubscribe();
+  }
 
 }

@@ -9,21 +9,18 @@ import { JsonSchemaService } from '../../_services/services';
 })
 export class JsonSchemaComponent implements OnInit {
 
-	jsonSchema: any;
+  jsonSchema: any;
 
-	constructor(
-	private route: ActivatedRoute, 
-	private jsonSchemaService:JsonSchemaService) { }
+  constructor(private route: ActivatedRoute, private jsonSchemaService: JsonSchemaService) { }
 
-
-	ngOnInit() {
-		this.route.params.subscribe((params) => {
-			this.jsonSchemaService.getJsonSchemaByBatchId(params['id']).subscribe((data) => {
-				if(data && data.length > 0){
-					this.jsonSchema = data[0].jsonSchema;
-				}
-			});
-		});
-	}
+  ngOnInit() {
+    this.route.params.subscribe((params) => {
+      this.jsonSchemaService.getJsonSchemaByBatchId(params['id']).subscribe((data) => {
+        if (data && data.length > 0) {
+          this.jsonSchema = data[0].jsonSchema;
+        }
+      });
+    });
+  }
 
 }

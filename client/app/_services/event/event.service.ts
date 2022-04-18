@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { Observable } from "rxjs/Observable";
+import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class EventService {
 
-	private isLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-    isLoggedEmitter: Observable<boolean> = this.isLogged.asObservable();
+  private isLogged: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  isLoggedEmitter: Observable<boolean> = this.isLogged.asObservable();
 
- 	constructor() { }
+  constructor() { }
 
- 	setIsLogged(isLogged: boolean) {
-        this.isLogged.next(isLogged);
-    }
+  setIsLogged(isLogged: boolean) {
+    this.isLogged.next(isLogged);
+  }
 
 }

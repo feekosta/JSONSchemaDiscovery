@@ -8,7 +8,9 @@ import 'moment/min/locales';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-	constructor(){
-		moment.locale('pt-br');
-	}
+
+  constructor() {
+    moment.locale('pt-br');
+  }
+
 }
