@@ -36,7 +36,6 @@ testem.log
 /typings
 yarn-error.log
 crash.log
-package-lock.json
 
 # e2e
 /e2e/*.js
