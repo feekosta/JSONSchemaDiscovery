@@ -21,6 +21,7 @@ export default class RawSchemaBatchController extends BaseController {
       const rawSchemaBatch = new this.model();
       rawSchemaBatch.collectionName = databaseParam.collectionName;
       rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
+      // @ts-ignore
       rawSchemaBatch.userId = databaseParam.userId;
       rawSchemaBatch.startDate = new Date();
       rawSchemaBatch.status = 'CONNECT_DATABASE';
@@ -97,6 +98,7 @@ export default class RawSchemaBatchController extends BaseController {
       const rawSchemaBatch = new this.model();
       rawSchemaBatch.collectionName = databaseParam.collectionName;
       rawSchemaBatch.dbUri = databaseParam.getURIWithoutAuthentication();
+      // @ts-ignore
       rawSchemaBatch.userId = databaseParam.userId;
       rawSchemaBatch.startDate = new Date();
 

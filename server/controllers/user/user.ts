@@ -12,6 +12,7 @@ export default class UserController extends BaseController {
       this.model.findOne({'email': email})
         .then(user => {
           if (!user) return reject({'message': 'Não foi possível encontrar sua conta.', 'code': 404});
+          // @ts-ignore
           return user.comparePassword(password)
             .then(isMatch => {
               if (!isMatch) return reject({'message': 'Senha incorreta. Tente novamente.', 'code': 403});

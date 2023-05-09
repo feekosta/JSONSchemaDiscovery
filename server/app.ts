@@ -8,7 +8,8 @@ import * as http from 'http';
 import * as fs from 'fs';
 import * as rfs from 'rotating-file-stream';
 import * as SegfaultHandler from 'segfault-handler';
-import * as cluster from 'cluster';
+import * as _cluster from 'cluster';
+const cluster = _cluster as unknown as _cluster.Cluster; // typings fix
 import * as os from 'os';
 import setRoutes from './routes';
 
@@ -77,6 +78,7 @@ if (cluster.isMaster) {
 
   // Connect to the database before starting the application server.
 
+  mongoose.set('strictQuery', true);
   mongoose.connect(process.env.MONGODB_URI).then(database => {
 
     // Save database object from the callback for reuse.

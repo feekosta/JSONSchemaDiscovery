@@ -32,7 +32,7 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "angular2-moment"
+              "ngx-moment"
             ]
           },
           "configurations": {
