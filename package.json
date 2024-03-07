@@ -45,7 +45,7 @@
     "jquery": "^3.6.0",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.3",
-    "mongodb": "^4.5.0",
+    "mongodb": "^4.17.0",
     "mongoose": "^6.3.0",
     "morgan": "^1.10.0",
     "ngx-moment": "^6.0.2",
