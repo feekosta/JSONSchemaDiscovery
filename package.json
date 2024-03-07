@@ -46,7 +46,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.3",
     "mongodb": "^4.5.0",
-    "mongoose": "^6.3.0",
+    "mongoose": "^6.11.3",
     "morgan": "^1.10.0",
     "ngx-moment": "^6.0.2",
     "rotating-file-stream": "^3.0.3",
