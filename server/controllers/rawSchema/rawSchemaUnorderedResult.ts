@@ -56,13 +56,28 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
       let updateQuantity = 0;
       collectionToWork.count().then((data) => {
         quantity = data;
-      });
-      const order = collectionToWork.cursor().pipe(rawSchemaOrder());
-      order.on('progress', (data) => {
-        this.model.update(
-          {_id: data._id},
-          {'$set': {'docRawSchema': data.docRawSchema}}
-        ).then((data) => {
+        const order = collectionToWork.cursor().pipe(rawSchemaOrder());
+        order.on('progress', (data) => {
+          this.model.update(
+            {_id: data._id},
+            {'$set': {'docRawSchema': data.docRawSchema}}
+          ).then((data) => {
+            updateQuantity++;
+            if (quantity >= 0 && updateQuantity >= quantity) {
+              this.executeAggregation(batchId).then((data) => {
+               return resolv(data);
+              }).catch((error) => {
+                console.error('error', error);
+                return reject(error);
+              });
+            }
+          }).catch((error) => {
+            console.error('error', error);
+            return reject(error);
+          });
+        });
+        order.on('ignore', () => {
+          console.log('ignore');
           updateQuantity++;
           if (quantity >= 0 && updateQuantity >= quantity) {
             this.executeAggregation(batchId).then((data) => {
@@ -72,26 +87,11 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
               return reject(error);
             });
           }
-        }).catch((error) => {
-          console.error('error', error);
-          return reject(error);
         });
-      });
-      order.on('ignore', () => {
-        console.log('ignore');
-        updateQuantity++;
-        if (quantity >= 0 && updateQuantity >= quantity) {
-          this.executeAggregation(batchId).then((data) => {
-            return resolv(data);
-          }).catch((error) => {
-            console.error('error', error);
-            return reject(error);
-          });
-        }
-      });
-      order.on('error', (error) => {
-        console.error('error', error);
-        reject(error);
+        order.on('error', (error) => {
+          console.error('error', error);
+          reject(error);
+        });
       });
     });
   };
