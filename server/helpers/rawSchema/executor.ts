@@ -1,4 +1,3 @@
-import {ObjectID} from 'mongodb';
 import RawSchemaProcessWorker from './rawSchemaProcessWorker';
 
 class Executor {

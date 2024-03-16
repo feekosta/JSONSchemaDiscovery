@@ -71,7 +71,7 @@ export default class RawSchemaBatchController extends BaseController {
 
   deleteBatch = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model.findOneAndRemove({_id: batchId}).then((data) => {
+      this.model.findOneAndDelete({_id: batchId}).then((data) => {
         return new RawSchemaController(batchId).deleteAll();
       }).then((data) => {
         return new RawSchemaOrderedResultController(batchId).deleteAll();
@@ -133,7 +133,7 @@ export default class RawSchemaBatchController extends BaseController {
   private getCollection = (database, rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
       const collection = database.collection(rawSchemaBatch.collectionName);
-      collection.count().then((count) => {
+      collection.countDocuments().then((count) => {
         if (count === 0)
           return reject({'type': 'EMPTY_COLLECTION_ERROR', 'message': 'coleção não encontrada', 'code': 400});
         rawSchemaBatch.collectionCount = count;

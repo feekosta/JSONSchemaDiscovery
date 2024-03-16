@@ -8,6 +8,10 @@ export default abstract class BSONTypeHelper {
         return data.constructor.name;
       } else if (data.constructor.name === 'RegExp') {
         return data.constructor.name;
+      } else if (data.$regex && data.$options) {
+        return 'RegExp';
+      } else if (data.$symbol) {
+        return 'Symbol';
       }
     }
   }

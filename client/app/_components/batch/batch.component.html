@@ -1,46 +1,48 @@
 <mat-card>
 	<mat-card-header>
 		<div class="app-card-header-title">
-			<mat-icon mat-list-icon color="primary">description</mat-icon>
-	    	<mat-card-title>{{batch?.collectionName}}</mat-card-title>
+			<mat-icon matListItemIcon color="primary">description</mat-icon>
+	    	<mat-card-title matListItemTitle>{{batch?.collectionName}}</mat-card-title>
     	</div>
     </mat-card-header>
     <mat-card-content>
     	<mat-list>
 	  		<mat-list-item>
-		  		<mat-icon mat-list-icon color="primary">cloud</mat-icon>
-				<h4 mat-line>Url</h4>
-				<p mat-line>{{batch?.dbUri}}</p>
-			</mat-list-item>
-			<mat-list-item>
-		  		<mat-icon mat-list-icon color="primary">info</mat-icon>
-				<h4 mat-line>Quantidade de registros na coleção</h4>
-				<p mat-line>{{batch?.collectionCount}}</p>
-			</mat-list-item>
-			
-			<mat-list-item>
-		  		<mat-icon mat-list-icon color="primary">info</mat-icon>
-				<h4 mat-line>Registros com mesma estrutura original</h4>
-				<p mat-line>{{batch?.uniqueUnorderedCount}}</p>
-			</mat-list-item>
-			<mat-list-item>
-		  		<mat-icon mat-list-icon color="primary">info</mat-icon>
-				<h4 mat-line>Registros com mesma estrutura ordenada</h4>
-				<p mat-line>{{batch?.uniqueOrderedCount}}</p>
-			</mat-list-item>
-			<mat-list-item>
-		  		<mat-icon mat-list-icon color="primary">description</mat-icon>
-				<h4 mat-line>JSONSchema</h4>
-				<button mat-mini-fab color="primary" (click)="openElapsedTimeModal()">
-					<mat-icon matTooltip="Informações sobre tempo decorrido">access_time</mat-icon>
-				</button>
-				<button mat-mini-fab color="primary" [routerLink]="['/jsonschema', batch?._id]">
-					<mat-icon matTooltip="Visualizar JSON Schema">visibility</mat-icon>
-				</button>
-				<button mat-mini-fab color="accent" (click)="download()">
-					<mat-icon matTooltip="Baixar JSON Schema">get_app</mat-icon>
-				</button>
-			</mat-list-item>
-		</mat-list>
+          <mat-icon matListItemIcon color="primary">cloud</mat-icon>
+          <h4 matListItemTitle>Url</h4>
+          <p matListItemLine>{{batch?.dbUri}}</p>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-icon matListItemIcon color="primary">info</mat-icon>
+          <h4 matListItemTitle>Quantidade de registros na coleção</h4>
+          <p matListItemLine>{{batch?.collectionCount}}</p>
+        </mat-list-item>
+
+        <mat-list-item>
+            <mat-icon matListItemIcon color="primary">info</mat-icon>
+          <h4 matListItemTitle>Registros com mesma estrutura original</h4>
+          <p matListItemLine>{{batch?.uniqueUnorderedCount}}</p>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-icon matListItemIcon color="primary">info</mat-icon>
+          <h4 matListItemTitle>Registros com mesma estrutura ordenada</h4>
+          <p matListItemLine>{{batch?.uniqueOrderedCount}}</p>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-icon matListItemIcon color="primary">description</mat-icon>
+          <h4 matListItemTitle>JSONSchema</h4>
+          <div matListItemMeta>
+            <button mat-mini-fab color="primary" (click)="openElapsedTimeModal()">
+              <mat-icon matTooltip="Informações sobre tempo decorrido">access_time</mat-icon>
+            </button>
+            <button mat-mini-fab color="primary" [routerLink]="['/jsonschema', batch?._id]">
+              <mat-icon matTooltip="Visualizar JSON Schema">visibility</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" (click)="download()">
+              <mat-icon matTooltip="Baixar JSON Schema">get_app</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+		  </mat-list>
     </mat-card-content>
 </mat-card>

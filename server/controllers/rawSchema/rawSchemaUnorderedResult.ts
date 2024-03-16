@@ -59,7 +59,7 @@ export default class RawSchemaUnorderedResultController extends BatchBaseControl
       });
       const order = collectionToWork.cursor().pipe(rawSchemaOrder());
       order.on('progress', (data) => {
-        this.model.update(
+        this.model.findOneAndUpdate(
           {_id: data._id},
           {'$set': {'docRawSchema': data.docRawSchema}}
         ).then((data) => {

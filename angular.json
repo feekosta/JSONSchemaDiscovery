@@ -20,7 +20,7 @@
             "outputPath": "dist/JSONSchemaDiscovery",
             "index": "client/index.html",
             "main": "client/main.ts",
-            "polyfills": "client/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "client/tsconfig.app.json",
             "assets": [
               "client/favicon.ico",
@@ -91,7 +91,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "client/test.ts",
-            "polyfills": "client/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "client/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [

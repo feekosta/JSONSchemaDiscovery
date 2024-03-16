@@ -2,7 +2,7 @@
 	<ng-container matColumnDef="status">
 		<mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
 		<mat-cell *matCellDef="let element">
-			<mat-icon mat-list-icon [color]="getStatusColor(element.status)" matTooltip="{{getTypeTooltip(element.type)}}" matTooltipPosition="right">{{getStatusIcon(element.status)}}</mat-icon>
+			<mat-icon matListItemIcon [color]="getStatusColor(element.status)" matTooltip="{{getTypeTooltip(element.type)}}" matTooltipPosition="right">{{getStatusIcon(element.status)}}</mat-icon>
 		</mat-cell>
 	</ng-container>
 	<ng-container matColumnDef="dbUri">
@@ -19,7 +19,7 @@
 	</ng-container>
 	<ng-container matColumnDef="actions">
 		<mat-header-cell *matHeaderCellDef> Ações </mat-header-cell>
-		<mat-cell *matCellDef="let element"> 
+		<mat-cell *matCellDef="let element">
 			<button mat-mini-fab color="primary" [routerLink]="['/batch', element.batchId]" *ngIf="element.status == 'DONE'">
 				<mat-icon matTooltip="Visualizar resultado">visibility</mat-icon>
 			</button>

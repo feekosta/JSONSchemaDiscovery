@@ -31,7 +31,7 @@ abstract class BatchBaseController extends BaseController {
   };
 
   deleteEntitiesByBatchId = (batchId) => {
-    return this.model.remove({'batchId': batchId});
+    return this.model.deleteMany({'batchId': batchId});
   };
 
   countEntitiesByBatchId = (batchId) => {

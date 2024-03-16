@@ -1,7 +1,6 @@
 import {EventEmitter} from 'events';
 import RawSchemaDiscoverer from './rawSchemaDiscoverer';
 import RawSchemaController from '../../controllers/rawSchema/rawSchema';
-import {ObjectID} from 'mongodb';
 import RawSchemaReader from './rawSchemaReader';
 
 export default class RawSchemaProcessWorker extends EventEmitter {
@@ -37,8 +36,8 @@ export default class RawSchemaProcessWorker extends EventEmitter {
       discovery = new RawSchemaDiscoverer().discovery(collectionToWork, rawSchemaBatch._id);
     }
     discovery.on('end', rawSchemes => {
-      this.emit('save', rawSchemes);
       if (rawSchemes.length > 0) {
+        this.emit('save', rawSchemes);
         this.emit('lastObjectId', rawSchemes[rawSchemes.length - 1].docId);
       } else {
         this.emit('done');
