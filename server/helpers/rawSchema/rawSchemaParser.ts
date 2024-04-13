@@ -5,7 +5,9 @@ const parse = function (batchId: string) {
   const rawSchemes = [];
   const mapper = es.through(function write(document) {
     const documentRawSchema = {};
-    Object.keys(document).forEach(key => documentRawSchema[key] = RawSchemaBuilder.build(document[key]));
+    Object.keys(document).forEach(key => {
+      documentRawSchema[key] = RawSchemaBuilder.build(document[key]);
+    });
     rawSchemes.push({
       'docId': document._id,
       'docRawSchema': JSON.stringify(documentRawSchema),

@@ -1,0 +1,5 @@
+{"_id":1,"article_id":2,"parent":{"$ref":"articles","$id":3}}
+{"_id":2,"article_id":3,"parent":{"$ref":"articles","$id":4}}
+{"_id":3,"article_id":4,"parent":{"$ref":"articles","$id":5}}
+{"_id":4,"article_id":5,"parent":{"$ref":"articles","$id":6}}
+{"_id":5,"article_id":6,"parent":{"$ref":"articles","$id":7}}

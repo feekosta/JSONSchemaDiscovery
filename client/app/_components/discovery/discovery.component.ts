@@ -22,7 +22,13 @@ export class DiscoveryComponent implements OnInit {
               private jsonSchemaService: JsonSchemaService,
               private feedbackService: FeedbackService) {
       this.model = new DatabaseParam();
-      this.model.port = '27017';
+      this.model.port = '27888';
+      this.model.address = '127.0.0.1';
+      this.model.databaseName = 'test';
+      this.model.collectionName = 'alltypes';
+      this.model.authentication.authDatabase = 'admin';
+      this.model.authentication.userName = 'mongoadmin';
+      this.model.authentication.password = 'secret';
       this.authMechanisms = [
         'DEFAULT', 'GSSAPI', 'PLAIN', 'MONGODB-X509', 'SCRAM-SHA-1', 'MONGODB-CR'
       ];

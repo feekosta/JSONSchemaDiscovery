@@ -2,28 +2,51 @@ class JSONSchema {
 
   'definitions': any;
   '$schema': String;
-  'id': String;
+  '$id': String;
   'title': String;
+  'description': String;
   'type': String;
   'properties': any;
   'additionalProperties': Boolean;
   'required': Array<String>;
 
-  constructor() {
-    this.$schema = 'http://json-schema.org/draft-06/schema#';
+  constructor(databaseTitle: String) {
+    this.$id = `https://jsonschemadiscovery.com/schemas/${databaseTitle}`;
+    this.$schema = 'https://json-schema.org/draft/2019-09/schema';
+    this.title = databaseTitle;
+    this.description = `JSON Schema for a ${databaseTitle} collection`;
+    this.type = 'object';
     this.definitions = {
       'Binary': {
         'title': 'Binary',
-        'type': 'object',
-        'properties': {
-          '$binary': {
-            'type': 'string'
+        'anyOf': [{
+          'type': 'object',
+          'properties': {
+            '$binary': {
+              'type': 'string'
+            },
+            '$type': {
+              'type': 'string'
+            }
           },
-          '$type': {
-            'type': 'string'
+          'required': ['$binary', '$type']
+        }, {
+          'type': 'object',
+          'properties': {
+            '$binary': {
+              'type': 'object',
+              'properties': {
+                'base64': {
+                  'type': 'string'
+                },
+                'subType': {
+                  'type': 'string'
+                }
+              },
+              'required': ['base64', 'subType']
+            }
           }
-        },
-        'required': ['$binary', '$type']
+        }],
       },
       'Undefined': {
         'title': 'Undefined',
@@ -45,6 +68,16 @@ class JSONSchema {
         },
         'required': ['$oid']
       },
+      'ObjectId': {
+        'title': 'ObjectId',
+        'type': 'object',
+        'properties': {
+          '$oid': {
+            'type': 'string'
+          }
+        },
+        'required': ['$oid']
+      },
       'Date': {
         'title': 'Date',
         'type': 'object',
@@ -55,7 +88,7 @@ class JSONSchema {
         },
         'required': ['$date']
       },
-      'RegExp': {
+      '_RegExp': {
         'title': 'RegExp',
         'type': 'object',
         'properties': {
@@ -68,12 +101,45 @@ class JSONSchema {
         },
         'required': ['$options', '$regex']
       },
+      'RegExp': {
+        'title': 'RegExp',
+        'anyOf': [{
+          'title': 'RegExp',
+          'type': 'object',
+          'properties': {
+            '$options': {
+              'type': 'string'
+            },
+            '$regex': {
+              '$type': 'string'
+            }
+          },
+          'required': ['$options', '$regex']
+        }, {
+          'type': 'object',
+          'properties': {
+            '$regularExpression': {
+              'type': 'object',
+              'properties': {
+                'pattern': {
+                  'type': 'string'
+                },
+                'options': {
+                  'type': 'string'
+                }
+              },
+              'required': ['pattern', 'options']
+            }
+          },
+          'required': ['$regularExpression']
+        }],
+      },
       'DBRef': {
         'title': 'DBRef',
         'type': 'object',
         'properties': {
           '$id': {
-            'type': 'string'
+            '$ref': '#/definitions/ObjectId'
           },
           '$ref': {
             'type': 'string'
@@ -123,6 +189,46 @@ class JSONSchema {
         },
         'required': ['$numberLong']
       },
+      'NumberLong': {
+        'title': 'NumberLong',
+        'type': 'object',
+        'properties': {
+          '$numberLong': {
+            'type': 'string'
+          }
+        },
+        'required': ['$numberLong']
+      },
+      'NumberInt': {
+        'title': 'NumberInt',
+        'type': 'object',
+        'properties': {
+          '$numberInt': {
+            'type': 'string'
+          }
+        },
+        'required': ['$numberInt']
+      },
+      'NumberDouble': {
+        'title': 'NumberDouble',
+        'type': 'object',
+        'properties': {
+          '$numberDouble': {
+            'type': 'string'
+          }
+        },
+        'required': ['$numberDouble']
+      },
+      'Decimal128': {
+        'title': 'Decimal128',
+        'type': 'object',
+        'properties': {
+          '$numberDecimal': {
+            'type': 'string'
+          }
+        },
+        'required': ['$numberDecimal']
+      },
       'MinKey': {
         'title': 'MinKey',
         'type': 'object',
@@ -142,6 +248,16 @@ class JSONSchema {
           }
         },
         'required': ['$maxKey']
+      },
+      'Symbol': {
+        'title': 'Symbol',
+        'type': 'object',
+        'properties': {
+          '$symbol': {
+            'type': 'string'
+          }
+        },
+        'required': ['$symbol']
       }
     };
     this.properties = {};

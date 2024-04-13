@@ -2,8 +2,13 @@ import JSONSchema from './jsonSchema';
 
 export default class JsonSchemaBuilder {
 
-  rootSchema = new JSONSchema();
-  usedDefinitions = [];
+  rootSchema: JSONSchema;
+  usedDefinitions: Array<string>;
+
+  constructor(collectionName) {
+    this.rootSchema = new JSONSchema(collectionName);
+    this.usedDefinitions = [];
+  }
 
   build = (fields, count) => {
     this.rootSchema.properties = this.getFieldsSchema(fields);
@@ -108,24 +113,30 @@ export default class JsonSchemaBuilder {
 
   private getArrayTypeSchema = (array) => {
     let items, totalCount;
+    let hasItems = false;
     const itemsArray = this.buildItems(array.items);
     if (itemsArray.length === 1) {
       items = itemsArray.pop();
       totalCount = items.count;
       delete items.count;
-    } else {
+      hasItems = true;
+    } else if (itemsArray.length > 0) {
       items = {'anyOf': itemsArray};
       totalCount = itemsArray.map(item => item.count).reduce((preVal, elem) => preVal + elem, 0);
       itemsArray.forEach(item => delete item.count);
+      hasItems = true;
     }
     const schema = {
       'name': array.path,
       'type': array.name.toLowerCase(),
-      'items': items,
       'minItems': 0,
+      'items': items,
       'count': array.count,
       'additionalItems': true
     };
+    if (!hasItems) {
+      delete schema.items;
+    }
     if (totalCount >= array.count) schema.minItems = 1;
     return schema;
   };

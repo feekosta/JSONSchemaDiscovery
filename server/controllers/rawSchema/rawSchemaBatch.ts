@@ -228,14 +228,17 @@ export default class RawSchemaBatchController extends BaseController {
         return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
         console.log('STEP2.1: DONE');
-        new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
-          rawSchemaBatch.uniqueUnorderedCount = data;
-          rawSchemaBatch.unorderedAggregationDate = new Date();
-          return rawSchemaBatch.save();
-        }).catch((error) => {
-          console.log('error', error);
-        });
-        return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
+        return new RawSchemaUnorderedResultController(batchId).countAllEntities()
+          .then((data) => {
+            rawSchemaBatch.uniqueUnorderedCount = data;
+            rawSchemaBatch.unorderedAggregationDate = new Date();
+            return rawSchemaBatch.save();
+          }).then((data) => {
+            return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
+          })
+          .catch((error) => {
+            console.log('error', error);
+          });
       }).then((data) => {
         console.log('STEP2.2: DONE');
         new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {
