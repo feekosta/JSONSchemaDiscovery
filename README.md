@@ -8,7 +8,7 @@
 After clone the repo to your local machine, in project's folder:
 1. Install global dependencies:
 * [Angular CLI](https://cli.angular.io/) `npm install -g @angular/cli`
-* [Typescript](https://www.typescriptlang.org/) `npm install -g typescript`
+* [Typescript](https://www.typescriptlang.org/) `npm install -g typescript@5.4.5`
 
 2. Install project dependencies running: `npm install`;
 

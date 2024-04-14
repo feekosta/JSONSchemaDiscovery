@@ -36,7 +36,7 @@ export default class AlertController extends BatchBaseController {
 
   countByUserId = (userId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      return this.model.find({'userId': userId}).count().then((data) => {
+      return this.model.countDocuments({'userId': userId}).then((data) => {
         return resolv(data);
       }, (error) => {
         return reject(error);
@@ -46,7 +46,7 @@ export default class AlertController extends BatchBaseController {
 
   deleteAlert = (alertId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model.findOneAndRemove({_id: alertId}).then((data) => {
+      this.model.findOneAndDelete({_id: alertId}).then((data) => {
         return resolv(data);
       }, (error) => {
         return reject(error);

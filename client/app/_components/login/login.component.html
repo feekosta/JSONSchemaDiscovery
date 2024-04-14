@@ -1,36 +1,27 @@
-<mat-card>
-
-  <img src="../../../assets/jsd_logo.png" alt="JSON Schema Discovery" class="app-logo">
-
-  <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
-
+<form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
+  <mat-card id="card" style="text-align: center;">
+    <mat-card-title>
+      <img src="../../../assets/jsd_logo.png" alt="JSON Schema Discovery" class="app-logo">
+    </mat-card-title>
     <mat-card-content>
-
-  		<mat-form-field class="mat-block" >
-        <input matInput type="email" placeholder="Email" required [formControl]="emailFormControl" [(ngModel)]="model.email" />
+      <mat-form-field>
+        <input matInput placeholder="Email" type="email" required [formControl]="emailFormControl" [(ngModel)]="model.email">
         <mat-error *ngIf="emailFormControl.hasError('pattern')">
           Por favor, digite um email válido
         </mat-error>
         <mat-error *ngIf="emailFormControl.hasError('required')">
           Email é <strong>obrigatório</strong>
         </mat-error>
-      </mat-form-field>
-
-  		<mat-form-field class="mat-block">
+      </mat-form-field><br/>
+      <mat-form-field>
         <input matInput placeholder="Senha" [type]="showPassword ? 'text' : 'password'" required [(ngModel)]="model.password" #password="ngModel" name="password">
         <mat-icon matSuffix (click)="showPassword = !showPassword">{{showPassword ? 'visibility' : 'visibility_off'}}</mat-icon>
         <mat-error *ngIf="!password.valid">
           Senha é <strong>obrigatório</strong>
         </mat-error>
-      </mat-form-field>
-
+      </mat-form-field><br/>
+      <button mat-raised-button color="primary" style="margin-right:5px;" [disabled]="loading">Entrar</button>
+      <a mat-raised-button [routerLink]="['/register']" style="margin-right:5px;">Criar conta</a>
     </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-raised-button color="primary" [disabled]="loading">Entrar</button>
-      <a mat-raised-button [routerLink]="['/register']">Criar conta</a>
-    </mat-card-actions>
-
-  </form>
-
-</mat-card>
+  </mat-card>
+</form>

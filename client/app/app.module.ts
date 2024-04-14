@@ -67,6 +67,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MomentModule } from 'ngx-moment';
 import { MatBadgeModule } from '@angular/material/badge';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 @NgModule({
   exports: [
@@ -146,11 +147,8 @@ export class AppMaterialModule {}
     FeedbackService,
     JsonSchemaService,
     LoadingService,
-    UserService
-  ],
-  entryComponents: [
-    BatchDeleteModalComponent,
-    BatchElapsedTimeModalComponent
+    UserService,
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline', floatLabel: 'always'}}
   ],
   bootstrap: [AppComponent]
 })

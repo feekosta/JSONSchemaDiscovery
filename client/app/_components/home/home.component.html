@@ -1,19 +1,31 @@
 <mat-list>
-  <mat-list-item *ngFor="let batch of batches">
-  	<h4 mat-line>{{batch.dbUri}}</h4>
-  	<h6 mat-line>{{batch.collectionName}}</h6>
-  	<mat-icon matTooltip="{{getTypeTooltip(batch.statusType)}}" matTooltipPosition="right" [color]="getStatusColor(batch.status)" mat-list-icon *ngIf="batch.status == 'DONE'||batch.status == 'ERROR'">{{getStatusIcon(batch.status)}}</mat-icon>
-	<mat-icon matTooltip="Em andamento" matTooltipPosition="right" mat-list-icon *ngIf="batch.status != 'DONE'&&batch.status != 'ERROR'">
-		<mat-spinner class="app-mat-spinner"></mat-spinner>
-	</mat-icon>
-	<button matTooltip="Visualizar" mat-mini-fab color="primary" [routerLink]="['/batch', batch._id]" *ngIf="batch.status == 'DONE'">
-		<mat-icon>visibility</mat-icon>
-	</button>
-	<button matTooltip="Deletar" mat-mini-fab color="warn" (click)="delete(batch._id)" *ngIf="batch.status == 'DONE'||batch.status == 'ERROR'">
-		<mat-icon>delete</mat-icon>
-	</button>
-  </mat-list-item>
+  @for (batch of batches; track batch) {
+    <mat-list-item>
+      <h4 matListItemTitle>{{batch.dbUri}}</h4>
+      <h6 matListItemLine>{{batch.collectionName}}</h6>
+      @if (batch.status == 'DONE' || batch.status == 'ERROR') {
+        <mat-icon matListItemIcon matTooltip="{{getTypeTooltip(batch.statusType)}}" matTooltipPosition="right" [color]="getStatusColor(batch.status)">{{getStatusIcon(batch.status)}}</mat-icon>
+      }
+      @if (batch.status != 'DONE' && batch.status != 'ERROR') {
+        <mat-icon matListItemIcon matTooltip="Em andamento" matTooltipPosition="right">
+          <mat-spinner [diameter]="25"></mat-spinner>
+        </mat-icon>
+      }
+      @if (batch.status == 'DONE') {
+        <button matTooltip="Visualizar" mat-mini-fab color="primary" [routerLink]="['/batch', batch._id]" matListItemMeta>
+          <mat-icon>visibility</mat-icon>
+        </button>
+      }
+      @if (batch.status == 'DONE' || batch.status == 'ERROR') {
+        <button matTooltip="Deletar" mat-mini-fab color="warn" (click)="delete(batch._id)" matListItemMeta>
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
+    </mat-list-item>
+  }
 </mat-list>
 <span class="app-action">
-  <button mat-fab matTooltip="Executar nova extração de JSON Schema" matTooltipPosition="left" [routerLink]="['/discovery']"><mat-icon>add</mat-icon></button>
+  <button mat-fab matTooltip="Executar nova extração de JSON Schema" matTooltipPosition="left" [routerLink]="['/discovery']">
+    <mat-icon>add</mat-icon>
+  </button>
 </span>

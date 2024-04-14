@@ -17,7 +17,7 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
         rawSchemaBatch = data;
         return new RawSchemaUnion().listEntitiesByBatchId(batchId);
       }).then((data) => {
-        return this.buildJsonSchema(data, batchId);
+        return this.buildJsonSchema(data, batchId, rawSchemaBatch.collectionName);
       }).then((data) => {
         rawSchemaBatch.endDate = new Date();
         rawSchemaBatch.status = 'DONE';
@@ -31,13 +31,13 @@ export default class JsonSchemaExtractedController extends BatchBaseController {
     });
   };
 
-  private buildJsonSchema = (rawSchemaUnions, batchId): Promise<any> => {
+  private buildJsonSchema = (rawSchemaUnions, batchId, collectionName): Promise<any> => {
     return new Promise((resolv, reject) => {
       const rawSchemaUnion = rawSchemaUnions.pop();
       if (!rawSchemaUnion)
         throw `no results for batchId: ${batchId}`;
       const rawSchemaFinal = JSON.parse(rawSchemaUnion.rawSchemaFinal);
-      const jsonSchemaGenerated = new JsonSchemaBuilder().build(rawSchemaFinal.fields, rawSchemaFinal.count);
+      const jsonSchemaGenerated = new JsonSchemaBuilder(collectionName).build(rawSchemaFinal.fields, rawSchemaFinal.count);
       const jsonSchemaExtracted = new JsonSchemaExtracted({
         batchId: batchId,
         jsonSchema: JSON.stringify(jsonSchemaGenerated)

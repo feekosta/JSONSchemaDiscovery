@@ -24,17 +24,16 @@ abstract class BaseController {
 
   // Count all
   public count = (req, res) => {
-    this.model.count((err, count) => {
-      if (err) {
-        return this.error(res, err, 404);
-      }
-      this.success(res, count);
+    this.model.countDocuments().then((count) => {
+      return this.success(res, count);
+    }).catch((err) => {
+      return this.error(res, err, 404);
     });
   };
 
   public countAllEntities = (): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model.count().then((data) => {
+      this.model.countDocuments().then((data) => {
         return resolv(data);
       }).catch((error) => {
         return reject({'type': 'COUNT_ALL_ERROR', 'message': error.message, 'code': 404});
@@ -45,15 +44,14 @@ abstract class BaseController {
   // Insert
   public insert = (req, res) => {
     const obj = new this.model(req.body);
-    obj.save((err, item) => {
+    obj.save().then((item) => {
+      return this.success(res, item);
+    }).catch((err) => {
       // 11000 is the code for duplicate key error
       if (err && err.code === 11000) {
-        this.error(res, err, 400);
+        return this.error(res, err, 400);
       }
-      if (err) {
-        return this.error(res, err, 404);
-      }
-      this.success(res, item);
+      return this.error(res, err, 404);
     });
   };
 
@@ -88,11 +86,10 @@ abstract class BaseController {
 
   // Get by id
   public get = (req, res) => {
-    this.model.findOne({'_id': req.params.id}, (err, obj) => {
-      if (err) {
+    this.model.findOne({'_id': req.params.id}).then((obj) => {
+      return this.success(res, obj);
+    }).catch((err) => {
         return this.error(res, err, 404);
-      }
-      this.success(res, obj);
     });
   };
 
@@ -148,7 +145,7 @@ abstract class BaseController {
 
   public deleteAll = (): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model.remove({}).then((data) => {
+      this.model.deleteMany({}).then((data) => {
         return resolv(data);
       }).catch((error) => {
         return reject({'type': 'REMOVE_ALL_ERROR', 'message': error.message, 'code': 404});

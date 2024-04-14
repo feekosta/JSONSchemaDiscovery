@@ -71,7 +71,7 @@ export default class RawSchemaBatchController extends BaseController {
 
   deleteBatch = (batchId): Promise<any> => {
     return new Promise((resolv, reject) => {
-      this.model.findOneAndRemove({_id: batchId}).then((data) => {
+      this.model.findOneAndDelete({_id: batchId}).then((data) => {
         return new RawSchemaController(batchId).deleteAll();
       }).then((data) => {
         return new RawSchemaOrderedResultController(batchId).deleteAll();
@@ -133,7 +133,7 @@ export default class RawSchemaBatchController extends BaseController {
   private getCollection = (database, rawSchemaBatch): Promise<any> => {
     return new Promise((resolv, reject) => {
       const collection = database.collection(rawSchemaBatch.collectionName);
-      collection.count().then((count) => {
+      collection.countDocuments().then((count) => {
         if (count === 0)
           return reject({'type': 'EMPTY_COLLECTION_ERROR', 'message': 'coleção não encontrada', 'code': 400});
         rawSchemaBatch.collectionCount = count;
@@ -228,14 +228,17 @@ export default class RawSchemaBatchController extends BaseController {
         return new RawSchemaController(batchId).aggregate(batchId);
       }).then((data) => {
         console.log('STEP2.1: DONE');
-        new RawSchemaUnorderedResultController(batchId).countAllEntities().then((data) => {
-          rawSchemaBatch.uniqueUnorderedCount = data;
-          rawSchemaBatch.unorderedAggregationDate = new Date();
-          return rawSchemaBatch.save();
-        }).catch((error) => {
-          console.log('error', error);
-        });
-        return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
+        return new RawSchemaUnorderedResultController(batchId).countAllEntities()
+          .then((data) => {
+            rawSchemaBatch.uniqueUnorderedCount = data;
+            rawSchemaBatch.unorderedAggregationDate = new Date();
+            return rawSchemaBatch.save();
+          }).then((data) => {
+            return new RawSchemaUnorderedResultController(batchId).aggregate(batchId);
+          })
+          .catch((error) => {
+            console.log('error', error);
+          });
       }).then((data) => {
         console.log('STEP2.2: DONE');
         new RawSchemaOrderedResultController(batchId).countAllEntities().then((data) => {

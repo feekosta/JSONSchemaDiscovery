@@ -9,6 +9,7 @@ export default class UserController extends BaseController {
 
   login = (email: String, password: String): Promise<any> => {
     return new Promise((resolv, reject) => {
+      // @ts-ignore
       this.model.findOne({'email': email})
         .then(user => {
           if (!user) return reject({'message': 'Não foi possível encontrar sua conta.', 'code': 404});
